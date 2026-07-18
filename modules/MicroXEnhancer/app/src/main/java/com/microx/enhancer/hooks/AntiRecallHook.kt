@@ -80,23 +80,25 @@ object AntiRecallHook {
             )
 
             for (methodName in revokeMethods) {
-                HookHelper.hookAllMethodsSafe(clazz, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(clazz, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     HookHelper.log("[防撤回] 拦截撤回方法: ${clazz.name}.$methodName")
-
-                    // 获取撤回消息的msgId
-                    val msgId = try {
-                        // 不同版本参数位置不同，尝试从args中提取
-                        extractMsgId(param)
-                    } catch (e: Exception) {
-                        "unknown"
-                    }
-
-                    // 保存原始消息内容
-                    saveRecalledMessage(msgId, param.thisObject, param.args)
-
-                    // 阻止原生撤回逻辑：直接return，不执行原方法
-                    param.result = null
+                    
+                                        // 获取撤回消息的msgId
+                                        val msgId = try {
+                                            // 不同版本参数位置不同，尝试从args中提取
+                                            extractMsgId(param)
+                                        } catch (e: Exception) {
+                                            "unknown"
+                                        }
+                    
+                                        // 保存原始消息内容
+                                        saveRecalledMessage(msgId, param.thisObject, param.args)
+                    
+                                        // 阻止原生撤回逻辑：直接return，不执行原方法
+                                        param.result = null
                 }
+            })
             }
         }
     }
@@ -125,13 +127,15 @@ object AntiRecallHook {
             )
 
             for (methodName in removeMethods) {
-                HookHelper.hookAllMethodsSafe(clazz, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(clazz, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     val msgId = extractMsgId(param)
-                    if (isRevokedMessage(msgId)) {
-                        HookHelper.log("[防撤回] 阻止消息删除 msgId=$msgId")
-                        param.result = null // 阻止删除操作
-                    }
+                                        if (isRevokedMessage(msgId)) {
+                                            HookHelper.log("[防撤回] 阻止消息删除 msgId=$msgId")
+                                            param.result = null // 阻止删除操作
+                                        }
                 }
+            })
             }
         }
     }
@@ -152,13 +156,15 @@ object AntiRecallHook {
             if (clazz == null) continue
 
             // Hook消息内容设置方法
-            HookHelper.hookAllMethodsSafe(clazz, "setContent") { param ->
-                val content = param.args.getOrNull(0) as? String ?: ""
-                if (content.contains("撤回了一条消息") || content.contains("recalled")) {
-                    // 不替换提示文字，保留原显示但阻止消息被删除
-                    HookHelper.logD("[防撤回] 检测到撤回提示: $content")
+            HookHelper.hookAllMethodsSafe(clazz, "setContent", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val content = param.args.getOrNull(0) as? String ?: ""
+                                    if (content.contains("撤回了一条消息") || content.contains("recalled")) {
+                                        // 不替换提示文字，保留原显示但阻止消息被删除
+                                        HookHelper.logD("[防撤回] 检测到撤回提示: $content")
+                                    }
                 }
-            }
+            })
         }
 
         // 额外：Hook聊天UI的消息更新方法
@@ -168,15 +174,19 @@ object AntiRecallHook {
         )
         if (chatUI != null) {
             // Hook消息列表刷新方法
-            HookHelper.hookAllMethodsSafe(chatUI, "notifyDataSetChanged") { param ->
-                HookHelper.logD("[防撤回] 消息列表刷新")
-                // 允许正常刷新，但之前删掉的消息不会被移除（因为deleteMsg被Hook了）
-            }
+            HookHelper.hookAllMethodsSafe(chatUI, "notifyDataSetChanged", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.logD("[防撤回] 消息列表刷新")
+                                    // 允许正常刷新，但之前删掉的消息不会被移除（因为deleteMsg被Hook了）
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(chatUI, "updateItem") { param ->
-                HookHelper.logD("[防撤回] 消息Item更新")
-                // 允许正常更新
-            }
+            HookHelper.hookAllMethodsSafe(chatUI, "updateItem", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.logD("[防撤回] 消息Item更新")
+                                    // 允许正常更新
+                }
+            })
         }
     }
 
@@ -197,15 +207,19 @@ object AntiRecallHook {
             val clazz = HookHelper.findClassSafe(lpparam, className)
             if (clazz == null) continue
 
-            HookHelper.hookAllMethodsSafe(clazz, "handleRevokeNotify") { param ->
-                HookHelper.log("[QQ防撤回] 拦截撤回通知")
-                param.result = null
-            }
+            HookHelper.hookAllMethodsSafe(clazz, "handleRevokeNotify", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.log("[QQ防撤回] 拦截撤回通知")
+                                    param.result = null
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(clazz, "onRevokeMsg") { param ->
-                HookHelper.log("[QQ防撤回] 拦截消息撤回")
-                param.result = null
-            }
+            HookHelper.hookAllMethodsSafe(clazz, "onRevokeMsg", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.log("[QQ防撤回] 拦截消息撤回")
+                                    param.result = null
+                }
+            })
         }
     }
 
@@ -219,10 +233,12 @@ object AntiRecallHook {
             val clazz = HookHelper.findClassSafe(lpparam, className)
             if (clazz == null) continue
 
-            HookHelper.hookAllMethodsSafe(clazz, "removeMsg") { param ->
-                HookHelper.log("[QQ防撤回] 阻止消息删除")
-                param.result = null
-            }
+            HookHelper.hookAllMethodsSafe(clazz, "removeMsg", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.log("[QQ防撤回] 阻止消息删除")
+                                    param.result = null
+                }
+            })
         }
     }
 

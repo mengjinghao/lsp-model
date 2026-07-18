@@ -2,6 +2,7 @@ package com.microx.enhancer.hooks
 
 import com.microx.enhancer.utils.ConfigManager
 import com.microx.enhancer.utils.HookHelper
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -69,9 +70,11 @@ object AutoReplyHook {
             )
 
             for (methodName in receiveMethods) {
-                HookHelper.hookAllMethodsSafe(receiverClass, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(receiverClass, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     processIncomingMessage(lpparam, param)
                 }
+            })
             }
         }
     }
@@ -90,13 +93,17 @@ object AutoReplyHook {
             val receiverClass = HookHelper.findClassSafe(lpparam, className)
             if (receiverClass == null) continue
 
-            HookHelper.hookAllMethodsSafe(receiverClass, "handleMessage") { param ->
-                processQQIncomingMessage(lpparam, param)
-            }
+            HookHelper.hookAllMethodsSafe(receiverClass, "handleMessage", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    processQQIncomingMessage(lpparam, param)
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(receiverClass, "onReceive") { param ->
-                processQQIncomingMessage(lpparam, param)
-            }
+            HookHelper.hookAllMethodsSafe(receiverClass, "onReceive", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    processQQIncomingMessage(lpparam, param)
+                }
+            })
         }
     }
 

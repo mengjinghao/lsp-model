@@ -86,6 +86,21 @@ object ConfigManager {
 
     fun isInitialized(): Boolean = prefs != null
 
+       /** 读取字符串配置（兼容旧Hook代码） */
+    fun getString(key: String, default: String = ""): String {
+        return prefs?.getString(key, default) ?: default
+    }
+
+    /** 写入字符串配置 */
+    fun putString(key: String, value: String) {
+        prefs?.edit()?.putString(key, value)?.apply()
+    }
+
+    /** 读取全部配置Map（兼容旧Hook代码） */
+    fun getAllConfig(): Map<String, Any?> {
+        return prefs?.all ?: emptyMap()
+    }
+
     /** 设置所有功能的默认开关值（首次运行触发） */
     private fun setDefaults() {
         val cfg = MicroXConfig(packageName = "global")

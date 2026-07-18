@@ -64,32 +64,36 @@ object MomentHook {
             )
 
             for (methodName in deleteMethods) {
-                HookHelper.hookAllMethodsSafe(storageClass, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(storageClass, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     // 判断是否为服务端下发的删除指令
-                    val isServerDelete = checkIsServerDelete(param)
-                    if (isServerDelete) {
-                        HookHelper.log("[防删朋友圈] 阻止服务端删除指令")
-                        param.result = null // 关键：阻止删除操作
-                    } else {
-                        // 本地手动删除允许正常执行
-                        HookHelper.logD("[防删朋友圈] 允许本地删除")
-                    }
+                                        val isServerDelete = checkIsServerDelete(param)
+                                        if (isServerDelete) {
+                                            HookHelper.log("[防删朋友圈] 阻止服务端删除指令")
+                                            param.result = null // 关键：阻止删除操作
+                                        } else {
+                                            // 本地手动删除允许正常执行
+                                            HookHelper.logD("[防删朋友圈] 允许本地删除")
+                                        }
                 }
+            })
             }
 
             // Hook update方法：某些版本通过更新状态标记删除
-            HookHelper.hookAllMethodsSafe(storageClass, "updateSnsInfo") { param ->
-                // 检查是否正在更新为"已删除"状态
-                try {
-                    val deleteFlag = tryGetDeleteFlag(param)
-                    if (deleteFlag) {
-                        HookHelper.log("[防删朋友圈] 阻止状态更新为已删除")
-                        param.result = null
-                    }
-                } catch (e: Exception) {
-                    // 忽略
+            HookHelper.hookAllMethodsSafe(storageClass, "updateSnsInfo", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    // 检查是否正在更新为"已删除"状态
+                                    try {
+                                        val deleteFlag = tryGetDeleteFlag(param)
+                                        if (deleteFlag) {
+                                            HookHelper.log("[防删朋友圈] 阻止状态更新为已删除")
+                                            param.result = null
+                                        }
+                                    } catch (e: Exception) {
+                                        // 忽略
+                                    }
                 }
-            }
+            })
         }
     }
 
@@ -112,33 +116,35 @@ object MomentHook {
         if (adapterClass == null) return
 
         // Hook getView：检查每条动态的内容
-        HookHelper.hookAllMethodsSafe(adapterClass, "getView") { param ->
-            val position = param.args.getOrNull(0) as? Int ?: 0
-
-            try {
-                val item = param.thisObject.javaClass
-                    .getMethod("getItem", Int::class.javaPrimitiveType)
-                    .invoke(param.thisObject, position)
-
-                if (item != null) {
-                    // 判断内容是否营销性质
-                    if (isMarketingContent(item)) {
-                        HookHelper.logD("[朋友圈精简] 过滤营销动态 position=$position")
-                        // 返回极小的View使其不显示
-                        val parent = param.args.getOrNull(2) as? android.view.ViewGroup
-                        val ctx = parent?.context
-                        if (ctx != null) {
-                            val emptyView = android.view.View(ctx)
-                            emptyView.layoutParams =
-                                android.view.ViewGroup.LayoutParams(0, 0)
-                            param.result = emptyView
-                        }
-                    }
+        HookHelper.hookAllMethodsSafe(adapterClass, "getView", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val position = param.args.getOrNull(0) as? Int ?: 0
+                    
+                                try {
+                                    val item = param.thisObject.javaClass
+                                        .getMethod("getItem", Int::class.javaPrimitiveType)
+                                        .invoke(param.thisObject, position)
+                    
+                                    if (item != null) {
+                                        // 判断内容是否营销性质
+                                        if (isMarketingContent(item)) {
+                                            HookHelper.logD("[朋友圈精简] 过滤营销动态 position=$position")
+                                            // 返回极小的View使其不显示
+                                            val parent = param.args.getOrNull(2) as? android.view.ViewGroup
+                                            val ctx = parent?.context
+                                            if (ctx != null) {
+                                                val emptyView = android.view.View(ctx)
+                                                emptyView.layoutParams =
+                                                    android.view.ViewGroup.LayoutParams(0, 0)
+                                                param.result = emptyView
+                                            }
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    // 兼容性处理
+                                }
                 }
-            } catch (e: Exception) {
-                // 兼容性处理
-            }
-        }
+            })
 
         // Hook朋友圈文本内容设置：检查并过滤营销文案
         hookMomentTextFilter(lpparam)
@@ -204,14 +210,16 @@ object MomentHook {
             val textClass = HookHelper.findClassSafe(lpparam, className)
             if (textClass == null) continue
 
-            HookHelper.hookAllMethodsSafe(textClass, "setText") { param ->
-                val text = param.args.getOrNull(0)?.toString() ?: return@hookAllMethodsSafe
-                // 将营销文本替换为提示信息
-                if (isMarketingText(text)) {
-                    HookHelper.logD("[朋友圈精简] 替换营销文案")
-                    param.args[0] = "[此内容已被过滤·疑似营销推广]"
+            HookHelper.hookAllMethodsSafe(textClass, "setText", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val text = param.args.getOrNull(0)?.toString() ?: return
+                                    // 将营销文本替换为提示信息
+                                    if (isMarketingText(text)) {
+                                        HookHelper.logD("[朋友圈精简] 替换营销文案")
+                                        param.args[0] = "[此内容已被过滤·疑似营销推广]"
+                                    }
                 }
-            }
+            })
         }
     }
 
@@ -238,10 +246,12 @@ object MomentHook {
         )
 
         if (dataLoaderClass != null) {
-            HookHelper.hookAllMethodsSafe(dataLoaderClass, "onDataLoaded") { param ->
-                HookHelper.logD("[朋友圈] 数据加载完成")
-                // 数据加载后的处理（例如清理过期缓存）
-            }
+            HookHelper.hookAllMethodsSafe(dataLoaderClass, "onDataLoaded", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.logD("[朋友圈] 数据加载完成")
+                                    // 数据加载后的处理（例如清理过期缓存）
+                }
+            })
         }
     }
 

@@ -2,6 +2,7 @@ package com.microx.enhancer.hooks
 
 import com.microx.enhancer.utils.ConfigManager
 import com.microx.enhancer.utils.HookHelper
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
@@ -92,10 +93,12 @@ object PrivacyHook {
             )
 
             for (methodName in methods) {
-                HookHelper.hookAllMethodsSafe(typingClass, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(typingClass, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     HookHelper.log("[隐私] 拦截正在输入状态发送")
-                    param.result = null  // 阻止发送
+                                        param.result = null  // 阻止发送
                 }
+            })
             }
         }
 
@@ -116,24 +119,26 @@ object PrivacyHook {
             if (editClass == null) continue
 
             // Hook TextWatcher的添加方法
-            HookHelper.hookAllMethodsSafe(editClass, "addTextChangedListener") { param ->
-                HookHelper.logD("[隐私] 拦截TextWatcher添加")
-                // 不阻止添加，但清空textWatcher的实现
-                val watcher = param.args.getOrNull(0)
-                if (watcher != null) {
-                    try {
-                        // 用自定义的watcher包装原watcher
-                        // 在onTextChanged中拦截输入状态发送
-                        val watcherClass = watcher.javaClass
-                        watcherClass.getDeclaredField("mTypingNotify").let { field ->
-                            field.isAccessible = true
-                            field.set(watcher, false)
-                        }
-                    } catch (e: Exception) {
-                        // 兼容处理
-                    }
+            HookHelper.hookAllMethodsSafe(editClass, "addTextChangedListener", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.logD("[隐私] 拦截TextWatcher添加")
+                                    // 不阻止添加，但清空textWatcher的实现
+                                    val watcher = param.args.getOrNull(0)
+                                    if (watcher != null) {
+                                        try {
+                                            // 用自定义的watcher包装原watcher
+                                            // 在onTextChanged中拦截输入状态发送
+                                            val watcherClass = watcher.javaClass
+                                            watcherClass.getDeclaredField("mTypingNotify").let { field ->
+                                                field.isAccessible = true
+                                                field.set(watcher, false)
+                                            }
+                                        } catch (e: Exception) {
+                                            // 兼容处理
+                                        }
+                                    }
                 }
-            }
+            })
         }
     }
 
@@ -165,10 +170,12 @@ object PrivacyHook {
             )
 
             for (methodName in methods) {
-                HookHelper.hookAllMethodsSafe(readClass, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(readClass, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     HookHelper.log("[隐私] 拦截已读回执发送: ${readClass?.name}.$methodName")
-                    param.result = null
+                                        param.result = null
                 }
+            })
             }
         }
 
@@ -178,11 +185,13 @@ object PrivacyHook {
             "com.tencent.mm.model.Conversation",
         )
         if (conversationClass != null) {
-            HookHelper.hookAllMethodsSafe(conversationClass, "setUnreadCount") { param ->
-                HookHelper.logD("[隐私] 拦截未读数清零（用于已读状态）")
-                // 不阻止，但要同时防止已读回执发送
-                // 这里允许清零本地未读数，但上面的Hook已经阻止了已读回执发送
-            }
+            HookHelper.hookAllMethodsSafe(conversationClass, "setUnreadCount", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.logD("[隐私] 拦截未读数清零（用于已读状态）")
+                                    // 不阻止，但要同时防止已读回执发送
+                                    // 这里允许清零本地未读数，但上面的Hook已经阻止了已读回执发送
+                }
+            })
         }
     }
 
@@ -206,28 +215,38 @@ object PrivacyHook {
             if (forwardClass == null) continue
 
             // Hook转发限制判断方法
-            HookHelper.hookAllMethodsSafe(forwardClass, "canForward") { param ->
-                HookHelper.log("[隐私] 拦截转发限制检查 -> 允许转发")
-                param.result = true
-            }
+            HookHelper.hookAllMethodsSafe(forwardClass, "canForward", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.log("[隐私] 拦截转发限制检查 -> 允许转发")
+                                    param.result = true
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(forwardClass, "isForwardable") { param ->
-                param.result = true
-            }
+            HookHelper.hookAllMethodsSafe(forwardClass, "isForwardable", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = true
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(forwardClass, "checkForwardPermission") { param ->
-                param.result = true
-            }
+            HookHelper.hookAllMethodsSafe(forwardClass, "checkForwardPermission", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = true
+                }
+            })
 
             // Hook语音消息是否可转发的判断
-            HookHelper.hookAllMethodsSafe(forwardClass, "isVoiceMsg") { param ->
-                param.result = false  // 将语音标记为非语音，允许转发
-            }
+            HookHelper.hookAllMethodsSafe(forwardClass, "isVoiceMsg", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = false  // 将语音标记为非语音，允许转发
+                }
+            })
 
             // 收藏内容转发限制
-            HookHelper.hookAllMethodsSafe(forwardClass, "isFavItemForwardable") { param ->
-                param.result = true
-            }
+            HookHelper.hookAllMethodsSafe(forwardClass, "isFavItemForwardable", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = true
+                }
+            })
         }
     }
 
@@ -252,35 +271,45 @@ object PrivacyHook {
             if (imageClass == null) continue
 
             // Hook压缩质量参数
-            HookHelper.hookAllMethodsSafe(imageClass, "setQuality") { param ->
-                HookHelper.log("[隐私] 强制图片质量为100%")
-                when {
-                    param.args.isNotEmpty() && param.args[0] is Int -> {
-                        param.args[0] = 100  // 最高质量
-                    }
-                    param.args.isNotEmpty() && param.args[0] is Float -> {
-                        param.args[0] = 1.0f  // 无损
-                    }
+            HookHelper.hookAllMethodsSafe(imageClass, "setQuality", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.log("[隐私] 强制图片质量为100%")
+                                    when {
+                                        param.args.isNotEmpty() && param.args[0] is Int -> {
+                                            param.args[0] = 100  // 最高质量
+                                        }
+                                        param.args.isNotEmpty() && param.args[0] is Float -> {
+                                            param.args[0] = 1.0f  // 无损
+                                        }
+                                    }
                 }
-            }
+            })
 
             // Hook是否压缩的判断
-            HookHelper.hookAllMethodsSafe(imageClass, "isCompress") { param ->
-                param.result = false  // 不压缩
-            }
+            HookHelper.hookAllMethodsSafe(imageClass, "isCompress", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = false  // 不压缩
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(imageClass, "shouldCompress") { param ->
-                param.result = false
-            }
+            HookHelper.hookAllMethodsSafe(imageClass, "shouldCompress", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = false
+                }
+            })
 
             // Hook图片最大尺寸限制
-            HookHelper.hookAllMethodsSafe(imageClass, "setMaxWidth") { param ->
-                param.args[0] = 99999  // 极大值，实际不限制
-            }
+            HookHelper.hookAllMethodsSafe(imageClass, "setMaxWidth", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.args[0] = 99999  // 极大值，实际不限制
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(imageClass, "setMaxHeight") { param ->
-                param.args[0] = 99999
-            }
+            HookHelper.hookAllMethodsSafe(imageClass, "setMaxHeight", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.args[0] = 99999
+                }
+            })
 
             // Hook压缩率设置
             val compressMethods = listOf(
@@ -288,10 +317,12 @@ object PrivacyHook {
                 "compressBitmap", "compressImage",
             )
             for (methodName in compressMethods) {
-                HookHelper.hookAllMethodsSafe(imageClass, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(imageClass, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     HookHelper.log("[隐私] 拦截图片压缩")
-                    param.result = param.args.getOrNull(0) // 返回原图（不压缩）
+                                        param.result = param.args.getOrNull(0) // 返回原图（不压缩）
                 }
+            })
             }
         }
 
@@ -301,9 +332,11 @@ object PrivacyHook {
             "com.tencent.mm.ui.transmit.MsgRetransmitUI",
         )
         if (sendClass != null) {
-            HookHelper.hookAllMethodsSafe(sendClass, "isSendOriginal") { param ->
-                param.result = true  // 始终使用原图
-            }
+            HookHelper.hookAllMethodsSafe(sendClass, "isSendOriginal", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = true  // 始终使用原图
+                }
+            })
         }
     }
 
@@ -327,23 +360,27 @@ object PrivacyHook {
             if (downloadClass == null) continue
 
             // Hook下载URL生成方法
-            HookHelper.hookAllMethodsSafe(downloadClass, "getDownloadUrl") { param ->
-                val url = param.result as? String ?: ""
-                if (url.isNotEmpty()) {
-                    // 移除水印参数
-                    val cleanUrl = removeWatermarkParams(url)
-                    if (cleanUrl != url) {
-                        HookHelper.logD("[隐私] 移除水印URL参数: $url -> $cleanUrl")
-                        param.result = cleanUrl
-                    }
+            HookHelper.hookAllMethodsSafe(downloadClass, "getDownloadUrl", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val url = param.result as? String ?: ""
+                                    if (url.isNotEmpty()) {
+                                        // 移除水印参数
+                                        val cleanUrl = removeWatermarkParams(url)
+                                        if (cleanUrl != url) {
+                                            HookHelper.logD("[隐私] 移除水印URL参数: $url -> $cleanUrl")
+                                            param.result = cleanUrl
+                                        }
+                                    }
                 }
-            }
+            })
 
             // Hook图片/视频保存路径设置
-            HookHelper.hookAllMethodsSafe(downloadClass, "setSavePath") { param ->
-                // 允许原始路径保存
-                HookHelper.logD("[隐私] 无水印保存路径")
-            }
+            HookHelper.hookAllMethodsSafe(downloadClass, "setSavePath", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    // 允许原始路径保存
+                                    HookHelper.logD("[隐私] 无水印保存路径")
+                }
+            })
         }
 
         // Hook朋友圈图片下载
@@ -351,15 +388,17 @@ object PrivacyHook {
             "com.tencent.mm.plugin.sns.model.SnsImageDownloaderLogic",
         )
         if (snsDownloaderClass != null) {
-            HookHelper.hookAllMethodsSafe(snsDownloaderClass, "downloadImage") { param ->
-                // 移除参数中的水印标记
-                param.args.forEachIndexed { index, arg ->
-                    if (arg is Boolean && arg) {
-                        // waterMark参数
-                        param.args[index] = false
-                    }
+            HookHelper.hookAllMethodsSafe(snsDownloaderClass, "downloadImage", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    // 移除参数中的水印标记
+                                    param.args.forEachIndexed { index, arg ->
+                                        if (arg is Boolean && arg) {
+                                            // waterMark参数
+                                            param.args[index] = false
+                                        }
+                                    }
                 }
-            }
+            })
         }
     }
 
@@ -373,9 +412,11 @@ object PrivacyHook {
             "com.tencent.mobileqq.activity.aio.AIOInput",
         )
         if (qqTypingClass != null) {
-            HookHelper.hookAllMethodsSafe(qqTypingClass, "sendTyping") { param ->
-                param.result = null
-            }
+            HookHelper.hookAllMethodsSafe(qqTypingClass, "sendTyping", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = null
+                }
+            })
         }
     }
 
@@ -385,13 +426,17 @@ object PrivacyHook {
             "com.tencent.imcore.message.QQMessageFacade",
         )
         if (qqReadClass != null) {
-            HookHelper.hookAllMethodsSafe(qqReadClass, "sendMessageReadReport") { param ->
-                param.result = null
-            }
+            HookHelper.hookAllMethodsSafe(qqReadClass, "sendMessageReadReport", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = null
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(qqReadClass, "sendReadConfirm") { param ->
-                param.result = null
-            }
+            HookHelper.hookAllMethodsSafe(qqReadClass, "sendReadConfirm", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = null
+                }
+            })
         }
     }
 

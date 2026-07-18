@@ -2,6 +2,7 @@ package com.microx.enhancer.hooks
 
 import com.microx.enhancer.utils.ConfigManager
 import com.microx.enhancer.utils.HookHelper
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -58,22 +59,28 @@ object BatchManagerHook {
             if (storageClass == null) continue
 
             // Hook获取缓存路径方法
-            HookHelper.hookAllMethodsSafe(storageClass, "getCachePath") { param ->
-                // 不做修改，仅标记
-                HookHelper.logD("[缓存清理] 缓存路径: ${param.result}")
-            }
-
-            HookHelper.hookAllMethodsSafe(storageClass, "getImgCachePath") { param ->
-                val path = param.result as? String ?: ""
-                if (path.isNotEmpty()) {
-                    // 记录图片缓存路径用于批量清理
-                    HookHelper.logD("[缓存清理] 图片缓存路径: $path")
+            HookHelper.hookAllMethodsSafe(storageClass, "getCachePath", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    // 不做修改，仅标记
+                                    HookHelper.logD("[缓存清理] 缓存路径: ${param.result}")
                 }
-            }
+            })
 
-            HookHelper.hookAllMethodsSafe(storageClass, "getVideoCachePath") { param ->
-                HookHelper.logD("[缓存清理] 视频缓存路径: ${param.result}")
-            }
+            HookHelper.hookAllMethodsSafe(storageClass, "getImgCachePath", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val path = param.result as? String ?: ""
+                                    if (path.isNotEmpty()) {
+                                        // 记录图片缓存路径用于批量清理
+                                        HookHelper.logD("[缓存清理] 图片缓存路径: $path")
+                                    }
+                }
+            })
+
+            HookHelper.hookAllMethodsSafe(storageClass, "getVideoCachePath", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.logD("[缓存清理] 视频缓存路径: ${param.result}")
+                }
+            })
         }
 
         // 提供清理方法：当UI触发清理时调用
@@ -89,10 +96,12 @@ object BatchManagerHook {
         )
 
         if (appClass != null) {
-            HookHelper.hookAllMethodsSafe(appClass, "getCacheDir") { param ->
-                val cacheDir = param.result as? File
-                // 暴露给BatchManager清理时使用
-            }
+            HookHelper.hookAllMethodsSafe(appClass, "getCacheDir", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val cacheDir = param.result as? File
+                                    // 暴露给BatchManager清理时使用
+                }
+            })
         }
     }
 
@@ -125,14 +134,16 @@ object BatchManagerHook {
             )
 
             for (methodName in queryMethods) {
-                HookHelper.hookAllMethodsSafe(contactClass, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(contactClass, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     val result = param.result
-                    if (result is List<*> && result.isNotEmpty()) {
-                        // 缓存联系人数据供导出使用
-                        HookHelper.log("[好友导出] 捕获联系人列表，共${result.size}人")
-                        // 注意：这里仅做缓存标记，实际导出在UI触发
-                    }
+                                        if (result is List<*> && result.isNotEmpty()) {
+                                            // 缓存联系人数据供导出使用
+                                            HookHelper.log("[好友导出] 捕获联系人列表，共${result.size}人")
+                                            // 注意：这里仅做缓存标记，实际导出在UI触发
+                                        }
                 }
+            })
             }
         }
     }
@@ -158,12 +169,14 @@ object BatchManagerHook {
             if (relationClass == null) continue
 
             // Hook isContact / isFriend等方法
-            HookHelper.hookAllMethodsSafe(relationClass, "isContact") { param ->
-                val result = param.result as? Boolean ?: true
-                if (!result) {
-                    HookHelper.log("[僵尸粉] 检测到非好友联系人")
+            HookHelper.hookAllMethodsSafe(relationClass, "isContact", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val result = param.result as? Boolean ?: true
+                                    if (!result) {
+                                        HookHelper.log("[僵尸粉] 检测到非好友联系人")
+                                    }
                 }
-            }
+            })
         }
     }
 
@@ -197,31 +210,35 @@ object BatchManagerHook {
             if (msgClass == null) continue
 
             // Hook消息分发方法
-            HookHelper.hookAllMethodsSafe(msgClass, "dispatchMessage") { param ->
-                try {
-                    // 提取消息文本
-                    val msgText = extractContent(param)
-                    if (msgText != null && isGroupChatMsg(param)) {
-                        // 检查是否为垃圾消息
-                        val isSpam = spamKeywords.any {
-                            msgText.lowercase().contains(it.lowercase())
-                        }
-
-                        if (isSpam) {
-                            HookHelper.log("[群聊管理] 过滤垃圾消息: ${msgText.take(50)}")
-                            // 阻止消息显示
-                            param.result = null
-                        }
-                    }
-                } catch (e: Exception) {
-                    // 忽略
+            HookHelper.hookAllMethodsSafe(msgClass, "dispatchMessage", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    try {
+                                        // 提取消息文本
+                                        val msgText = extractContent(param)
+                                        if (msgText != null && isGroupChatMsg(param)) {
+                                            // 检查是否为垃圾消息
+                                            val isSpam = spamKeywords.any {
+                                                msgText.lowercase().contains(it.lowercase())
+                                            }
+                    
+                                            if (isSpam) {
+                                                HookHelper.log("[群聊管理] 过滤垃圾消息: ${msgText.take(50)}")
+                                                // 阻止消息显示
+                                                param.result = null
+                                            }
+                                        }
+                                    } catch (e: Exception) {
+                                        // 忽略
+                                    }
                 }
-            }
+            })
 
             // Hook群成员禁言
-            HookHelper.hookAllMethodsSafe(msgClass, "setMemberShutUp") { param ->
-                HookHelper.log("[群聊管理] 禁言操作")
-            }
+            HookHelper.hookAllMethodsSafe(msgClass, "setMemberShutUp", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.log("[群聊管理] 禁言操作")
+                }
+            })
         }
     }
 

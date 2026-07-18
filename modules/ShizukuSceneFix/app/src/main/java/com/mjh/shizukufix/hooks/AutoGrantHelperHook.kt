@@ -96,11 +96,11 @@ object AutoGrantHelperHook {
             try {
                 val view = findAllowButton(activity) ?: run {
                     LogX.d("  [AutoGrant] 未找到允许按钮")
-                    return
+                    null
                 }
                 activity.runOnUiThread {
                     try {
-                        view.performClick()
+                        view?.performClick()
                         LogX.i("  [AutoGrant] 已自动点击允许按钮")
                     } catch (t: Throwable) {
                         LogX.e("  [AutoGrant] 自动点击失败", t)
@@ -119,7 +119,7 @@ object AutoGrantHelperHook {
         for (name in ALLOW_BUTTON_RES_NAMES) {
             val id = res.getIdentifier(name, "id", pkg)
             if (id != 0) {
-                val v = activity.findViewById(id)
+                val v = activity.findViewById<android.view.View>(id)
                 if (v != null) return v
             }
         }

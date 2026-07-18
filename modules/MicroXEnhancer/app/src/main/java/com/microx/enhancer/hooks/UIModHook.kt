@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.microx.enhancer.utils.ConfigManager
 import com.microx.enhancer.utils.HookHelper
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -93,23 +94,26 @@ object UIModHook {
             )
 
             for (methodName in buildMethods) {
-                HookHelper.hookAllMethodsSafe(bubbleClass, methodName) { param ->  // 这里有个命名冲突，下面调整
-                    try {
-                        // param.result 可能是创建的View
-                        val resultView = param.result as? View
-                        if (resultView != null) {
-                            // 查找气泡背景View（通常是一个带背景的FrameLayout/LinearLayout）
-                            val bubbleView = findBubbleView(resultView)
-                            if (bubbleView != null) {
-                                // 判断是接收还是发送
-                                val isSender = isSenderBubble(param.thisObject, param.args)
-                                applyBubbleStyle(bubbleView, isSender)
-                            }
-                        }
-                    } catch (e: Exception) {
-                        // 忽略
-                    }
+                HookHelper.hookAllMethodsSafe(bubbleClass, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    // 这里有个命名冲突，下面调整
+                                        try {
+                                            // param.result 可能是创建的View
+                                            val resultView = param.result as? View
+                                            if (resultView != null) {
+                                                // 查找气泡背景View（通常是一个带背景的FrameLayout/LinearLayout）
+                                                val bubbleView = findBubbleView(resultView)
+                                                if (bubbleView != null) {
+                                                    // 判断是接收还是发送
+                                                    val isSender = isSenderBubble(param.thisObject, param.args)
+                                                    applyBubbleStyle(bubbleView, isSender)
+                                                }
+                                            }
+                                        } catch (e: Exception) {
+                                            // 忽略
+                                        }
                 }
+            })
             }
         }
 
@@ -166,9 +170,11 @@ object UIModHook {
     /** Hook所有TextView背景设置，针对聊天气泡文本修改 */
     private fun hookAllTextViewBackgrounds(lpparam: XC_LoadPackage.LoadPackageParam) {
         val textViewClass = XposedHelpers.findClass("android.widget.TextView", lpparam.classLoader)
-        HookHelper.hookAllMethodsSafe(textViewClass, "setBackground") { param ->
-            // 不做全局处理，仅在特定场景触发
-        }
+        HookHelper.hookAllMethodsSafe(textViewClass, "setBackground", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    // 不做全局处理，仅在特定场景触发
+                }
+            })
     }
 
     // ================================================================
@@ -179,21 +185,23 @@ object UIModHook {
         val textViewClass = XposedHelpers.findClass("android.widget.TextView", lpparam.classLoader)
 
         // Hook setTextSize方法
-        HookHelper.hookAllMethodsSafe(textViewClass, "setTextSize") { param ->
-            // 获取原始字体大小
-            when {
-                param.args.size >= 1 && param.args[0] is Float -> {
-                    val originalSize = param.args[0] as Float
-                    // 调整比例（可配置）：如1.2倍
-                    val scaleFactor = 1.15f
-                    param.args[0] = originalSize * scaleFactor
+        HookHelper.hookAllMethodsSafe(textViewClass, "setTextSize", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    // 获取原始字体大小
+                                when {
+                                    param.args.size >= 1 && param.args[0] is Float -> {
+                                        val originalSize = param.args[0] as Float
+                                        // 调整比例（可配置）：如1.2倍
+                                        val scaleFactor = 1.15f
+                                        param.args[0] = originalSize * scaleFactor
+                                    }
+                                    param.args.size >= 2 && param.args[1] is Float -> {
+                                        val originalSize = param.args[1] as Float
+                                        param.args[1] = originalSize * 1.15f
+                                    }
+                                }
                 }
-                param.args.size >= 2 && param.args[1] is Float -> {
-                    val originalSize = param.args[1] as Float
-                    param.args[1] = originalSize * 1.15f
-                }
-            }
-        }
+            })
     }
 
     // ================================================================
@@ -218,27 +226,35 @@ object UIModHook {
             if (redDotClass == null) continue
 
             // Hook show方法和setVisibility
-            HookHelper.hookAllMethodsSafe(redDotClass, "show") { param ->
-                HookHelper.logD("[隐藏小红点] 拦截show()")
-                param.result = null
-            }
-
-            HookHelper.hookAllMethodsSafe(redDotClass, "setVisibility") { param ->
-                val visibility = param.args.getOrNull(0) as? Int ?: 0
-                if (visibility == View.VISIBLE) {
-                    HookHelper.logD("[隐藏小红点] 设置View为GONE")
-                    param.args[0] = View.GONE
+            HookHelper.hookAllMethodsSafe(redDotClass, "show", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.logD("[隐藏小红点] 拦截show()")
+                                    param.result = null
                 }
-            }
+            })
+
+            HookHelper.hookAllMethodsSafe(redDotClass, "setVisibility", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val visibility = param.args.getOrNull(0) as? Int ?: 0
+                                    if (visibility == View.VISIBLE) {
+                                        HookHelper.logD("[隐藏小红点] 设置View为GONE")
+                                        param.args[0] = View.GONE
+                                    }
+                }
+            })
 
             // Hook setCount/setNumber方法
-            HookHelper.hookAllMethodsSafe(redDotClass, "setCount") { param ->
-                param.args[0] = 0 // 设置未读数为0
-            }
+            HookHelper.hookAllMethodsSafe(redDotClass, "setCount", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.args[0] = 0 // 设置未读数为0
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(redDotClass, "setUnreadCount") { param ->
-                param.args[0] = 0
-            }
+            HookHelper.hookAllMethodsSafe(redDotClass, "setUnreadCount", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.args[0] = 0
+                }
+            })
         }
 
         // 额外：Hook launcher UI的红点更新方法
@@ -247,14 +263,18 @@ object UIModHook {
             "com.tencent.mm.ui.HomeUI",
         )
         if (launcherClass != null) {
-            HookHelper.hookAllMethodsSafe(launcherClass, "updateUnreadCount") { param ->
-                HookHelper.logD("[隐藏小红点] 拦截未读数更新")
-                param.result = null
-            }
+            HookHelper.hookAllMethodsSafe(launcherClass, "updateUnreadCount", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    HookHelper.logD("[隐藏小红点] 拦截未读数更新")
+                                    param.result = null
+                }
+            })
 
-            HookHelper.hookAllMethodsSafe(launcherClass, "onTabUnreadCountChanged") { param ->
-                param.result = null
-            }
+            HookHelper.hookAllMethodsSafe(launcherClass, "onTabUnreadCountChanged", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = null
+                }
+            })
         }
     }
 
@@ -283,15 +303,17 @@ object UIModHook {
             )
 
             for (methodName in initMethods) {
-                HookHelper.hookAllMethodsSafe(tabClass, methodName) { param ->
+                HookHelper.hookAllMethodsSafe(tabClass, methodName, object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
                     // 在Tab初始化后移除多余的Tab
-                    param.thisObject.javaClass.methods
-                        .find { it.name.contains("remove") || it.name.contains("hide") }
-                        ?.let { method ->
-                            // 尝试移除发现页以外的多余入口
-                            HookHelper.logD("[去除Tab] 拦截Tab初始化")
-                        }
+                                        param.thisObject.javaClass.methods
+                                            .find { it.name.contains("remove") || it.name.contains("hide") }
+                                            ?.let { method ->
+                                                // 尝试移除发现页以外的多余入口
+                                                HookHelper.logD("[去除Tab] 拦截Tab初始化")
+                                            }
                 }
+            })
             }
         }
 
@@ -301,15 +323,17 @@ object UIModHook {
             "com.tencent.mm.ui.widget.MMTabHost",
         )
         if (tabHostClass != null) {
-            HookHelper.hookAllMethodsSafe(tabHostClass, "addTab") { param ->
-                // 获取Tab的tag/标题
-                val tabTag = param.args.getOrNull(0)?.toString() ?: ""
-                val blockedTabs = listOf("game", "shopping", "video", "shop")
-                if (blockedTabs.any { tabTag.lowercase().contains(it) }) {
-                    HookHelper.log("[去除Tab] 移除多余Tab: $tabTag")
-                    param.result = null
+            HookHelper.hookAllMethodsSafe(tabHostClass, "addTab", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    // 获取Tab的tag/标题
+                                    val tabTag = param.args.getOrNull(0)?.toString() ?: ""
+                                    val blockedTabs = listOf("game", "shopping", "video", "shop")
+                                    if (blockedTabs.any { tabTag.lowercase().contains(it) }) {
+                                        HookHelper.log("[去除Tab] 移除多余Tab: $tabTag")
+                                        param.result = null
+                                    }
                 }
-            }
+            })
         }
     }
 
@@ -324,23 +348,25 @@ object UIModHook {
         )
 
         if (chatUIClass != null) {
-            HookHelper.hookAllMethodsSafe(chatUIClass, "onCreate") { param ->
-                val activity = param.thisObject as? android.app.Activity
-                if (activity != null) {
-                    // 在聊天页创建后设置自定义背景
-                    val rootView = activity.window?.decorView?.findViewById<View>(
-                        android.R.id.content
-                    ) as? ViewGroup
-                    rootView?.post {
-                        try {
-                            // 设置背景颜色或图片
-                            rootView.setBackgroundColor(Color.parseColor("#F5F5F5"))
-                        } catch (e: Exception) {
-                            HookHelper.logE("[聊天背景] 设置失败: ${e.message}")
-                        }
-                    }
+            HookHelper.hookAllMethodsSafe(chatUIClass, "onCreate", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val activity = param.thisObject as? android.app.Activity
+                                    if (activity != null) {
+                                        // 在聊天页创建后设置自定义背景
+                                        val rootView = activity.window?.decorView?.findViewById<View>(
+                                            android.R.id.content
+                                        ) as? ViewGroup
+                                        rootView?.post {
+                                            try {
+                                                // 设置背景颜色或图片
+                                                rootView.setBackgroundColor(Color.parseColor("#F5F5F5"))
+                                            } catch (e: Exception) {
+                                                HookHelper.logE("[聊天背景] 设置失败: ${e.message}")
+                                            }
+                                        }
+                                    }
                 }
-            }
+            })
         }
     }
 
@@ -355,12 +381,14 @@ object UIModHook {
         )
         if (qqBubbleClass == null) return
 
-        HookHelper.hookAllMethodsSafe(qqBubbleClass, "getView") { param ->
-            val view = param.result as? View
-            if (view is ViewGroup) {
-                view.setBackgroundColor(Color.parseColor("#E8F5E9"))
-            }
-        }
+        HookHelper.hookAllMethodsSafe(qqBubbleClass, "getView", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val view = param.result as? View
+                                if (view is ViewGroup) {
+                                    view.setBackgroundColor(Color.parseColor("#E8F5E9"))
+                                }
+                }
+            })
     }
 
     private fun hookQQHideRedDots(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -370,13 +398,17 @@ object UIModHook {
         )
         if (qqBadgeClass == null) return
 
-        HookHelper.hookAllMethodsSafe(qqBadgeClass, "setVisibility") { param ->
-            param.args[0] = View.GONE
-        }
+        HookHelper.hookAllMethodsSafe(qqBadgeClass, "setVisibility", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.args[0] = View.GONE
+                }
+            })
 
-        HookHelper.hookAllMethodsSafe(qqBadgeClass, "show") { param ->
-            param.result = null
-        }
+        HookHelper.hookAllMethodsSafe(qqBadgeClass, "show", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    param.result = null
+                }
+            })
     }
 
     private fun hookQQRemoveTabs(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -386,14 +418,16 @@ object UIModHook {
         )
         if (mainClass == null) return
 
-        HookHelper.hookAllMethodsSafe(mainClass, "initTab") { param ->
-            val tabName = param.args.getOrNull(0)?.toString() ?: ""
-            // QQ动态页、看点等（不同版本tab名称不同）
-            val blockedTabs = listOf("dynamic", "read", "live", "game")
-            if (blockedTabs.any { tabName.lowercase().contains(it) }) {
-                HookHelper.log("[QQ去除Tab] 移除多余Tab: $tabName")
-                param.result = null
-            }
-        }
+        HookHelper.hookAllMethodsSafe(mainClass, "initTab", object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: XC_MethodHook.MethodHookParam) {
+                    val tabName = param.args.getOrNull(0)?.toString() ?: ""
+                                // QQ动态页、看点等（不同版本tab名称不同）
+                                val blockedTabs = listOf("dynamic", "read", "live", "game")
+                                if (blockedTabs.any { tabName.lowercase().contains(it) }) {
+                                    HookHelper.log("[QQ去除Tab] 移除多余Tab: $tabName")
+                                    param.result = null
+                                }
+                }
+            })
     }
 }
