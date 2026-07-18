@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF0A0A1A">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- ============ 机型伪装 ============ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="机型伪装"
+            android:textSize="16sp"
+            android:textColor="#FF00E5FF"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swDeviceSpoof"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="开启机型伪装"
+            android:textColor="#FFFFFFFF"
+            android:checked="true" />
+
+        <Spinner
+            android:id="@+id/spProfile"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/edit_bg"
+            android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/btnCustomDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="自定义机型"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <!-- ============ 帧率解锁 ============ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="帧率解锁"
+            android:textSize="16sp"
+            android:textColor="#FF00E5FF"
+            android:textStyle="bold"
+            android:paddingBottom="4dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swFrameRate"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="强制解锁帧率上限"
+            android:textColor="#FFFFFFFF"
+            android:checked="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="目标帧率上限"
+            android:textSize="13sp"
+            android:textColor="#99FFFFFF"
+            android:paddingTop="8dp" />
+
+        <Spinner
+            android:id="@+id/spTargetFps"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/edit_bg"
+            android:layout_marginTop="4dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <!-- ============ 温控屏蔽 ============ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="温控屏蔽"
+            android:textSize="16sp"
+            android:textColor="#FF00E5FF"
+            android:textStyle="bold"
+            android:paddingBottom="4dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swThermal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="屏蔽游戏过热降频"
+            android:textColor="#FFFFFFFF"
+            android:checked="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="温控阈值(℃):"
+                android:textSize="13sp"
+                android:textColor="#99FFFFFF" />
+
+            <EditText
+                android:id="@+id/etThermalThreshold"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:text="50"
+                android:textColor="#FFFFFFFF"
+                android:background="@drawable/edit_bg"
+                android:inputType="number"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:layout_marginStart="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(建议45-60)"
+                android:textSize="11sp"
+                android:textColor="#66FFFFFF"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <!-- ============ 环境隐藏 ============ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="环境隐藏"
+            android:textSize="16sp"
+            android:textColor="#FF00E5FF"
+            android:textStyle="bold"
+            android:paddingBottom="4dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swDetectionHide"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="开启环境隐藏"
+            android:textColor="#FFFFFFFF"
+            android:checked="true" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swHideShizuku"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="  隐藏Shizuku"
+            android:textColor="#99FFFFFF"
+            android:checked="true" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swHideXposed"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="  隐藏Xposed"
+            android:textColor="#99FFFFFF"
+            android:checked="true" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swHideLspatch"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:text="  隐藏LSPatch"
+            android:textColor="#99FFFFFF"
+            android:checked="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <!-- ============ 分辨率伪装 ============ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="分辨率伪装"
+            android:textSize="16sp"
+            android:textColor="#FF00E5FF"
+            android:textStyle="bold"
+            android:paddingBottom="4dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swResolutionSpoof"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="伪装2K/4K屏幕分辨率"
+            android:textColor="#FFFFFFFF"
+            android:checked="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/etResWidth"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:hint="宽度"
+                android:text="2560"
+                android:textColor="#FFFFFFFF"
+                android:textColorHint="#66FFFFFF"
+                android:background="@drawable/edit_bg"
+                android:inputType="number"
+                android:gravity="center"
+                android:paddingHorizontal="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text=" × "
+                android:textColor="#FFFFFFFF"
+                android:gravity="center"
+                android:paddingHorizontal="4dp" />
+
+            <EditText
+                android:id="@+id/etResHeight"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:hint="高度"
+                android:text="1440"
+                android:textColor="#FFFFFFFF"
+                android:textColorHint="#66FFFFFF"
+                android:background="@drawable/edit_bg"
+                android:inputType="number"
+                android:gravity="center"
+                android:paddingHorizontal="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text=" @"
+                android:textColor="#FFFFFFFF"
+                android:gravity="center"
+                android:paddingHorizontal="4dp" />
+
+            <EditText
+                android:id="@+id/etResDpi"
+                android:layout_width="72dp"
+                android:layout_height="44dp"
+                android:hint="DPI"
+                android:text="560"
+                android:textColor="#FFFFFFFF"
+                android:textColorHint="#66FFFFFF"
+                android:background="@drawable/edit_bg"
+                android:inputType="number"
+                android:gravity="center"
+                android:paddingHorizontal="8dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <!-- ============ GPU优化 ============ -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swGpuOptimize"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="GPU调度优化"
+            android:textColor="#FFFFFFFF"
+            android:checked="true" />
+
+        <!-- ============ Shizuku联动 ============ -->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swShizukuBridge"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="Shizuku联动"
+            android:textColor="#FFFFFFFF"
+            android:checked="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginVertical="16dp" />
+
+        <!-- ============ 操作按钮区 ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnExport"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="导出"
+                android:textSize="12sp"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <Button
+                android:id="@+id/btnImport"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="导入"
+                android:textSize="12sp"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <Button
+                android:id="@+id/btnReset"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="重置"
+                android:textSize="12sp"
+                style="@style/Widget.MaterialComponents.Button" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="保存配置"
+            android:textSize="15sp"
+            android:layout_marginTop="12dp"
+            style="@style/Widget.MaterialComponents.Button" />
+
+        <!-- 底部间距 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="48dp" />
+
+    </LinearLayout>
+
+</ScrollView>

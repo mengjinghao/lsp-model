@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF0A0A1A">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 标题 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Game-Unlocker Pro"
+            android:textSize="24sp"
+            android:textColor="#FF00E5FF"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="超强游戏帧率解锁 | LSPatch本地模式"
+            android:textSize="13sp"
+            android:textColor="#99FFFFFF"
+            android:gravity="center"
+            android:paddingBottom="24dp" />
+
+        <!-- 信息区 -->
+        <TextView
+            android:id="@+id/tvInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#66FFFFFF"
+            android:padding="8dp"
+            android:background="#11FFFFFF"
+            android:gravity="center" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 游戏列表标题 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="游戏列表"
+            android:textSize="16sp"
+            android:textColor="#FFFFFFFF"
+            android:textStyle="bold"
+            android:padding="8dp" />
+
+        <!-- 游戏列表容器 -->
+        <LinearLayout
+            android:id="@+id/gameListLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- 自定义包名输入 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="添加自定义游戏"
+            android:textSize="14sp"
+            android:textColor="#FFFFFFFF"
+            android:padding="8dp" />
+
+        <LinearLayout
+            android:id="@+id/customPkgLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/etCustomPkg"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:hint="输入游戏包名"
+                android:textColor="#FFFFFFFF"
+                android:textColorHint="#66FFFFFF"
+                android:background="@drawable/edit_bg"
+                android:paddingHorizontal="12dp"
+                android:inputType="textUri" />
+
+            <Button
+                android:id="@+id/btnAddCustom"
+                android:layout_width="80dp"
+                android:layout_height="48dp"
+                android:text="添加"
+                android:textSize="13sp"
+                android:layout_marginStart="8dp"
+                style="@style/Widget.MaterialComponents.Button" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- 操作按钮区 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnExportAll"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="导出全部"
+                android:textSize="12sp"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <Button
+                android:id="@+id/btnImportAll"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="导入配置"
+                android:textSize="12sp"
+                android:layout_marginEnd="4dp"
+                style="@style/Widget.MaterialComponents.Button" />
+
+            <Button
+                android:id="@+id/btnResetAll"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:text="全部重置"
+                android:textSize="12sp"
+                style="@style/Widget.MaterialComponents.Button" />
+        </LinearLayout>
+
+        <!-- 底部间距 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    微X增强模块 — AndroidManifest.xml
+    完全适配LSPatch免Root环境
+    LSPatch通过识别以下meta-data识别为Xposed模块
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ===== 基础权限（仅模块自身需要，不对宿主动态申请） ===== -->
+    <!-- 存储权限：配置导入导出、消息本地备份 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <!-- 前台服务：本地模式后台保活（可选） -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MicroXEnhancer"
+        tools:targetApi="34">
+
+        <!-- ===== Xposed模块元数据：LSPatch识别的关键标识 ===== -->
+        <!-- xposedminversion: 最低Xposed版本（82兼容LSPatch） -->
+        <!-- xposeddescription: 模块描述（LSPatch管理面板显示） -->
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="微X增强模块 - 微信QQ多功能增强，完全适配LSPatch免Root环境" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="82" />
+        <!-- xposedscope: 推荐作用域（LSPatch自动识别） -->
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/xposed_scope" />
+
+        <!-- 模块自身设置面板入口 -->
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="true"
+            android:label="@string/settings_title"
+            android:theme="@style/Theme.MicroXEnhancer">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+</manifest>

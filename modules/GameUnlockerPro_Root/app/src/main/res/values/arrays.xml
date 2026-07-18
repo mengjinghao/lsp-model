@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Xposed Scope: 模块作用域列表
+      LSPatch本地模式下可在此指定需要Hook的APP包名
+      真实使用时可自行增减
+    -->
+    <string-array name="xposed_scope">
+        <!-- 王者荣耀 -->
+        <item>com.tencent.tmgp.sgame</item>
+        <!-- 原神 -->
+        <item>com.miHoYo.Yuanshen</item>
+        <item>com.miHoYo.GenshinImpact</item>
+        <!-- 和平精英 / PUBG Mobile -->
+        <item>com.tencent.tmgp.pubgmhd</item>
+        <item>com.tencent.ig</item>
+        <!-- 崩坏:星穹铁道 -->
+        <item>com.miHoYo.hkrpg</item>
+        <!-- 使命召唤手游 -->
+        <item>com.tencent.tmgp.cod</item>
+        <item>com.activision.callofduty.shooter</item>
+        <!-- 高能英雄 -->
+        <item>com.tencent.tmgp.gnyx</item>
+        <!-- 黑神话手游（假设包名） -->
+        <item>com.gameblackmyth.mobile</item>
+    </string-array>
+
+    <!-- 预设游戏列表（显示名+包名） -->
+    <string-array name="game_names">
+        <item>王者荣耀</item>
+        <item>原神</item>
+        <item>和平精英</item>
+        <item>崩坏:星穹铁道</item>
+        <item>使命召唤手游</item>
+        <item>高能英雄</item>
+        <item>黑神话手游</item>
+    </string-array>
+
+    <string-array name="game_packages">
+        <item>com.tencent.tmgp.sgame</item>
+        <item>com.miHoYo.Yuanshen</item>
+        <item>com.tencent.tmgp.pubgmhd</item>
+        <item>com.miHoYo.hkrpg</item>
+        <item>com.tencent.tmgp.cod</item>
+        <item>com.tencent.tmgp.gnyx</item>
+        <item>com.gameblackmyth.mobile</item>
+    </string-array>
+
+    <!-- 帧率选项值 -->
+    <string-array name="fps_values">
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+        <item>144</item>
+        <item>160</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="fps_labels">
+        <item>60帧</item>
+        <item>90帧</item>
+        <item>120帧</item>
+        <item>144帧</item>
+        <item>160帧</item>
+        <item>自动(屏幕最高)</item>
+    </string-array>
+</resources>

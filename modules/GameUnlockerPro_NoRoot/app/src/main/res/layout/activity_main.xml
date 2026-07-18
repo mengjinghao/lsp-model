@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF0A0A1A">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Game-Unlocker Pro"
+            android:textSize="22sp"
+            android:textColor="#FF00E5FF"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NoRoot版 · LSPatch本地模式"
+            android:textSize="12sp"
+            android:textColor="#66FFFFFF"
+            android:gravity="center"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="游戏列表"
+            android:textSize="16sp"
+            android:textColor="#FFFFFFFF"
+            android:textStyle="bold"
+            android:padding="8dp" />
+
+        <LinearLayout
+            android:id="@+id/gameListLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="添加自定义游戏包名"
+            android:textSize="14sp"
+            android:textColor="#FFFFFFFF"
+            android:padding="8dp"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/etCustomPkg"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:hint="输入游戏包名"
+                android:textColor="#FFFFFFFF"
+                android:textColorHint="#66FFFFFF"
+                android:background="@drawable/edit_bg"
+                android:paddingHorizontal="12dp" />
+
+            <Button
+                android:id="@+id/btnAddCustom"
+                android:layout_width="80dp"
+                android:layout_height="48dp"
+                android:text="添加"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnResetAll"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="全部重置"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+</ScrollView>

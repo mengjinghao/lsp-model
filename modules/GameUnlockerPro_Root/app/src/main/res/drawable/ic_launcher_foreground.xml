@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- G字母简化图标 -->
+    <path
+        android:fillColor="#FF00E5FF"
+        android:pathData="M54,30 L66,30 Q72,30 72,36 L72,48 L60,48 L60,54 L72,54 L72,66 Q72,72 66,72 L54,72 L54,66 L60,66 L66,66 L66,60 L54,60 Q48,60 48,54 L48,48 Q48,42 54,42 L60,42 L60,36 L54,36 Z" />
+    <!-- 闪电符号 -->
+    <path
+        android:fillColor="#FF00E5FF"
+        android:pathData="M42,24 L36,54 L42,54 L36,84 L54,48 L46,48 L54,24 Z" />
+</vector>

@@ -1,0 +1,9 @@
+-keep class com.gameunlocker.noroot.MainHook { *; }
+-keep class com.gameunlocker.noroot.hooks.** { *; }
+-keep class com.gameunlocker.noroot.utils.** { *; }
+-keep class com.gameunlocker.noroot.models.** { *; }
+-keep class de.robv.android.xposed.** { *; }
+-dontwarn de.robv.android.xposed.**
+-dontwarn rikka.shizuku.**
+-keepclassmembers class com.gameunlocker.noroot.models.** { *; }
+-keepattributes *Annotation*,Signature,EnclosingMethod
