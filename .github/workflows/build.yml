@@ -5,6 +5,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build ${{ matrix.module }}
@@ -52,20 +55,26 @@ jobs:
         working-directory: modules/${{ matrix.module }}
         run: ./gradlew :app:assembleRelease --no-daemon --stacktrace
 
-      - name: Upload APK
+      - name: Rename APK
+        run: |
+          cd modules/${{ matrix.module }}/app/build/outputs/apk/release/
+          mv app-release.apk ${{ matrix.module }}.apk 2>/dev/null || true
+          ls -la
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.module }}-apk
-          path: modules/${{ matrix.module }}/app/build/outputs/apk/release/*.apk
+          path: modules/${{ matrix.module }}/app/build/outputs/apk/release/${{ matrix.module }}.apk
           if-no-files-found: error
           retention-days: 30
 
-  collect:
-    name: Collect All APKs
+  release:
+    name: Publish APKs to GitHub Release
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download all artifacts
+      - name: Download all APK artifacts
         uses: actions/download-artifact@v4
         with:
           path: all-apks
@@ -73,16 +82,53 @@ jobs:
 
       - name: Flatten APKs
         run: |
-          mkdir -p flattened
+          mkdir -p release-assets
           find all-apks -name "*.apk" | while read f; do
-            mod=$(echo "$f" | cut -d'/' -f2 | sed 's/-apk//')
-            cp "$f" "flattened/${mod}.apk"
+            cp "$f" "release-assets/$(basename "$f")"
           done
-          ls -la flattened/
+          echo "=== 最终 APK 列表 ==="
+          ls -la release-assets/
 
-      - name: Upload all APKs
-        uses: actions/upload-artifact@v4
+      - name: Create Release and Upload APKs
+        uses: softprops/action-gh-release@v2
         with:
-          name: all-xposed-apks
-          path: flattened/*.apk
-          retention-days: 30
+          tag_name: v2.0.0
+          name: LSP-Model 模块合集 v2.0.0
+          body: |
+            # LSP-Model Xposed 模块合集 v2.0.0
+
+            10 个模块 APK（Root 版与 NoRoot 版分离），Material3 + Compose 架构。
+
+            ## 直接下载 APK（无需解压）
+            下方 Assets 列表中每个 `.apk` 文件可单独点击下载，直接安装。
+
+            ## 安装步骤
+            1. 下载对应模块的 `.apk` 文件
+            2. 安装到手机
+            3. 打开 **LSPosed 管理器**（Root 版）或 **LSPatch**（NoRoot 版）
+            4. 模块列表会自动出现本模块（因 meta-data `xposedmodule=true`）
+            5. 勾选作用域（目标应用），强制停止目标应用后重新打开生效
+
+            ## 模块列表
+            | APK 文件 | 类型 | 说明 |
+            |----------|------|------|
+            | ShizukuSceneFix.apk | 通用 | 修复 Scene 在 Shizuku 授权列表不显示 |
+            | GameUnlockerPro_NoRoot.apk | LSPatch | 游戏性能（机型伪装/帧率/进程优化） |
+            | GameUnlockerPro_Root.apk | LSPosed | 游戏性能（含温控/GPU/系统属性） |
+            | MicroXEnhancer.apk | LSPatch | 微信/QQ 增强（去广告/防撤回/美化） |
+            | PrivacyGuard_NoRoot.apk | LSPatch | 隐私保护（设备ID/位置/传感器伪造） |
+            | PrivacyGuard_Root.apk | LSPosed | 隐私保护（含系统属性/权限回收/MAC） |
+            | AdBlockerX_NoRoot.apk | LSPatch | 广告拦截（WebView/OkHttp/黑名单） |
+            | AdBlockerX_Root.apk | LSPosed | 广告拦截（含系统hosts/PrivateDNS） |
+            | BatteryOptimizer_NoRoot.apk | LSPatch | 省电（WakeLock/Alarm/Job优化） |
+            | BatteryOptimizer_Root.apk | LSPosed | 省电（含Doze/冻结/CPU调度） |
+
+            ## 权限边界
+            - **NoRoot 版**：LSPatch 免 Root，可用 Shizuku(adb级)，不写 /system /sys
+            - **Root 版**：LSPosed，含 Shizuku 真根操作
+
+            开发者：**MJH**
+            项目地址：github.com/mengjinghao/lsp-model
+          files: release-assets/*.apk
+          prerelease: false
+          draft: false
