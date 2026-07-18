@@ -15,7 +15,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * CPU 调度策略 Hook（需 Shizuku/Root）
  *
  * 功能：
- *  - 通过 Shizuku 读写 /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+ *  - 通过 Shizuku 读写 /sys/devices/system/cpu/cpuN/cpufreq/scaling_governor
  *  - 屏幕关闭时切换为 powersave governor，降低 CPU 频率省电
  *  - 屏幕亮起恢复 interactive / schedutil，恢复性能
  */

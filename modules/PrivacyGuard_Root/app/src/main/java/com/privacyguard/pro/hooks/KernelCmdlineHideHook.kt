@@ -2,6 +2,7 @@ package com.privacyguard.pro.hooks
 
 import com.privacyguard.pro.models.PrivacyConfig
 import com.privacyguard.pro.utils.FakeDeviceCache
+import com.privacyguard.pro.utils.InstanceTagger
 import com.privacyguard.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -57,8 +58,7 @@ object KernelCmdlineHideHook {
                             try {
                                 val path = p.args[0] as? String ?: return
                                 if (path == CMDLINE_PATH) {
-                                    XposedHelpers.setAdditionalInstanceProperty(
-                                        p.thisObject, "isCmdline", true)
+                                    InstanceTagger.setTag(p.thisObject, "isCmdline", true)
                                     LogX.d("检测到 APP 读取 /proc/cmdline")
                                 }
                             } catch (_: Throwable) {}
@@ -78,8 +78,7 @@ object KernelCmdlineHideHook {
                                 val file = p.args[0] ?: return
                                 val path = XposedHelpers.callMethod(file, "getAbsolutePath") as? String ?: return
                                 if (path == CMDLINE_PATH) {
-                                    XposedHelpers.setAdditionalInstanceProperty(
-                                        p.thisObject, "isCmdline", true)
+                                    InstanceTagger.setTag(p.thisObject, "isCmdline", true)
                                     LogX.d("检测到 APP 通过 File 读取 /proc/cmdline")
                                 }
                             } catch (_: Throwable) {}
@@ -95,8 +94,7 @@ object KernelCmdlineHideHook {
                     object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
                             try {
-                                val flag = XposedHelpers.getAdditionalInstanceProperty(
-                                    p.thisObject, "isCmdline") as? Boolean ?: return
+                                val flag = InstanceTagger.getTag(p.thisObject, "isCmdline") as? Boolean ?: return
                                 if (!flag) return
                                 val buf = p.args[0] as? ByteArray ?: return
                                 val off = p.args[1] as Int
@@ -132,8 +130,7 @@ object KernelCmdlineHideHook {
                             try {
                                 val path = p.args[0] as? String ?: return
                                 if (path == CMDLINE_PATH) {
-                                    XposedHelpers.setAdditionalInstanceProperty(
-                                        p.thisObject, "isCmdline", true)
+                                    InstanceTagger.setTag(p.thisObject, "isCmdline", true)
                                     LogX.d("检测到 APP 通过 RandomAccessFile 读取 /proc/cmdline")
                                 }
                             } catch (_: Throwable) {}
@@ -153,8 +150,7 @@ object KernelCmdlineHideHook {
                                 val file = p.args[0] ?: return
                                 val path = XposedHelpers.callMethod(file, "getAbsolutePath") as? String ?: return
                                 if (path == CMDLINE_PATH) {
-                                    XposedHelpers.setAdditionalInstanceProperty(
-                                        p.thisObject, "isCmdline", true)
+                                    InstanceTagger.setTag(p.thisObject, "isCmdline", true)
                                 }
                             } catch (_: Throwable) {}
                         }
@@ -168,8 +164,7 @@ object KernelCmdlineHideHook {
                     object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
                             try {
-                                val flag = XposedHelpers.getAdditionalInstanceProperty(
-                                    p.thisObject, "isCmdline") as? Boolean ?: return
+                                val flag = InstanceTagger.getTag(p.thisObject, "isCmdline") as? Boolean ?: return
                                 if (flag) {
                                     p.result = FAKE_CMDLINE
                                 }
@@ -186,8 +181,7 @@ object KernelCmdlineHideHook {
                     object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
                             try {
-                                val flag = XposedHelpers.getAdditionalInstanceProperty(
-                                    p.thisObject, "isCmdline") as? Boolean ?: return
+                                val flag = InstanceTagger.getTag(p.thisObject, "isCmdline") as? Boolean ?: return
                                 if (!flag) return
                                 val buf = p.args[0] as? ByteArray ?: return
                                 val off = p.args[1] as Int

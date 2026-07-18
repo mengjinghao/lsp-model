@@ -17,7 +17,7 @@ import java.lang.reflect.Method
  * 硬性限制：
  *  - 系统级 Hook 必须先检查 isShizukuAvailable()
  *  - setprop 修改非持久化，重启后消失
- *  - 写 /sys/* 节点需要 root 级别 Shizuku 授权
+ *  - 写 /sys 节点需要 root 级别 Shizuku 授权
  *  - 所有调用通过 try-catch 保护，失败不影响其他 Hook
  */
 object ShizukuHelper {

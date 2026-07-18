@@ -147,7 +147,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         Spacer(Modifier.height(8.dp))
 
         FeatureCard(
-            "CPU 大核亲和性", "通过 Shizuku 写 /sys/devices/system/cpu/cpu*/cpufreq 节点",
+            "CPU 大核亲和性", "通过 Shizuku 写 /sys/devices/system/cpu/cpuN/cpufreq 节点",
             cfg.cpuBigCoreAffinityEnabled,
             { cfg.cpuBigCoreAffinityEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
             experimental = true, systemLevel = true

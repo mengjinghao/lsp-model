@@ -2,6 +2,7 @@ package com.privacyguard.pro.hooks
 
 import com.privacyguard.pro.models.PrivacyConfig
 import com.privacyguard.pro.utils.FakeDeviceCache
+import com.privacyguard.pro.utils.InstanceTagger
 import com.privacyguard.pro.utils.LogX
 import com.privacyguard.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
@@ -101,8 +102,7 @@ object SelinuxContextSpoofHook {
                                 val path = p.args[0] as? String ?: return
                                 if (path == ATTR_CURRENT_PATH || path.contains("attr/current")) {
                                     // 标记该 FileInputStream 实例
-                                    XposedHelpers.setAdditionalInstanceProperty(
-                                        p.thisObject, "isAttrCurrent", true)
+                                    InstanceTagger.setTag(p.thisObject, "isAttrCurrent", true)
                                     LogX.d("检测到 APP 读取 /proc/self/attr/current")
                                 }
                             } catch (_: Throwable) {}
@@ -119,8 +119,7 @@ object SelinuxContextSpoofHook {
                     object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
                             try {
-                                val flag = XposedHelpers.getAdditionalInstanceProperty(
-                                    p.thisObject, "isAttrCurrent") as? Boolean ?: return
+                                val flag = InstanceTagger.getTag(p.thisObject, "isAttrCurrent") as? Boolean ?: return
                                 if (flag) {
                                     p.result = if (fakeBytes.isNotEmpty()) fakeBytes[0].toInt() and 0xFF else -1
                                 }
@@ -135,8 +134,7 @@ object SelinuxContextSpoofHook {
                     object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
                             try {
-                                val flag = XposedHelpers.getAdditionalInstanceProperty(
-                                    p.thisObject, "isAttrCurrent") as? Boolean ?: return
+                                val flag = InstanceTagger.getTag(p.thisObject, "isAttrCurrent") as? Boolean ?: return
                                 if (!flag) return
                                 val buf = p.args[0] as? ByteArray ?: return
                                 val off = p.args[1] as Int

@@ -16,7 +16,7 @@ package com.privacyguard.pro.models
  * 硬性限制：
  *  - 系统级 Hook 必须先检查 ShizukuHelper.isShizukuAvailable()
  *  - setprop 修改非持久化，重启后消失
- *  - 写 /sys/* 节点需要 root 级别 Shizuku 授权
+ *  - 写 /sys 节点需要 root 级别 Shizuku 授权
  */
 data class PrivacyConfig(
     // ===== 基础 =====

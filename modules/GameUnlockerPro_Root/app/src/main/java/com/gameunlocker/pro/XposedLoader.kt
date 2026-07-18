@@ -41,7 +41,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - setprop 修改 ro.surface_flinger.* 刷新率属性
  *  - am force-stop 冻结后台进程
  *  - cmd game_mode / settings put global game_mode
- *  - 写 /sys/devices/system/cpu/cpu*/cpufreq 节点
+ *  - 写 /sys/devices/system/cpu/cpuN/cpufreq 节点
  */
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 

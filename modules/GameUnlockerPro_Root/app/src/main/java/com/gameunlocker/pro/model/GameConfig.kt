@@ -9,7 +9,7 @@ package com.gameunlocker.pro.model
  *  - gpuOptimizeEnabled: GPU 调频优化（Hook EGL/Choreographer）
  *  - shizukuBridgeEnabled: Shizuku 系统属性修改（setprop 刷新率属性）
  *  - gameModeActivationEnabled: [实验] 通过 Shizuku 执行 cmd game_mode / settings put global game_mode
- *  - cpuBigCoreAffinityEnabled: [实验] 通过 Shizuku 写 /sys/devices/system/cpu/cpu*/cpufreq 亲和性
+ *  - cpuBigCoreAffinityEnabled: [实验] 通过 Shizuku 写 /sys/devices/system/cpu/cpuN/cpufreq 亲和性
  */
 data class GameConfig(
     // ===== 基础 =====

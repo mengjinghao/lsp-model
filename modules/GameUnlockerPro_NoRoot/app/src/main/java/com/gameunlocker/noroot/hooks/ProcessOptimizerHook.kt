@@ -14,7 +14,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  2. Hook PowerManager 热状态回调 -> 返回 STATUS_NONE
  *
  * 硬性限制（无法实现）：
- *  - 不能修改内核温控节点（/sys/class/thermal/*）
+ *  - 不能修改内核温控节点（/sys/class/thermal 等节点）
  *  - 不能禁用系统 thermal-engine 服务
  *  - 不能修改 CPU/GPU 调频策略
  *  - 高温下 SOC 硬件保护降频无法阻止

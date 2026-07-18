@@ -113,7 +113,7 @@ fun AboutScreen() {
                     "2. GPU 调频优化（Hook EGL/Choreographer/HardwareRenderer）\n" +
                     "3. Shizuku setprop 修改 ro.surface_flinger.* 刷新率属性\n" +
                     "4. cmd game_mode / settings put global game_mode 激活游戏模式\n" +
-                    "5. 写 /sys/devices/system/cpu/cpu*/cpufreq 节点设置 CPU governor\n" +
+                    "5. 写 /sys/devices/system/cpu/cpuN/cpufreq 节点设置 CPU governor\n" +
                     "6. am force-stop 冻结非必要后台进程",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

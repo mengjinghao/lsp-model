@@ -11,14 +11,14 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * CPU 大核亲和性 Hook（实验性，系统级，需 Shizuku/Root）
  *
  * 功能：
- *  - 通过 Shizuku 写 /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+ *  - 通过 Shizuku 写 /sys/devices/system/cpu/cpuN/cpufreq/scaling_governor
  *    设置大核为 performance 模式，小核为 schedutil
- *  - 通过 Shizuku 写 /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq
+ *  - 通过 Shizuku 写 /sys/devices/system/cpu/cpuN/cpufreq/scaling_max_freq
  *    解锁大核最高频率
  *  - Hook Process.setThreadAffinity 让游戏主线程绑定到 CPU4-7（大核集群）
  *
  * 硬性限制：
- *  - /sys/devices/system/cpu/cpu*/cpufreq 节点写权限需 root
+ *  - /sys/devices/system/cpu/cpuN/cpufreq 节点写权限需 root
  *  - 不同 SoC 大核集群布局不同（高通 4+4/4+3+1，MTK 4+4/1+3+4）
  *  - 频率值需根据具体机型调整，本 Hook 仅做示例性写入
  *
