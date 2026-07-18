@@ -16,24 +16,13 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 注意事项：
  *  - OkHttp 在不同 APP 中可能被混淆（class 名变为 a.b.c 等）
  *  - 使用 findClassIfExists 多候选类名 + try-catch 容错
- *  - 类不存在/方法不存在时直接跳过，不影响 APP 正常运行
- *
- * 边界声明（NoRoot 版）：
- *  - 仅作用于本 APP 进程内的 OkHttp 实例
- *  - 不修改 OkHttp 全局配置，不替换 OkHttpClient
  */
 object OkHttpAdHook {
 
-    /** OkHttp 候选类名（不同混淆/版本下） */
     private val REAL_CALL_CANDIDATES = listOf(
         "okhttp3.RealCall",
         "okhttp3.internal.connection.RealCall",
         "okhttp3.OkHttpClient\$RealCall"
-    )
-
-    private val REQUEST_BUILDER_CANDIDATES = listOf(
-        "okhttp3.Request\$Builder",
-        "okhttp3.Request"
     )
 
     private val RESPONSE_CLASS = "okhttp3.Response"
@@ -42,19 +31,17 @@ object OkHttpAdHook {
     private val HTTP_URL_CLASS = "okhttp3.HttpUrl"
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: AdBlockConfig) {
-        if (!cfg.okHttpBlockEnabled) return
+        if (!cfg.okHttpAdEnabled) return
         LogX.i("OkHttpAdHook 启动（应用进程内，多候选类名容错）")
 
         hookRealCall(lpparam)
         hookInterceptorChain(lpparam)
     }
 
-    /** 1. Hook RealCall.execute / enqueue */
     private fun hookRealCall(lpparam: XC_LoadPackage.LoadPackageParam) {
         for (className in REAL_CALL_CANDIDATES) {
             val clazz = XposedHelpers.findClassIfExists(className, lpparam.classLoader) ?: continue
 
-            // execute(): Response
             try {
                 XposedHelpers.findAndHookMethod(clazz, "execute",
                     object : XC_MethodHook() {
@@ -69,7 +56,6 @@ object OkHttpAdHook {
                 LogX.d("[OkHttp] 已 Hook $className.execute")
             } catch (_: Throwable) {}
 
-            // enqueue(Callback)
             try {
                 XposedHelpers.findAndHookMethod(clazz, "enqueue",
                     "okhttp3.Callback",
@@ -87,7 +73,6 @@ object OkHttpAdHook {
         }
     }
 
-    /** 2. Hook Interceptor.Chain.proceed(Request) */
     private fun hookInterceptorChain(lpparam: XC_LoadPackage.LoadPackageParam) {
         val chainClass = XposedHelpers.findClassIfExists(
             "okhttp3.Interceptor\$Chain", lpparam.classLoader) ?: return
@@ -110,8 +95,6 @@ object OkHttpAdHook {
         } catch (_: Throwable) {}
     }
 
-    // ===== 工具方法 =====
-
     private fun extractRequestUrl(realCall: Any): String? {
         return try {
             val req = XposedHelpers.callMethod(realCall, "request") ?: return null
@@ -124,12 +107,10 @@ object OkHttpAdHook {
             val url = XposedHelpers.callMethod(req, "url") ?: return null
             url.toString()
         } catch (_: Throwable) {
-            // 尝试通过 toString 解析
             try { req.toString() } catch (_: Throwable) { null }
         }
     }
 
-    /** 构造一个空的 404 Response（容错失败时返回 null，让原请求继续执行） */
     private fun buildEmptyResponse(lpparam: XC_LoadPackage.LoadPackageParam, url: String): Any? {
         return try {
             val respClass = XposedHelpers.findClassIfExists(RESPONSE_CLASS, lpparam.classLoader) ?: return null
@@ -137,7 +118,6 @@ object OkHttpAdHook {
             val requestClass = XposedHelpers.findClassIfExists(REQUEST_CLASS, lpparam.classLoader) ?: return null
             val httpUrlClass = XposedHelpers.findClassIfExists(HTTP_URL_CLASS, lpparam.classLoader)
 
-            // 构造一个最小 Request（避免 NPE）
             val reqBuilder = XposedHelpers.callStaticMethod(requestClass, "newBuilder") ?: return null
             val fakeReq = try {
                 if (httpUrlClass != null) {

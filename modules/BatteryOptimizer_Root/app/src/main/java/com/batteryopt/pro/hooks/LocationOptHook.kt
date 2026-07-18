@@ -8,11 +8,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
  * LocationManager 定位优化 Hook（应用层）
- *
- * 功能：
- *  1. Hook requestLocationUpdates，对高频定位请求降频（minTimeInterval 提至 30s）
- *  2. 对后台高频 GPS 请求降级为网络定位（节省 GPS 芯片功耗）
- *  3. 日志记录定位请求
  */
 object LocationOptHook {
 

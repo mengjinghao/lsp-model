@@ -18,12 +18,8 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *
  * 功能：
  *  - 通过 Shizuku 执行 `dumpsys deviceidle force-idle deep` 强制进入深度 Doze
- *  - 通过 `settings put global device_idle_constants ...` 调整 Doze 参数（缩短进入时间）
+ *  - 通过 `settings put global device_idle_constants ...` 调整 Doze 参数
  *  - 仅在屏幕关闭时触发，屏幕亮起时恢复（dumpsys deviceidle unforce）
- *
- * 注意：
- *  - 部分 OEM 系统（如 MIUI/EMUI）有自家省电策略，可能不响应原生 deviceidle 命令
- *  - 强制 Doze 可能导致后台同步/推送延迟，属于预期效果
  */
 object SystemDozeHook {
 
@@ -31,7 +27,6 @@ object SystemDozeHook {
     private var screenReceiver: BroadcastReceiver? = null
     private var pendingForceIdle: Runnable? = null
 
-    /** Doze 参数：缩短 IDLE_AFTER_INACTIVE_TIMEOUT，让设备更快进入深度 Doze */
     private val dozeParams = mapOf(
         "inactive_after" to "30s",
         "sensing_after" to "60s",
@@ -49,14 +44,10 @@ object SystemDozeHook {
 
         LogX.i("系统 Doze 强制启动 | 延迟=${cfg.dozeDelaySec}s")
 
-        // 应用 Doze 参数（缩短进入时间）
         applyDozeParams()
-
-        // 注册屏幕开关广播
         registerScreenReceiver(lpparam, cfg)
     }
 
-    /** 通过 Shizuku 应用 Doze 参数 */
     private fun applyDozeParams() {
         if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku 不可用，跳过 Doze 参数应用")
@@ -70,7 +61,6 @@ object SystemDozeHook {
         LogX.i("已应用 Doze 参数: ${dozeParams.size} 项")
     }
 
-    /** 注册屏幕开关广播接收器 */
     private fun registerScreenReceiver(
         lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
     ) {
@@ -99,7 +89,6 @@ object SystemDozeHook {
         }
     }
 
-    /** 屏幕关闭：延迟后强制进入深度 Doze */
     private fun onScreenOff(delaySec: Int) {
         LogX.i("屏幕关闭，${delaySec}s 后强制进入深度 Doze")
         pendingForceIdle?.let { handler.removeCallbacks(it) }
@@ -115,7 +104,6 @@ object SystemDozeHook {
         handler.postDelayed(r, delaySec * 1000L)
     }
 
-    /** 屏幕亮起：取消待执行任务并恢复 Doze */
     private fun onScreenOn() {
         LogX.i("屏幕亮起，恢复 Doze 自动状态")
         pendingForceIdle?.let { handler.removeCallbacks(it) }
@@ -126,7 +114,6 @@ object SystemDozeHook {
         }
     }
 
-    /** 反射获取 Application 实例 */
     private fun retrieveApplication(lpparam: XC_LoadPackage.LoadPackageParam): Application? {
         return try {
             val at = XposedHelpers.findClass("android.app.ActivityThread", lpparam.classLoader)

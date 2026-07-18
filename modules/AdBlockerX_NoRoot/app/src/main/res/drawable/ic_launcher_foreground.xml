@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <!-- 盾牌外形 -->
     <path android:fillColor="#FFFFFFFF"
-        android:pathData="M54,18 L82,28 L82,52 C82,72 70,86 54,92 C38,86 26,72 26,52 L26,28 Z" />
-    <!-- 中央禁止符号：圆环 -->
-    <path android:fillColor="#FFC62828"
-        android:pathData="M54,38 m-14,0 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0 Z" />
-    <!-- 禁止斜线 -->
-    <path android:fillColor="#FFFFFFFF"
-        android:pathData="M44,32 L66,46 L62,52 L40,38 Z" />
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round"
+        android:pathData="M54,28 L78,36 L78,56 Q78,72 54,82 Q30,72 30,56 L30,36 Z" />
+    <path android:fillColor="#FFC62828" android:strokeColor="#FFC62828" android:strokeWidth="3"
+        android:pathData="M40,40 L68,68 M68,40 L40,68" />
 </vector>

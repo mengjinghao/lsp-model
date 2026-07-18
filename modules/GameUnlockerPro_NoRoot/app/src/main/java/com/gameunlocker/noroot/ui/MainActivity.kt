@@ -1,98 +1,139 @@
 package com.gameunlocker.noroot.ui
 
 import android.os.Bundle
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import com.gameunlocker.noroot.models.GameConfig
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PowerSettingsNew
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.ui.screens.AboutScreen
+import com.gameunlocker.noroot.ui.screens.FeaturesScreen
+import com.gameunlocker.noroot.ui.screens.HomeScreen
+import com.gameunlocker.noroot.ui.theme.GameUnlockerTheme
 import com.gameunlocker.noroot.utils.ConfigManager
-import com.gameunlocker.noroot.utils.DeviceProfileDatabase
 
-class MainActivity : AppCompatActivity() {
-
-    private val games = listOf(
-        "com.tencent.tmgp.sgame" to "王者荣耀",
-        "com.miHoYo.Yuanshen" to "原神",
-        "com.tencent.tmgp.pubgmhd" to "和平精英",
-        "com.miHoYo.hkrpg" to "崩坏:星穹铁道",
-        "com.tencent.tmgp.cod" to "使命召唤手游",
-        "com.tencent.tmgp.gnyx" to "高能英雄",
-        "com.gameblackmyth.mobile" to "黑神话手游"
-    )
-
-    private lateinit var listLayout: LinearLayout
-
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        listLayout = findViewById(R.id.gameListLayout)
-        ConfigManager.init(this)
-        setupUI()
-    }
-
-    private fun setupUI() {
-        listLayout.removeAllViews()
-        for ((pkg, name) in games) {
-            listLayout.addView(createItem(pkg, name))
-        }
-
-        // 自定义包名添加
-        findViewById<Button>(R.id.btnAddCustom).setOnClickListener {
-            val pkg = findViewById<EditText>(R.id.etCustomPkg).text.toString().trim()
-            if (pkg.isNotEmpty()) {
-                listLayout.addView(createItem(pkg, pkg))
-                Toast.makeText(this, "已添加: $pkg", Toast.LENGTH_SHORT).show()
+        ConfigManager.init(applicationContext)
+        setContent {
+            GameUnlockerTheme {
+                MainScreen()
             }
         }
+    }
+}
 
-        findViewById<Button>(R.id.btnResetAll).setOnClickListener {
-            ConfigManager.resetAll()
-            setupUI()
-            Toast.makeText(this, "已重置", Toast.LENGTH_SHORT).show()
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val isLandscape = LocalConfiguration.current.screenWidthDp > LocalConfiguration.current.screenHeightDp
+
+    var cfg by remember { mutableStateOf(ConfigManager.getGlobalConfig()) }
+    val onCfgChange: (GameConfig) -> Unit = { cfg = it }
+
+    val screens = listOf(
+        Triple("home", "总开关", Icons.Default.PowerSettingsNew),
+        Triple("features", "功能", Icons.Default.Build),
+        Triple("about", "关于", Icons.Default.Info)
+    )
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = { Text("GameUnlocker NoRoot") },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        },
+        bottomBar = {
+            if (!isLandscape) {
+                val current by navController.currentBackStackEntryAsState()
+                val route = current?.destination?.route
+                NavigationBar {
+                    screens.forEach { (r, label, icon) ->
+                        NavigationBarItem(
+                            selected = route == r,
+                            onClick = { navController.navigate(r) { popUpTo(navController.graph.startDestinationId) { saveState = true }; launchSingleTop = true; restoreState = true } },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) }
+                        )
+                    }
+                }
+            }
+        }
+    ) { inner ->
+        if (isLandscape) {
+            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxSize().padding(inner)) {
+                val current by navController.currentBackStackEntryAsState()
+                val route = current?.destination?.route
+                NavigationRail {
+                    screens.forEach { (r, label, icon) ->
+                        NavigationRailItem(
+                            selected = route == r,
+                            onClick = { navController.navigate(r) { popUpTo(navController.graph.startDestinationId) { saveState = true }; launchSingleTop = true; restoreState = true } },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) }
+                        )
+                    }
+                }
+                AppNavHost(navController, cfg, onCfgChange, PaddingValues(0.dp))
+            }
+        } else {
+            AppNavHost(navController, cfg, onCfgChange, inner)
         }
     }
+}
 
-    private fun createItem(pkg: String, name: String): LinearLayout {
-        val cfg = ConfigManager.getGameConfig(pkg)
-        val item = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(40, 24, 40, 24)
-        }
-
-        val profile = DeviceProfileDatabase.findById(cfg.selectedDeviceProfileId)
-        val summary = listOfNotNull(
-            if (cfg.deviceSpoofEnabled) profile?.displayName else null,
-            if (cfg.frameRateUnlockEnabled) "${cfg.targetFps}帧" else null,
-            if (cfg.detectionHideEnabled) "环境隐藏" else null,
-            if (cfg.processOptimizeEnabled) "性能优化" else null
-        ).joinToString(" | ")
-
-        val tvName = TextView(this).apply {
-            text = name; textSize = 16f; setTextColor(0xFFFFFFFF.toInt())
-        }
-        val tvSummary = TextView(this).apply {
-            text = "$pkg  |  $summary"; textSize = 11f; setTextColor(0x99FFFFFF.toInt())
-        }
-
-        item.addView(tvName)
-        item.addView(tvSummary)
-
-        // 分割线
-        val div = View(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 4
-            ).apply { topMargin = 16 }
-            setBackgroundColor(0x22FFFFFF.toInt())
-        }
-        item.addView(div)
-
-        item.setOnClickListener { SettingsActivity.start(this, pkg, name) }
-        item.setOnLongClickListener {
-            ConfigManager.deleteGameConfig(pkg)
-            setupUI()
-            Toast.makeText(this, "已删除: $name", Toast.LENGTH_SHORT).show()
-            true
-        }
-
-        return item
+@Composable
+private fun AppNavHost(
+    navController: NavHostController,
+    cfg: GameConfig,
+    onCfgChange: (GameConfig) -> Unit,
+    padding: PaddingValues
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "home",
+        modifier = Modifier.fillMaxSize().padding(padding)
+    ) {
+        composable("home") { HomeScreen(cfg, onCfgChange) }
+        composable("features") { FeaturesScreen(cfg, onCfgChange) }
+        composable("about") { AboutScreen() }
     }
 }

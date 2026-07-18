@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BatteryOptimizer">
+        android:theme="@style/Theme.BatteryOptimizer"
+        tools:targetApi="34">
 
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.BatteryOptimizer">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -21,7 +24,7 @@
 
         <meta-data android:name="xposedmodule" android:value="true" />
         <meta-data android:name="xposedminversion" android:value="82" />
-        <meta-data android:name="xposeddescription" android:value="@string/xposed_description" />
+        <meta-data android:name="xposeddescription" android:value="BatteryOptimizer NoRoot - 应用层省电优化：WakeLock/Alarm/Sync/Job/Location/Animation/Sensor + 实验性 BT/Camera/Vibrator" />
         <meta-data android:name="xposedscope" android:resource="@array/xposed_scope" />
 
     </application>

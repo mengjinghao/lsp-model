@@ -4,69 +4,49 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.batteryopt.noroot.models.BatteryConfig
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 /**
  * 配置管理器
  *
- * LSPatch本地模式下使用目标 APP 进程的 SharedPreferences 存储配置。
- * 注意：每款 APP 的配置相互隔离，保存在各自进程的 data 目录下。
- * 模块自身的 MainActivity（在模块 APK 进程内）也使用同一份管理逻辑。
+ * 双通道读取：
+ *  1. UI 侧（模块进程）：通过 SharedPreferences 读写
+ *  2. Hook 侧（目标APP进程）：通过 XSharedPreferences 读取模块 prefs（LSPosed模式）
+ *     或通过 Context.getSharedPreferences 读取（LSPatch本地模式，同进程）
+ *
+ * LSPosed 兼容：prefs 使用 MODE_WORLD_READABLE（LSPosed 拦截并放行），失败回退 MODE_PRIVATE。
  */
 object ConfigManager {
 
-    private const val PREFS_NAME = "battery_optimizer_configs"
-    private const val KEY_ALL = "all_app_configs"
+    const val PREFS_NAME = "battery_optimizer_prefs"
+    private const val KEY_GLOBAL = "global_config"
+
     private val gson = Gson()
     private var prefs: SharedPreferences? = null
 
     fun init(ctx: Context) {
-        if (prefs == null) {
-            prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        if (prefs != null) return
+        prefs = try {
+            ctx.getSharedPreferences(PREFS_NAME, Context.MODE_WORLD_READABLE)
+        } catch (_: Throwable) {
+            ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         }
     }
 
-    fun getAllConfigs(): MutableMap<String, BatteryConfig> {
-        val json = prefs?.getString(KEY_ALL, null) ?: return mutableMapOf()
-        return try {
-            val type = object : TypeToken<MutableMap<String, BatteryConfig>>() {}.type
-            gson.fromJson(json, type) ?: mutableMapOf()
-        } catch (e: Exception) {
-            mutableMapOf()
-        }
+    fun isInitialized(): Boolean = prefs != null
+
+    /** 全局配置（UI 总开关使用，作用于所有目标APP） */
+    fun getGlobalConfig(): BatteryConfig {
+        val def = BatteryConfig(packageName = "global")
+        if (!isInitialized()) return def
+        val json = prefs?.getString(KEY_GLOBAL, null) ?: return def
+        return try { gson.fromJson(json, BatteryConfig::class.java) ?: def } catch (_: Throwable) { def }
     }
 
-    private fun saveAll(configs: MutableMap<String, BatteryConfig>) {
-        prefs?.edit()?.putString(KEY_ALL, gson.toJson(configs))?.apply()
-    }
-
-    fun getAppConfig(pkg: String): BatteryConfig {
-        return getAllConfigs()[pkg] ?: createDefault(pkg)
-    }
-
-    fun saveAppConfig(cfg: BatteryConfig) {
-        val all = getAllConfigs()
+    fun saveGlobalConfig(cfg: BatteryConfig) {
+        if (!isInitialized()) return
         cfg.lastModified = System.currentTimeMillis()
-        all[cfg.packageName] = cfg
-        saveAll(all)
+        prefs?.edit()?.putString(KEY_GLOBAL, gson.toJson(cfg))?.apply()
     }
-
-    fun deleteAppConfig(pkg: String) {
-        val all = getAllConfigs()
-        all.remove(pkg)
-        saveAll(all)
-    }
-
-    fun createDefault(pkg: String) = BatteryConfig(
-        packageName = pkg,
-        wakeLockOptEnabled = true,
-        alarmOptEnabled = true,
-        syncOptEnabled = true,
-        jobOptEnabled = true,
-        locationOptEnabled = true,
-        animationOptEnabled = false,
-        sensorOptEnabled = true
-    )
 
     fun resetAll() { prefs?.edit()?.clear()?.apply() }
 }

@@ -9,16 +9,13 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 /**
  * 广告ID屏蔽Hook（应用层）
  *
- * 功能：
- *  - Hook com.google.android.gms.ads.identifier.AdvertisingIdClient.getAdvertisingIdInfo
- *  - Hook AdvertisingIdClient$Info.getId / isLimitAdTrackingEnabled
- *  - 返回空 ID，并强制 isLimitAdTrackingEnabled = true
+ * 返回空/伪造ID，并强制 isLimitAdTrackingEnabled = true（用户已选择退出个性化广告）
  */
 object AdvertisingIdHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: PrivacyConfig) {
         if (!cfg.advertisingIdBlockEnabled) return
-        LogX.i("广告ID屏蔽启动")
+        LogX.i("广告ID屏蔽启动（应用层）")
 
         hookAdvertisingIdClient(lpparam)
         hookAdvertisingIdInfo(lpparam)

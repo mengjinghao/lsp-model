@@ -1,21 +1,14 @@
 package com.adblockerx.pro.utils
 
 /**
- * 内置广告域名黑名单（Root 版与 NoRoot 版保持一致）
+ * 内置广告域名黑名单（Root 版同 NoRoot，约 90 条）
  *
  * 设计原则：
- *  - 内存黑名单作为应用层 Hook 的查询源
- *  - 系统级 hosts/Private DNS 操作时也会读取此列表写入系统
- *  - 子域名匹配：判断时使用 host.endsWith(domain) 或 host.contains(domain)
- *
- * 涵盖：Google Ads / 腾讯 GDT / 字节穿山甲 / 百度联盟 /
- *      阿里妈妈 / 快手广告 / 网易广告 / 360联盟 / Mobtech / umeng / etc.
+ *  - 内存中维护，同时供 SystemHostsHook 写入系统 hosts 文件
+ *  - 子域名匹配：host.endsWith(domain) 或 host.contains(domain)
  */
 object AdBlockList {
 
-    /**
-     * 内置广告/追踪域名（约 60 条）
-     */
     val BUILTIN_AD_DOMAINS: List<String> = listOf(
         // ===== Google / DoubleClick =====
         "doubleclick.net",
@@ -120,12 +113,30 @@ object AdBlockList {
         "tapjoy.com",
         "admob.com",
         "mm.adtech.com",
-        "adtech.com"
+        "adtech.com",
+
+        // ===== 追踪 SDK 域名 =====
+        "tracking.miui.com",
+        "data.adsrvr.org",
+        "pixel.facebook.com",
+        "analytics.twitter.com",
+        "snap.licdn.com",
+        "px.ads.linkedin.com",
+        "tags.tiqcdn.com",
+        "collect.tencent.com",
+
+        // ===== 网盟/RTB 补充 =====
+        "adsymptotic.com",
+        "yieldlab.net",
+        "smartadserver.com",
+        "openx.net",
+        "3lift.com",
+        "bidswitch.net",
+        "contextweb.com",
+        "quantserve.com",
+        "scorecardresearch.com"
     )
 
-    /**
-     * 判断 host 是否命中黑名单（内置 + 自定义）
-     */
     fun isBlocked(
         host: String?,
         builtinEnabled: Boolean,
@@ -153,7 +164,6 @@ object AdBlockList {
         return false
     }
 
-    /** 从 URL 字符串中提取 host */
     fun extractHost(url: String?): String? {
         if (url.isNullOrBlank()) return null
         return try {

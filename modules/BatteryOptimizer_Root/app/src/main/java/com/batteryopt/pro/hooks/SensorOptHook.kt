@@ -8,14 +8,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
  * SensorManager 传感器降频 Hook（应用层）
- *
- * 功能：
- *  - Hook registerListener，对高频传感器（>50Hz）降频到合理值
- *  - 默认上限 200000us = 5Hz，足以满足大部分场景需求
  */
 object SensorOptHook {
 
-    /** 高频阈值（微秒）：低于此值视为高频，需要降频。50Hz = 20000us */
     private const val HIGH_FREQ_THRESHOLD_US = 20_000
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {

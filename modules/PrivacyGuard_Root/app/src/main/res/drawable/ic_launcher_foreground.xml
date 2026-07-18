@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <!-- 盾牌轮廓 -->
     <path android:fillColor="#FFFFFFFF"
-        android:pathData="M54,24 L78,34 L78,54 C78,70 68,80 54,86 C40,80 30,70 30,54 L30,34 Z" />
-    <!-- 对勾（绿色） -->
-    <path android:strokeColor="#FF1B5E20" android:strokeWidth="6"
-        android:strokeLineCap="round" android:strokeLineJoin="round"
-        android:fillColor="#00000000"
-        android:pathData="M42,54 L50,62 L68,42" />
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round"
+        android:pathData="M54,28 L78,36 L78,56 Q78,72 54,82 Q30,72 30,56 L30,36 Z" />
+    <path android:fillColor="#FF1B5E20" android:pathData="M44,54 L50,62 L66,44 L62,40 L50,54 L48,52 Z" />
 </vector>

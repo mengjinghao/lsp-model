@@ -1,47 +1,41 @@
 package com.privacyguard.noroot.models
 
-import com.google.gson.annotations.SerializedName
-
 /**
- * PrivacyGuard 隐私保护配置（NoRoot 版）
+ * 隐私保护配置（免Root版）
  *
- * 仅包含应用层 Hook 的开关字段，不涉及任何系统级修改。
- * 每个 APP 独立保存一份配置，互不干扰。
- *
- * 硬性限制：
- *  - 所有 Hook 仅在目标 APP 进程内生效，无法影响系统全局
- *  - 不修改系统属性、不写 /system 或 /sys 文件
- *  - 不进行全局权限拦截、不调用 Shizuku 系统级操作
+ * 硬性限制（NoRoot版严格遵守）：
+ *  - 仅应用进程内 Java 层 Hook
+ *  - 不修改系统属性(setprop)、不写 /system /sys
+ *  - 不调用 Shizuku 做真Root操作（adb级Shizuku可选，用于轻量命令）
+ *  - 伪造值仅在当前进程生命周期内稳定
  */
 data class PrivacyConfig(
-    @SerializedName("packageName") val packageName: String,
+    // ===== 基础 =====
+    var packageName: String = "",
+    var masterEnabled: Boolean = true,
+    var deviceIdSpoofEnabled: Boolean = true,
+    var clipboardGuardEnabled: Boolean = true,
+    var clipboardBlockRead: Boolean = false,
+    var permissionSpoofEnabled: Boolean = false,
+    var locationSpoofEnabled: Boolean = false,
+    var sensorFakerEnabled: Boolean = false,
+    var advertisingIdBlockEnabled: Boolean = true,
 
-    // ===== 设备ID伪造 =====
-    @SerializedName("deviceIdSpoofEnabled") var deviceIdSpoofEnabled: Boolean = true,
+    // ===== 实验性 =====
+    var packageVisibilitySpoofEnabled: Boolean = false,
+    var networkInfoSpoofEnabled: Boolean = false,
+    var screenMetricsSpoofEnabled: Boolean = false,
+    var storagePathSpoofEnabled: Boolean = false,
 
-    // ===== 剪贴板保护 =====
-    @SerializedName("clipboardGuardEnabled") var clipboardGuardEnabled: Boolean = true,
-    @SerializedName("clipboardBlockRead") var clipboardBlockRead: Boolean = false,
-
-    // ===== 权限欺骗（仅欺骗 APP 自身检查，不影响系统授权） =====
-    @SerializedName("permissionSpoofEnabled") var permissionSpoofEnabled: Boolean = false,
-    @SerializedName("deniedPermissions") var deniedPermissions: MutableList<String> = mutableListOf(
+    // ===== 参数 =====
+    var spoofLatitude: Double = 31.2304,
+    var spoofLongitude: Double = 121.4737,
+    var sensorNoiseMode: Int = 2,          // 0=静态 其他=加噪
+    var deniedPermissions: MutableList<String> = mutableListOf(
         "android.permission.READ_CONTACTS",
         "android.permission.READ_CALL_LOG",
-        "android.permission.READ_PHONE_STATE"
+        "android.permission.READ_CALENDAR"
     ),
 
-    // ===== 位置伪造 =====
-    @SerializedName("locationSpoofEnabled") var locationSpoofEnabled: Boolean = false,
-    @SerializedName("spoofLatitude") var spoofLatitude: Double = 31.230416,   // 默认上海
-    @SerializedName("spoofLongitude") var spoofLongitude: Double = 121.473701,
-
-    // ===== 传感器伪造 =====
-    @SerializedName("sensorFakerEnabled") var sensorFakerEnabled: Boolean = false,
-    @SerializedName("sensorNoiseMode") var sensorNoiseMode: Int = 0, // 0=静态, 1=加噪
-
-    // ===== 广告ID屏蔽 =====
-    @SerializedName("advertisingIdBlockEnabled") var advertisingIdBlockEnabled: Boolean = true,
-
-    @SerializedName("lastModified") var lastModified: Long = System.currentTimeMillis()
+    var lastModified: Long = 0L
 )

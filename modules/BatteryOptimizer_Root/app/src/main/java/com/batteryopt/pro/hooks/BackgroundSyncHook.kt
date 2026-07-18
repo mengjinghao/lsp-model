@@ -8,11 +8,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
  * ContentResolver 同步优化 Hook（应用层）
- *
- * 功能：
- *  1. Hook requestSync，对非必要同步降频（按 authority 节流）
- *  2. Hook addPeriodicSync，延长周期同步间隔
- *  3. 日志记录同步情况
  */
 object BackgroundSyncHook {
 

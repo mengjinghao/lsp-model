@@ -11,21 +11,20 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *
  * 功能：
  *  1. Hook set/setRepeating/setExact/setWindow，对高频精确闹钟降级为 setWindow（inexact）
- *  2. 对明显非关键的重复闹钟（如统计上报）增加最小间隔限制（默认 5 分钟）
- *  3. 日志记录闹钟设置情况
+ *  2. 对明显非关键的重复闹钟增加最小间隔限制（默认 5 分钟）
  */
 object AlarmOptimizerHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         LogX.i("Alarm 优化启动 | 最小间隔=${cfg.alarmMinIntervalMs}ms 降级exact=${cfg.alarmExactDowngrade}")
 
-        hookSet(lpparam, cfg)
+        hookSet(lpparam)
         hookSetRepeating(lpparam, cfg)
         hookSetExact(lpparam, cfg)
         hookSetWindow(lpparam, cfg)
     }
 
-    private fun hookSet(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
+    private fun hookSet(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val amCls = XposedHelpers.findClassIfExists(
                 "android.app.AlarmManager", lpparam.classLoader

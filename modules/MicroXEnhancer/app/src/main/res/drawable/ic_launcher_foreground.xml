@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <!-- 圆形背景 -->
-    <path
-        android:fillColor="#1E88E5"
-        android:pathData="M54,54m-50,0a50,50 0,1 1,100 0a50,50 0,1 1,-100 0" />
-    <!-- X字母 -->
-    <path
-        android:fillColor="#FFFFFF"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- X字母（白色） -->
+    <path android:fillColor="#FFFFFFFF"
         android:pathData="M35,30L47,44L35,58L42,58L50,48L58,58L65,58L53,44L65,30L58,30L50,40L42,30Z" />
-    <!-- 小盾牌标记 -->
-    <path
-        android:fillColor="#90CAF9"
+    <!-- 小盾牌标记（青色亮调） -->
+    <path android:fillColor="#FF4DB6AC"
         android:pathData="M68,32L74,36L76,44C76,50 72,55 68,57C64,55 60,50 60,44L62,36Z" />
 </vector>

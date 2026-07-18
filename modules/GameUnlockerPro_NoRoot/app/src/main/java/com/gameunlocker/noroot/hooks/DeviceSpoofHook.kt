@@ -1,27 +1,38 @@
 package com.gameunlocker.noroot.hooks
 
-import com.gameunlocker.noroot.models.DeviceProfile
+import com.gameunlocker.noroot.model.DeviceProfile
+import com.gameunlocker.noroot.model.GameConfig
 import com.gameunlocker.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
- * 单应用机型伪装Hook（仅作用于当前被Hook的游戏进程）
+ * 单游戏机型伪装 Hook（仅作用于当前被 Hook 的游戏进程）
  *
- * 硬性限制：本Hook仅修改当前进程内的Build类属性，
- * 退出游戏后恢复真实参数，无法全局伪装手机型号。
+ * 硬性限制（NoRoot 版）：
+ *  - 仅修改当前进程内的 Build 类属性，退出游戏后恢复真实参数
+ *  - 仅 Hook Java 层 SystemProperties.get 方法，不修改底层属性文件
+ *  - 不调用 Shizuku setprop
  *
  * 拦截路径：
  *  1. android.os.Build 静态字段 -> 游戏读取 MODEL/BRAND/MANUFACTURER
  *  2. SystemProperties.get() -> 游戏读取 ro.product.* 属性
- *  3. TelephonyManager -> 伪装设备ID（防IMEI检测）
- *  4. Runtime.availableProcessors() -> 伪装CPU核心数
+ *  3. TelephonyManager.getDeviceId -> 伪装设备 ID
+ *  4. Runtime.availableProcessors() -> 伪装 CPU 核心数
  */
 object DeviceSpoofHook {
 
-    fun apply(lpparam: XC_LoadPackage.LoadPackageParam, profile: DeviceProfile) {
-        LogX.i("机型伪装: ${profile.displayName}")
+    fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: GameConfig) {
+        if (!cfg.deviceSpoofEnabled) return
+
+        // 优先使用自定义机型，其次内置机型，最后默认小米15
+        val profile: DeviceProfile = cfg.customDeviceProfile
+            ?: com.gameunlocker.noroot.utils.DeviceProfileDatabase.findById(cfg.selectedDeviceProfileId)
+            ?: com.gameunlocker.noroot.utils.DeviceProfileDatabase.findById("xiaomi15")
+            ?: return
+
+        LogX.i("机型伪装: ${profile.displayName}（仅应用层）")
 
         spoofBuildFields(profile)
         spoofSystemProperties(profile)
@@ -33,9 +44,6 @@ object DeviceSpoofHook {
     private fun spoofBuildFields(profile: DeviceProfile) {
         try {
             val build = XposedHelpers.findClass("android.os.Build", null)
-
-            // 无Root限制：使用setStaticObjectField直接覆盖静态字段
-            // 注意：某些ROM的Build字段可能为final，setStaticObjectField可能抛异常
             val fields = mapOf(
                 "MODEL" to profile.model,
                 "BRAND" to profile.brand,
@@ -50,22 +58,20 @@ object DeviceSpoofHook {
             for ((name, value) in fields) {
                 try {
                     XposedHelpers.setStaticObjectField(build, name, value)
-                } catch (e: Exception) {
-                    // 部分ROM字段为final，忽略单字段失败
-                    LogX.d("Build.$name 修改失败(可能为final): ${e.message}")
+                } catch (_: Throwable) {
+                    // 部分 ROM 字段为 final，忽略单字段失败
                 }
             }
-            LogX.i("Build属性伪装完成: MODEL=${profile.model}")
-        } catch (e: Exception) {
-            LogX.e("Build伪装异常", e)
+            LogX.i("Build 属性伪装完成: MODEL=${profile.model}")
+        } catch (e: Throwable) {
+            LogX.e("Build 伪装异常", e)
         }
     }
 
     /** Hook SystemProperties 拦截属性读取 */
     private fun spoofSystemProperties(profile: DeviceProfile) {
         try {
-            val sp = XposedHelpers.findClass("android.os.SystemProperties", null)
-
+            val sp = XposedHelpers.findClassIfExists("android.os.SystemProperties", null) ?: return
             val props = mapOf(
                 "ro.product.model" to profile.model,
                 "ro.product.brand" to profile.brand,
@@ -81,51 +87,69 @@ object DeviceSpoofHook {
                 "ro.chipname" to profile.cpuModel
             )
 
-            // 无Root限制：仅Hook Java层get方法，不修改底层系统属性文件
-            XposedHelpers.findAndHookMethod(sp, "get",
-                String::class.java, String::class.java,
-                object : XC_MethodHook() {
-                    override fun beforeHookedMethod(param: MethodHookParam) {
-                        val key = param.args[0] as String
-                        if (props.containsKey(key)) {
-                            param.result = props[key]
+            // get(String, String)
+            try {
+                XposedHelpers.findAndHookMethod(sp, "get",
+                    String::class.java, String::class.java,
+                    object : XC_MethodHook() {
+                        override fun beforeHookedMethod(p: MethodHookParam) {
+                            val key = p.args[0] as? String ?: return
+                            if (props.containsKey(key)) p.result = props[key]
                         }
-                    }
-                })
-            LogX.i("SystemProperties伪装: ${props.size}个属性")
-        } catch (e: Exception) {
-            LogX.e("SystemProperties伪装异常", e)
+                    })
+            } catch (_: Throwable) {}
+
+            // get(String)
+            try {
+                XposedHelpers.findAndHookMethod(sp, "get",
+                    String::class.java,
+                    object : XC_MethodHook() {
+                        override fun beforeHookedMethod(p: MethodHookParam) {
+                            val key = p.args[0] as? String ?: return
+                            if (props.containsKey(key)) p.result = props[key]
+                        }
+                    })
+            } catch (_: Throwable) {}
+
+            LogX.hookSuccess("SystemProperties", "get(${props.size} props)")
+        } catch (e: Throwable) {
+            LogX.hookFailed("SystemProperties", "get", e)
         }
     }
 
-    /** 伪装TelephonyManager设备ID */
+    /** 伪装 TelephonyManager 设备 ID */
     private fun spoofTelephony(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
-            val tm = XposedHelpers.findClass(
-                "android.telephony.TelephonyManager", lpparam.classLoader)
-            XposedHelpers.findAndHookMethod(tm, "getDeviceId",
-                object : XC_MethodHook() {
-                    override fun beforeHookedMethod(param: MethodHookParam) {
-                        param.result = "000000000000000"
-                    }
-                })
-        } catch (e: Exception) {
-            LogX.d("TelephonyManager Hook异常: ${e.message}")
+            val tm = XposedHelpers.findClassIfExists(
+                "android.telephony.TelephonyManager", lpparam.classLoader) ?: return
+            try {
+                XposedHelpers.findAndHookMethod(tm, "getDeviceId",
+                    object : XC_MethodHook() {
+                        override fun beforeHookedMethod(p: MethodHookParam) {
+                            p.result = "000000000000000"
+                        }
+                    })
+                LogX.hookSuccess("TelephonyManager", "getDeviceId")
+            } catch (_: Throwable) {}
+        } catch (e: Throwable) {
+            LogX.hookFailed("TelephonyManager", "getDeviceId", e)
         }
     }
 
-    /** 伪装CPU核心数 */
+    /** 伪装 CPU 核心数 */
     private fun spoofCpuInfo(profile: DeviceProfile) {
         try {
-            val rt = XposedHelpers.findClass("java.lang.Runtime", null)
+            val rt = XposedHelpers.findClassIfExists("java.lang.Runtime", null) ?: return
             XposedHelpers.findAndHookMethod(rt, "availableProcessors",
                 object : XC_MethodHook() {
-                    override fun beforeHookedMethod(param: MethodHookParam) {
-                        param.result = profile.sdkVersion // 用SDK版本号近似核心数
+                    override fun beforeHookedMethod(p: MethodHookParam) {
+                        // 旗舰机通常 8 核以上，返回 8 保证游戏认为是大核心机型
+                        p.result = 8
                     }
                 })
-        } catch (e: Exception) {
-            LogX.d("CPU信息伪装异常: ${e.message}")
+            LogX.hookSuccess("Runtime", "availableProcessors -> 8")
+        } catch (e: Throwable) {
+            LogX.hookFailed("Runtime", "availableProcessors", e)
         }
     }
 }

@@ -10,13 +10,7 @@ import java.util.Random
 /**
  * 传感器伪造Hook（应用层）
  *
- * 功能：
- *  - Hook SensorEventListener.onSensorChanged，修改 SensorEvent.values
- *  - 对加速度/陀螺仪/磁场读数做静态或加噪处理（防传感器指纹追踪）
- *
- * 模式：
- *  - 0 = 静态：返回固定值（加速度 0,0,9.81，陀螺仪 0,0,0）
- *  - 1 = 加噪：原值上添加 ±10% 随机噪声
+ * 对加速度/陀螺仪/磁场读数做静态或加噪处理，防传感器指纹追踪
  */
 object SensorFakerHook {
 
@@ -28,7 +22,7 @@ object SensorFakerHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: PrivacyConfig) {
         if (!cfg.sensorFakerEnabled) return
-        LogX.i("传感器伪造启动：模式=${if (cfg.sensorNoiseMode == 0) "静态" else "加噪"}")
+        LogX.i("传感器伪造启动（应用层）：模式=${if (cfg.sensorNoiseMode == 0) "静态" else "加噪"}")
 
         hookSensorEventListener(lpparam, cfg.sensorNoiseMode)
     }
@@ -90,9 +84,7 @@ object SensorFakerHook {
                 if (listener2 != null) {
                     XposedHelpers.findAndHookMethod(listener2, "onSensorChanged",
                         sensorEventCls, object : XC_MethodHook() {
-                            override fun beforeHookedMethod(p: MethodHookParam) {
-                                // 与上面逻辑相同，简化处理
-                            }
+                            override fun beforeHookedMethod(p: MethodHookParam) {}
                         })
                     LogX.hookSuccess("SensorEventListener2", "onSensorChanged")
                 }

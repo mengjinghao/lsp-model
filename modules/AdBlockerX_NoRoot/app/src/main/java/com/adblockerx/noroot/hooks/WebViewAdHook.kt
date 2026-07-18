@@ -19,7 +19,6 @@ import java.io.ByteArrayInputStream
  * 边界声明（NoRoot 版）：
  *  - 仅作用于本 APP 进程内的 android.webkit.WebView 实例
  *  - 不修改系统 WebView Provider，不修改 DNS
- *  - 不读取/不写入任何系统文件
  */
 object WebViewAdHook {
 
@@ -42,7 +41,7 @@ object WebViewAdHook {
     """.trimIndent()
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: AdBlockConfig) {
-        if (!cfg.webViewBlockEnabled) return
+        if (!cfg.webviewAdEnabled) return
         LogX.i("WebViewAdHook 启动（应用进程内）")
 
         hookShouldOverrideUrlLoading(lpparam)
@@ -51,13 +50,11 @@ object WebViewAdHook {
         if (cfg.injectJsEnabled) hookOnPageFinished(lpparam)
     }
 
-    /** 1. shouldOverrideUrlLoading：拦截广告跳转 */
     private fun hookShouldOverrideUrlLoading(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val wvcClass = XposedHelpers.findClassIfExists(
                 "android.webkit.WebViewClient", lpparam.classLoader) ?: return
 
-            // 旧版 API：shouldOverrideUrlLoading(WebView, String)
             try {
                 XposedHelpers.findAndHookMethod(wvcClass, "shouldOverrideUrlLoading",
                     "android.webkit.WebView", String::class.java,
@@ -66,13 +63,12 @@ object WebViewAdHook {
                             val url = p.args.getOrNull(1) as? String ?: return
                             if (HostsFilterHook.isUrlBlocked(url)) {
                                 LogX.i("[WebView] 拦截跳转: $url")
-                                p.result = true // 阻止加载
+                                p.result = true
                             }
                         }
                     })
             } catch (_: Throwable) {}
 
-            // 新版 API：shouldOverrideUrlLoading(WebView, WebResourceRequest)
             try {
                 val wrrClass = XposedHelpers.findClassIfExists(
                     "android.webkit.WebResourceRequest", lpparam.classLoader) ?: return
@@ -96,7 +92,6 @@ object WebViewAdHook {
         }
     }
 
-    /** 2. shouldInterceptRequest：返回 404 空响应 */
     private fun hookShouldInterceptRequest(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val wvcClass = XposedHelpers.findClassIfExists(
@@ -116,7 +111,6 @@ object WebViewAdHook {
                         } catch (_: Throwable) { null } ?: return
                         if (!HostsFilterHook.isUrlBlocked(url)) return
                         try {
-                            // 构造 404 空响应
                             val empty = ByteArrayInputStream(ByteArray(0))
                             val resp = wrrRespClass.getConstructor(
                                 String::class.java,
@@ -137,12 +131,11 @@ object WebViewAdHook {
         }
     }
 
-    /** 3. WebView.loadUrl：拦截广告页加载 */
     private fun hookLoadUrl(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val wvClass = XposedHelpers.findClassIfExists(
                 "android.webkit.WebView", lpparam.classLoader) ?: return
-            // loadUrl(String)
+
             try {
                 XposedHelpers.findAndHookMethod(wvClass, "loadUrl",
                     String::class.java,
@@ -156,7 +149,7 @@ object WebViewAdHook {
                         }
                     })
             } catch (_: Throwable) {}
-            // loadUrl(String, Map)
+
             try {
                 XposedHelpers.findAndHookMethod(wvClass, "loadUrl",
                     String::class.java, MutableMap::class.java,
@@ -170,7 +163,7 @@ object WebViewAdHook {
                         }
                     })
             } catch (_: Throwable) {}
-            // loadDataWithBaseURL
+
             try {
                 XposedHelpers.findAndHookMethod(wvClass, "loadDataWithBaseURL",
                     String::class.java, String::class.java,
@@ -190,7 +183,6 @@ object WebViewAdHook {
         }
     }
 
-    /** 4. onPageFinished：注入 CSS/JS 隐藏广告 DOM */
     private fun hookOnPageFinished(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val wvcClass = XposedHelpers.findClassIfExists(

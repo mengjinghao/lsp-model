@@ -12,7 +12,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 功能：
  *  1. Hook requestLocationUpdates，对高频定位请求降频（minTimeInterval 提至 30s）
  *  2. 对后台高频 GPS 请求降级为网络定位（节省 GPS 芯片功耗）
- *  3. 日志记录定位请求
  *
  * 硬性限制（NoRoot 版）：
  *  - 仅作用于当前 APP 的定位请求，不能修改系统 LocationManagerService
@@ -27,11 +26,6 @@ object LocationOptHook {
         hookRequestLocationUpdates(lpparam, cfg)
     }
 
-    /**
-     * Hook requestLocationUpdates 的多个重载
-     * 注意：Android 6+ 推荐 LocationRequest + fused location provider，
-     * 但很多 APP 仍直接调用 LocationManager 老接口
-     */
     private fun hookRequestLocationUpdates(
         lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
     ) {
@@ -57,7 +51,6 @@ object LocationOptHook {
                             LogX.w("定位间隔放大: $provider ${old}ms -> ${cfg.locationMinIntervalMs}ms")
                             minTime = cfg.locationMinIntervalMs
                         }
-                        // 后台高频 GPS 降级为 NETWORK
                         if (cfg.locationDowngradeGps &&
                             provider == "gps" && minTime < 60_000L
                         ) {

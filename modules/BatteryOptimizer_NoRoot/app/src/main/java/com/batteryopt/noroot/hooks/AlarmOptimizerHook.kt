@@ -10,32 +10,27 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * AlarmManager 闹钟优化 Hook（应用层）
  *
  * 功能：
- *  1. Hook set/setRepeating/setExact/setWindow，对高频精确闹钟降级为 setWindow（inexact），
- *     给系统更大合并空间，减少频繁唤醒
- *  2. 对明显非关键的重复闹钟（如统计上报）增加最小间隔限制（默认 5 分钟）
+ *  1. Hook set/setRepeating/setExact/setWindow，对高频精确闹钟降级为 setWindow（inexact）
+ *  2. 对明显非关键的重复闹钟增加最小间隔限制（默认 5 分钟）
  *  3. 日志记录闹钟设置情况
  *
  * 硬性限制（NoRoot 版）：
  *  - 仅作用于当前 APP 调用的 AlarmManager，不影响其他 APP
  *  - 不能修改系统 doze 白名单
- *  - 关键闹钟（如 RTC_WAKEUP 用于闹钟应用的）应谨慎降级，本模块保留 type=RTC_WAKEUP 但放大窗口
+ *  - 关键闹钟（如 RTC_WAKEUP）保留 type 但放大窗口
  */
 object AlarmOptimizerHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         LogX.i("Alarm 优化启动 | 最小间隔=${cfg.alarmMinIntervalMs}ms 降级exact=${cfg.alarmExactDowngrade}")
 
-        hookSet(lpparam, cfg)
+        hookSet(lpparam)
         hookSetRepeating(lpparam, cfg)
         hookSetExact(lpparam, cfg)
         hookSetWindow(lpparam, cfg)
     }
 
-    /**
-     * Hook set(int type, long when, PendingIntent operation)
-     * 普通 set 已经是 inexact，但可以延后到最小间隔
-     */
-    private fun hookSet(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
+    private fun hookSet(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val amCls = XposedHelpers.findClassIfExists(
                 "android.app.AlarmManager", lpparam.classLoader
@@ -59,10 +54,6 @@ object AlarmOptimizerHook {
         }
     }
 
-    /**
-     * Hook setRepeating(int type, long triggerAt, long interval, PendingIntent op)
-     * 对非关键重复闹钟（interval 小于最小间隔的）放大 interval
-     */
     private fun hookSetRepeating(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         try {
             val amCls = XposedHelpers.findClassIfExists(
@@ -93,10 +84,6 @@ object AlarmOptimizerHook {
         }
     }
 
-    /**
-     * Hook setExact/setExactAndAllowWhileIdle
-     * 高频精确闹钟降级为 setWindow，给系统合并空间
-     */
     private fun hookSetExact(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         if (!cfg.alarmExactDowngrade) return
 
@@ -116,18 +103,15 @@ object AlarmOptimizerHook {
                         override fun beforeHookedMethod(p: MethodHookParam) {
                             val triggerAt = p.args[1] as Long
                             val windowLen = cfg.alarmMinIntervalMs / 2
-                            // 改用 setWindow 让系统合并
                             try {
-                                val am = p.thisObject
                                 XposedHelpers.callMethod(
-                                    am, "setWindow",
+                                    p.thisObject, "setWindow",
                                     p.args[0], triggerAt, windowLen, p.args[2]
                                 )
                                 LogX.w("setExact 降级为 setWindow: windowLen=$windowLen")
                             } catch (e: Exception) {
                                 LogX.e("setExact 降级异常", e)
                             }
-                            // 阻断原 setExact 调用
                             p.result = null
                         }
                     })
@@ -164,10 +148,6 @@ object AlarmOptimizerHook {
         }
     }
 
-    /**
-     * Hook setWindow(int type, long windowStart, long windowLength, PendingIntent op)
-     * 仅放大过小的 windowLength
-     */
     private fun hookSetWindow(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         try {
             val amCls = XposedHelpers.findClassIfExists(

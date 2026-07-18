@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.GameUnlockerPro" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">#FF1A1A2E</item>
-        <item name="colorOnPrimary">#FFFFFFFF</item>
-        <item name="android:statusBarColor">#FF1A1A2E</item>
-        <item name="android:navigationBarColor">#FF0A0A1A</item>
+    <style name="Theme.GameUnlocker" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

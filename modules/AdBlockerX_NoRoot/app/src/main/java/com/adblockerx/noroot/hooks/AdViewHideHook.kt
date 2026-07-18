@@ -4,6 +4,7 @@ import android.view.View
 import com.adblockerx.noroot.models.AdBlockConfig
 import com.adblockerx.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
@@ -15,14 +16,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - Hook 构造方法（构造完成后立即 setVisibility GONE）
  *  - Hook setVisibility 方法：当尝试设为 VISIBLE 时强制改为 GONE
  *  - 类不存在则跳过，绝不抛出异常
- *
- * 边界声明（NoRoot 版）：
- *  - 仅作用于本 APP 进程内的 View 实例
- *  - 不修改其他 APP 的广告 SDK
  */
 object AdViewHideHook {
 
-    /** 常见广告 SDK 的广告 View 类候选名 */
     private val AD_VIEW_CLASS_CANDIDATES = listOf(
         // 腾讯 GDT / AMS
         "com.qq.e.ads.nativ.NativeExpressADView",
@@ -53,7 +49,7 @@ object AdViewHideHook {
         "com.kwad.sdk.api.KsAdView",
         "com.kwad.sdk.content.KsContentAdView",
 
-        // 通用候选名（已混淆广告 SDK）
+        // 通用候选名
         "com.admobile.sdk.AdView",
         "com.anythink.sdk.AdView"
     )
@@ -71,13 +67,12 @@ object AdViewHideHook {
         LogX.i("AdViewHideHook 完成：命中 ${hooked} 个广告 View 类")
     }
 
-    /** Hook 构造方法：构造完成后强制 GONE */
     private fun hookConstructor(clazz: Class<*>): Boolean {
         return try {
             val constructors = clazz.declaredConstructors
             for (c in constructors) {
                 try {
-                    XposedBridgeHook(c, object : XC_MethodHook() {
+                    XposedBridge.hookMethod(c, object : XC_MethodHook() {
                         override fun afterHookedMethod(p: MethodHookParam) {
                             val view = p.thisObject as? View ?: return
                             try {
@@ -95,7 +90,6 @@ object AdViewHideHook {
         }
     }
 
-    /** Hook setVisibility：拦截 VISIBLE 调用 */
     private fun hookSetVisibility(clazz: Class<*>): Boolean {
         return try {
             XposedHelpers.findAndHookMethod(clazz, "setVisibility",
@@ -104,7 +98,6 @@ object AdViewHideHook {
                     override fun beforeHookedMethod(p: MethodHookParam) {
                         val v = p.args.getOrNull(0) as? Int ?: return
                         if (v == View.VISIBLE) {
-                            // 强制改为 GONE
                             p.args[0] = View.GONE
                             LogX.d("[AdViewHide] 强制 GONE: ${clazz.name}")
                         }
@@ -113,21 +106,6 @@ object AdViewHideHook {
             true
         } catch (_: Throwable) {
             false
-        }
-    }
-
-    /** 反射包装：兼容 Xposed Bridge 挂载构造方法 */
-    private object XposedBridgeHook {
-        operator fun invoke(constructor: java.lang.reflect.Constructor<*>, hook: XC_MethodHook) {
-            try {
-                val bridge = Class.forName("de.robv.android.xposed.XposedBridge")
-                val m = bridge.getMethod("hookMethod",
-                    java.lang.reflect.Member::class.java,
-                    XC_MethodHook::class.java)
-                m.invoke(null, constructor, hook)
-            } catch (_: Throwable) {
-                // 某些环境下 hookMethod 不可用，忽略
-            }
         }
     }
 }

@@ -7,22 +7,22 @@ import java.lang.reflect.Method
  *
  * 功能：
  *  1. 检测 Shizuku 服务是否可用
- *  2. 通过反射调用 Shizuku API 执行系统级 Shell 命令
- *     - 修改 /data/adb/hosts（Magisk overlay 风格）
- *     - 设置系统 Private DNS
- *     - 刷新 DNS 缓存
+ *  2. 通过反射调用 Shizuku.newProcess 执行系统级 Shell 命令
+ *     - 修改 /data/adb/modules/adblockerx/system/etc/hosts（Magisk overlay）
+ *     - 设置系统 Private DNS（settings put global private_dns_*）
+ *     - 刷新 DNS 缓存（ndc resolver）
+ *     - iptables 添加/删除规则
+ *     - 读写 /sys、/proc 等节点
  *
- * 注意事项：
- *  - LSPosed 模式下 Shizuku 通常已授权
- *  - LSPatch 本地模式下 Shizuku 可能未运行，所有调用必须 try-catch
- *  - 系统级操作前必须调用 [isShizukuAvailable] 检查
+ * 硬性限制：
+ *  - 系统级操作前必须调用 isShizukuAvailable 检查
+ *  - mount --bind 需 Root 级 Shizuku 授权
  */
 object ShizukuHelper {
 
     private const val TAG = "ShizukuHelper"
     private var shizukuAvailable: Boolean? = null
 
-    /** 检查 Shizuku 是否可用 */
     fun isShizukuAvailable(): Boolean {
         if (shizukuAvailable != null) return shizukuAvailable!!
         shizukuAvailable = try {
@@ -38,16 +38,9 @@ object ShizukuHelper {
         return shizukuAvailable!!
     }
 
-    /**
-     * 通过 Shizuku 执行 shell 命令
-     * @return 命令输出（stdout），失败返回 null
-     */
     fun execShell(command: String): String? {
         return try {
-            if (!isShizukuAvailable()) {
-                LogX.w("Shizuku不可用，跳过命令: $command")
-                return null
-            }
+            if (!isShizukuAvailable()) return null
             val shizukuCls = Class.forName("rikka.shizuku.Shizuku")
             val newProcessMethod = shizukuCls.getMethod(
                 "newProcess",
@@ -66,7 +59,6 @@ object ShizukuHelper {
             val isStr = isMethod.invoke(process) as? java.io.InputStream
             val out = isStr?.bufferedReader()?.readText()
 
-            // 等待进程结束（防止僵死）
             try {
                 val waitFor = process.javaClass.getMethod("waitFor")
                 waitFor.invoke(process)
@@ -79,7 +71,6 @@ object ShizukuHelper {
         }
     }
 
-    /** 仅执行不关心输出，返回是否执行成功（未抛异常且 Shizuku 可用） */
     fun execShellSilent(command: String): Boolean {
         return try {
             if (!isShizukuAvailable()) return false
@@ -89,19 +80,32 @@ object ShizukuHelper {
         }
     }
 
-    /**
-     * 通过 Shizuku 设置系统属性
-     */
     fun setSystemProperty(key: String, value: String): Boolean {
         return execShellSilent("setprop $key $value")
     }
 
-    /** 重置 Shizuku 状态（重新检测） */
+    fun writeFile(path: String, content: String): Boolean {
+        return try {
+            if (!isShizukuAvailable()) return false
+            val escaped = content.replace("'", "'\\''")
+            execShell("echo '$escaped' > $path") != null
+        } catch (e: Exception) {
+            LogX.e("Shizuku写入文件异常: $path", e)
+            false
+        }
+    }
+
+    fun readFile(path: String): String? {
+        return try {
+            if (!isShizukuAvailable()) return null
+            execShell("cat $path 2>/dev/null")
+        } catch (_: Throwable) { null }
+    }
+
     fun reset() {
         shizukuAvailable = null
     }
 
-    /** 释放资源 */
     fun release() {
         shizukuAvailable = null
     }

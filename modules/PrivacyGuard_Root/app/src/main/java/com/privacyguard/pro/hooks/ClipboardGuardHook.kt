@@ -12,16 +12,12 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 功能：
  *  1. 记录 APP 读取剪贴板行为（防偷读）
  *  2. 可选阻断 getPrimaryClip 返回（防 APP 偷读剪贴板内容）
- *
- * 硬性限制：
- *  - 仅 Hook Java 层 ClipboardManager API
- *  - 不修改系统剪贴板，仅在当前进程内拦截
  */
 object ClipboardGuardHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: PrivacyConfig) {
         if (!cfg.clipboardGuardEnabled) return
-        LogX.i("剪贴板保护启动：阻断=${cfg.clipboardBlockRead}")
+        LogX.i("剪贴板保护启动（应用层）：阻断=${cfg.clipboardBlockRead}")
 
         hookClipboardManager(lpparam, cfg.clipboardBlockRead)
     }
@@ -44,6 +40,7 @@ object ClipboardGuardHook {
             try {
                 XposedHelpers.findAndHookMethod(cm, "getPrimaryClipDescription", object : XC_MethodHook() {
                     override fun beforeHookedMethod(p: MethodHookParam) {
+                        LogX.d("APP读取剪贴板描述")
                         if (blockRead) p.result = null
                     }
                 })

@@ -18,17 +18,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - 通过 Shizuku 读写 /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
  *  - 屏幕关闭时切换为 powersave governor，降低 CPU 频率省电
  *  - 屏幕亮起恢复 interactive / schedutil，恢复性能
- *
- * 容错说明：
- *  - 部分设备 sysfs 节点不可写（厂商定制内核）
- *  - 部分 CPU 核心可能离线，写节点会失败
- *  - 全部异常被捕获，不影响其他功能
  */
 object CpuGovernorHook {
 
     private var screenReceiver: BroadcastReceiver? = null
 
-    /** 尝试操作的 CPU 索引范围（0~7 覆盖常见 8 核设备） */
     private val cpuIndices = 0..7
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
@@ -70,7 +64,6 @@ object CpuGovernorHook {
         }
     }
 
-    /** 设置所有 CPU 核心的 governor */
     private fun setGovernor(governor: String) {
         if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku 不可用，跳过 governor 设置")
@@ -81,8 +74,7 @@ object CpuGovernorHook {
         for (i in cpuIndices) {
             val path = "/sys/devices/system/cpu/cpu$i/cpufreq/scaling_governor"
             val cmd = "echo $governor > $path"
-            val out = ShizukuHelper.execShell(cmd)
-            // 验证是否成功：读取当前 governor
+            ShizukuHelper.execShell(cmd)
             val verify = ShizukuHelper.execShell("cat $path 2>/dev/null")?.trim()
             if (verify == governor) {
                 successCount++

@@ -12,7 +12,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 功能：
  *  1. Hook requestSync，对非必要同步降频（增加最小间隔）
  *  2. Hook addPeriodicSync，延长周期同步间隔
- *  3. 日志记录同步情况
  *
  * 硬性限制（NoRoot 版）：
  *  - 仅作用于当前 APP 调用的同步请求
@@ -28,10 +27,6 @@ object BackgroundSyncHook {
         hookAddPeriodicSync(lpparam, cfg)
     }
 
-    /**
-     * Hook ContentResolver.requestSync(Account, String authority, Bundle extras)
-     * 对 manual 同步增加节流（按 authority 记录上次触发时间）
-     */
     private fun hookRequestSync(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         try {
             val crCls = XposedHelpers.findClassIfExists(
@@ -51,7 +46,6 @@ object BackgroundSyncHook {
                         val now = System.currentTimeMillis()
                         val last = lastRequestTs[authority] ?: 0L
                         if (now - last < cfg.syncMinIntervalMs) {
-                            // 节流：跳过此次同步
                             p.result = null
                             LogX.w("requestSync 节流: $authority 间隔不足，跳过")
                         } else {
@@ -66,10 +60,6 @@ object BackgroundSyncHook {
         }
     }
 
-    /**
-     * Hook ContentResolver.addPeriodicSync(Account, authority, extras, pollFrequency)
-     * pollFrequency 单位为秒，放大到配置的最小间隔
-     */
     private fun hookAddPeriodicSync(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         try {
             val crCls = XposedHelpers.findClassIfExists(

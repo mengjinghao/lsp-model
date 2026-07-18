@@ -10,18 +10,16 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 /**
  * 位置伪造Hook（应用层）
  *
- * 功能：
- *  - Hook LocationManager.getLastKnownLocation / requestLocationUpdates
- *  - Hook Location 构造函数，修改经纬度字段
- *  - 仅修改传给 APP 的 Location 对象
- *
- * 注意：不修改系统 GPS 定位，不影响紧急呼叫定位。
+ * 拦截路径：
+ *  1. LocationManager.getLastKnownLocation
+ *  2. LocationManager.requestLocationUpdates
+ *  3. Location 构造函数 / setLatitude / setLongitude
  */
 object LocationSpoofHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: PrivacyConfig) {
         if (!cfg.locationSpoofEnabled) return
-        LogX.i("位置伪造启动：lat=${cfg.spoofLatitude} lng=${cfg.spoofLongitude}")
+        LogX.i("位置伪造启动（应用层）：lat=${cfg.spoofLatitude} lng=${cfg.spoofLongitude}")
 
         hookLocationManager(lpparam, cfg.spoofLatitude, cfg.spoofLongitude)
         hookLocationConstructor(lpparam, cfg.spoofLatitude, cfg.spoofLongitude)
@@ -57,7 +55,6 @@ object LocationSpoofHook {
                 LogX.hookSuccess("LocationManager", "getLastKnownLocation(API30+)")
             } catch (_: Exception) {}
 
-            // requestLocationUpdates 多个重载统一处理
             try {
                 val methods = lm.declaredMethods.filter { it.name == "requestLocationUpdates" }
                 for (m in methods) {

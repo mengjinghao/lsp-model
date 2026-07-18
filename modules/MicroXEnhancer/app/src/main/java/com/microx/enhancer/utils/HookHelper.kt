@@ -7,9 +7,10 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
- * Hook辅助工具类
- * 提供安全的类查找、方法Hook、日志输出等通用功能
- * 所有操作仅作用于当前被修补的应用进程
+ * Hook辅助工具类（保留兼容旧 Hook 代码）
+ *
+ * 提供安全的类查找、方法 Hook、日志输出等通用功能。
+ * 所有操作仅作用于当前被修补的应用进程。
  */
 object HookHelper {
 
@@ -20,37 +21,25 @@ object HookHelper {
         isDebug = debug
     }
 
-    /** 调试日志：仅在debug模式输出 */
     fun logD(msg: String) {
         if (isDebug) {
             Log.d(TAG, msg)
-            XposedBridge.log("[$TAG-D] $msg")
+            try { XposedBridge.log("[$TAG-D] $msg") } catch (_: Throwable) {}
         }
     }
 
-    /** 普通日志：始终输出到Xposed日志 */
     fun log(msg: String) {
         Log.i(TAG, msg)
-        XposedBridge.log("[$TAG] $msg")
+        try { XposedBridge.log("[$TAG] $msg") } catch (_: Throwable) {}
     }
 
-    /** 错误日志 */
     fun logE(msg: String, t: Throwable? = null) {
         Log.e(TAG, msg, t)
-        if (t != null) {
-            XposedBridge.log("[$TAG-E] $msg: ${t.message}")
-        } else {
-            XposedBridge.log("[$TAG-E] $msg")
-        }
+        try { XposedBridge.log("[$TAG-E] $msg: ${t?.message ?: ""}") } catch (_: Throwable) {}
     }
 
     /**
      * 安全查找类：尝试多个可能的类名，返回第一个找到的
-     * 适用于微信/QQ版本间类名变化的情况
-     *
-     * @param lpparam LoadPackage参数
-     * @param candidateNames 候选类名列表（按优先级排序）
-     * @return 找到的Class对象，未找到返回null
      */
     fun findClassSafe(
         lpparam: XC_LoadPackage.LoadPackageParam,
@@ -59,10 +48,10 @@ object HookHelper {
         for (name in candidateNames) {
             try {
                 return XposedHelpers.findClass(name, lpparam.classLoader)
-            } catch (e: XposedHelpers.ClassNotFoundError) {
+            } catch (_: XposedHelpers.ClassNotFoundError) {
                 logD("类未找到(尝试下一个): $name")
-            } catch (e: Exception) {
-                logD("查找类异常: $name — ${e.message}")
+            } catch (_: Exception) {
+                logD("查找类异常: $name")
             }
         }
         logE("所有候选类名均未找到: ${candidateNames.joinToString()}")
@@ -70,12 +59,7 @@ object HookHelper {
     }
 
     /**
-     * 安全Hook方法：封装try-catch，防止单个Hook失败影响其他功能
-     *
-     * @param clazz 目标类
-     * @param methodName 方法名
-     * @param hookCallback Hook回调
-     * @param paramTypes 方法参数类型（可选）
+     * 安全 Hook 方法：封装 try-catch，防止单个 Hook 失败影响其他功能
      */
     fun hookMethodSafe(
         clazz: Class<*>?,
@@ -88,24 +72,15 @@ object HookHelper {
             return false
         }
         return try {
-            val params = if (paramTypes.isNotEmpty())
-                paramTypes.toList().toTypedArray()
-            else
-                null
-            val paramsStr = if (params != null)
-                params.joinToString(", ") { it?.toString() ?: "null" }
-            else
-                "(自动匹配)"
-
-            if (params != null) {
-                XposedHelpers.findAndHookMethod(clazz, methodName, *params, hookCallback)
+            if (paramTypes.isNotEmpty()) {
+                XposedHelpers.findAndHookMethod(clazz, methodName, *paramTypes, hookCallback)
             } else {
                 XposedHelpers.findAndHookMethod(clazz, methodName, hookCallback)
             }
-            logD("Hook成功: ${clazz.name}.$methodName($paramsStr)")
+            logD("Hook成功: ${clazz.name}.$methodName")
             true
-        } catch (e: NoSuchMethodError) {
-            logE("Hook失败(方法不存在): ${clazz.name}.$methodName — ${e.message}")
+        } catch (_: NoSuchMethodError) {
+            logE("Hook失败(方法不存在): ${clazz.name}.$methodName")
             false
         } catch (e: Exception) {
             logE("Hook失败(异常): ${clazz.name}.$methodName — ${e.message}", e)
@@ -114,8 +89,7 @@ object HookHelper {
     }
 
     /**
-     * Hook所有匹配名称的方法（不限参数类型）
-     * 适用于方法有多个重载版本的场景
+     * Hook 所有匹配名称的方法（不限参数类型）
      */
     fun hookAllMethodsSafe(
         clazz: Class<*>?,
@@ -139,7 +113,7 @@ object HookHelper {
     /** 判断当前进程是否为微信主进程 */
     fun isWeChatMainProcess(processName: String): Boolean {
         return processName == "com.tencent.mm" ||
-                processName == "com.tencent.mm:tools" // tools进程也需Hook（部分UI在tools进程）
+                processName == "com.tencent.mm:tools"
     }
 
     /** 判断当前进程是否为QQ主进程 */
@@ -151,7 +125,7 @@ object HookHelper {
     fun getBooleanArg(args: XC_MethodHook.MethodHookParam, index: Int, default: Boolean): Boolean {
         return try {
             args.args[index] as? Boolean ?: default
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             default
         }
     }
@@ -160,7 +134,7 @@ object HookHelper {
     fun getStringArg(args: XC_MethodHook.MethodHookParam, index: Int): String? {
         return try {
             args.args[index] as? String
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }

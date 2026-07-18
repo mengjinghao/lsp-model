@@ -1,9 +1,10 @@
-# Xposed module entry points - keep
--keep class com.example.shizukulistfix.MainHook { *; }
--keep class com.example.shizukulistfix.scene.** { *; }
--keep class com.example.shizukulistfix.shizuku.** { *; }
--keep class com.example.shizukulistfix.utils.** { *; }
-
-# Keep Xposed API
+-keep class com.mjh.shizukufix.XposedLoader { *; }
+-keep class com.mjh.shizukufix.hooks.** { *; }
+-keep class com.mjh.shizukufix.utils.** { *; }
+-keep class com.mjh.shizukufix.models.** { *; }
 -keep class de.robv.android.xposed.** { *; }
--keep class dalvik.system.DexClassLoader { *; }
+-dontwarn de.robv.android.xposed.**
+-dontwarn rikka.shizuku.**
+-dontwarn moe.shizuku.**
+-keepclassmembers class com.mjh.shizukufix.models.** { *; }
+-keepattributes *Annotation*,Signature,EnclosingMethod

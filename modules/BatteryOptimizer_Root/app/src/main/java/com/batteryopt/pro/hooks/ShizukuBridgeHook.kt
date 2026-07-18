@@ -31,7 +31,6 @@ object ShizukuBridgeHook {
         logSystemInfo()
     }
 
-    /** 检测 Shizuku 可用性并打日志 */
     private fun checkShizukuAvailability() {
         val available = ShizukuHelper.isShizukuAvailable()
         if (available) {
@@ -42,7 +41,6 @@ object ShizukuBridgeHook {
         }
     }
 
-    /** 输出系统信息用于诊断 */
     private fun logSystemInfo() {
         if (!ShizukuHelper.isShizukuAvailable()) return
         try {
@@ -57,7 +55,6 @@ object ShizukuBridgeHook {
         }
     }
 
-    /** 释放资源（模块卸载或 APP 退出时调用） */
     fun release() {
         ShizukuHelper.release()
         isApplied = false

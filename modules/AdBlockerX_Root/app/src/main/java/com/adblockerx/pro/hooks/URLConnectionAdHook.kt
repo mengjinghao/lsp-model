@@ -10,18 +10,12 @@ import java.io.ByteArrayInputStream
 import java.net.URL
 
 /**
- * URLConnection / HttpURLConnection 广告拦截 Hook（Root 版与 NoRoot 版一致）
- *
- * 拦截策略：
- *  1. URL.openConnection：对广告域名的 URL 抛 IOException 跳过
- *  2. HttpURLConnection.connect：广告域名直接抛异常
- *  3. HttpURLConnection.getResponseCode：返回 404
- *  4. HttpsURLConnection 同理
+ * URLConnection / HttpURLConnection 广告拦截 Hook（Root 版同 NoRoot）
  */
 object URLConnectionAdHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: AdBlockConfig) {
-        if (!cfg.urlConnectionBlockEnabled) return
+        if (!cfg.urlConnectionAdEnabled) return
         LogX.i("URLConnectionAdHook 启动（应用进程内）")
 
         hookUrlOpenConnection(lpparam)
@@ -41,6 +35,7 @@ object URLConnectionAdHook {
                             val host = url.host ?: return
                             if (HostsFilterHook.isBlocked(host)) {
                                 LogX.i("[URLConnection] 拦截 openConnection: $host")
+                                p.result = null
                                 p.throwable = java.io.IOException("AdBlockerX blocked: $host")
                             }
                         }

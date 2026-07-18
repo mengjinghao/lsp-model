@@ -4,17 +4,14 @@ import android.view.View
 import com.adblockerx.pro.models.AdBlockConfig
 import com.adblockerx.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
- * 广告 SDK View 隐藏 Hook（Root 版与 NoRoot 版一致）
+ * 广告 SDK View 隐藏 Hook（Root 版同 NoRoot）
  *
- * 拦截策略：
- *  - 反射查找常见广告 SDK 的广告 View 类（GDT/百度/字节/小米/AdMob 等）
- *  - Hook 构造方法（构造完成后立即 setVisibility GONE）
- *  - Hook setVisibility 方法：当尝试设为 VISIBLE 时强制改为 GONE
- *  - 类不存在则跳过，绝不抛出异常
+ * Hook 21 个广告 SDK 候选类的构造方法 + setVisibility
  */
 object AdViewHideHook {
 
@@ -25,24 +22,19 @@ object AdViewHideHook {
         "com.qq.e.comm.plugin.splash.SplashAdView",
         "com.tencent.gdtad.api.AdView",
         "com.tencent.mobileqq.splashad.SplashADView",
-
         "com.baidu.mobads.api.BaiduAdView",
         "com.baidu.mobads.banner.BannerAdView",
         "com.baidu.mobads.interstitial.InterstitialAd",
-
         "com.bytedance.sdk.openadsdk.adapter.view.TTNativeAdView",
         "com.bytedance.sdk.openadsdk.core.widget.SplashAdView",
         "com.bytedance.sdk.openadsdk.core.widget.BannerAdView",
         "com.bytedance.sdk.openadsdk.core.widget.RewardVideoAd",
         "com.bykv.vk.openvk.adapter.view.TTNativeAdView",
-
         "com.google.android.gms.ads.AdView",
         "com.google.android.gms.ads.InterstitialAd",
         "com.google.android.gms.ads.formats.NativeAdView",
-
         "com.kwad.sdk.api.KsAdView",
         "com.kwad.sdk.content.KsContentAdView",
-
         "com.admobile.sdk.AdView",
         "com.anythink.sdk.AdView"
     )
@@ -65,7 +57,7 @@ object AdViewHideHook {
             val constructors = clazz.declaredConstructors
             for (c in constructors) {
                 try {
-                    XposedBridgeHook(c, object : XC_MethodHook() {
+                    XposedBridge.hookMethod(c, object : XC_MethodHook() {
                         override fun afterHookedMethod(p: MethodHookParam) {
                             val view = p.thisObject as? View ?: return
                             try {
@@ -99,18 +91,6 @@ object AdViewHideHook {
             true
         } catch (_: Throwable) {
             false
-        }
-    }
-
-    private object XposedBridgeHook {
-        operator fun invoke(constructor: java.lang.reflect.Constructor<*>, hook: XC_MethodHook) {
-            try {
-                val bridge = Class.forName("de.robv.android.xposed.XposedBridge")
-                val m = bridge.getMethod("hookMethod",
-                    java.lang.reflect.Member::class.java,
-                    XC_MethodHook::class.java)
-                m.invoke(null, constructor, hook)
-            } catch (_: Throwable) {}
         }
     }
 }

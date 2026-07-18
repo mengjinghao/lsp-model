@@ -7,17 +7,15 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
- * 权限欺骗Hook（应用层）
+ * 权限欺骗Hook（应用层，仅欺骗APP自身检查）
  *
- * 功能：
- *  - Hook ContextWrapper.checkSelfPermission / PackageManager.checkPermission
- *  - 对配置中选定的危险权限返回 PERMISSION_DENIED
- *  - 仅欺骗 APP 自身的检查，不真的修改系统授权
- *
- * 注意：Root 版可配合 GlobalPermissionHook 真的回收权限（pm revoke）
+ * 与 GlobalPermissionHook 区别：
+ *  - 本Hook仅欺骗 APP 自身权限检查 API，不真的修改系统授权
+ *  - GlobalPermissionHook 真的回收权限，影响系统全局（Shizuku pm revoke）
  */
 object PermissionSpoofHook {
 
+    private const val PERMISSION_GRANTED = 0
     private const val PERMISSION_DENIED = -1
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: PrivacyConfig) {
@@ -116,7 +114,7 @@ object PermissionSpoofHook {
                     })
                 LogX.hookSuccess("ContextCompat", "checkSelfPermission")
             } catch (_: Exception) {}
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             LogX.d("ContextCompat 未找到，跳过 androidx 兼容Hook")
         }
     }

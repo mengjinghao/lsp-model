@@ -3,6 +3,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven { url = uri("https://api.xposed.info/") }
         maven { url = uri("https://jitpack.io") }
     }
 }
@@ -12,8 +13,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://api.xposed.info/") }
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

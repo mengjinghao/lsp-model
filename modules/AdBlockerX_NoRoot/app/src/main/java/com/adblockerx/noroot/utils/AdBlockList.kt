@@ -15,7 +15,7 @@ package com.adblockerx.noroot.utils
 object AdBlockList {
 
     /**
-     * 内置广告/追踪域名（约 60 条）
+     * 内置广告/追踪域名（约 90 条）
      * 注意：列表仅用于广告拦截，不含任何合法域名
      */
     val BUILTIN_AD_DOMAINS: List<String> = listOf(
@@ -122,7 +122,28 @@ object AdBlockList {
         "tapjoy.com",
         "admob.com",
         "mm.adtech.com",
-        "adtech.com"
+        "adtech.com",
+
+        // ===== 追踪 SDK 域名 =====
+        "tracking.miui.com",
+        "data.adsrvr.org",
+        "pixel.facebook.com",
+        "analytics.twitter.com",
+        "snap.licdn.com",
+        "px.ads.linkedin.com",
+        "tags.tiqcdn.com",
+        "collect.tencent.com",
+
+        // ===== 网盟/RTB 补充 =====
+        "adsymptotic.com",
+        "yieldlab.net",
+        "smartadserver.com",
+        "openx.net",
+        "3lift.com",
+        "bidswitch.net",
+        "contextweb.com",
+        "quantserve.com",
+        "scorecardresearch.com"
     )
 
     /**
@@ -163,7 +184,6 @@ object AdBlockList {
         if (url.isNullOrBlank()) return null
         return try {
             val u = url.trim()
-            // 简易解析：去掉协议前缀和 path
             val start = when {
                 u.startsWith("https://", true) -> 8
                 u.startsWith("http://", true) -> 7

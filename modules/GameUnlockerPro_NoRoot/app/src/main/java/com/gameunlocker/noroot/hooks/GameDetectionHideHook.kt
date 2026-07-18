@@ -1,26 +1,26 @@
 package com.gameunlocker.noroot.hooks
 
-import com.gameunlocker.noroot.models.GameConfig
+import com.gameunlocker.noroot.model.GameConfig
 import com.gameunlocker.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
- * 游戏环境检测隐藏Hook
+ * 游戏环境检测隐藏 Hook
  *
  * 硬性限制：
- *  - 全部为Java层Hook，无法拦截Native层直接dlopen/fopen的检测
- *  - LSPatch本地模式会修改APK签名和lib路径，主流游戏反作弊SDK可能检测到
+ *  - 全部为 Java 层 Hook，无法拦截 Native 层直接 dlopen/fopen 的检测
+ *  - LSPatch 本地模式会修改 APK 签名和 lib 路径，主流游戏反作弊 SDK 可能检测到
  *  - 封号风险需自行承担，建议仅用于单机或轻检测游戏
  *
  * 拦截路径：
- *  1. PackageManager查询 → 隐藏Xposed/Shizuku/MT管理器等包
+ *  1. PackageManager 查询 → 隐藏 Xposed/Shizuku/MT 管理器等包
  *  2. ClassLoader.loadClass → 拦截 de.robv.android.xposed 类加载
- *  3. File.exists/canRead() → 隐藏特征文件存在性
- *  4. System.loadLibrary → 拦截安全检测so库加载
+ *  3. File.exists → 隐藏特征文件存在性
+ *  4. System.loadLibrary → 拦截安全检测 so 库加载
  *  5. ActivityManager.getRunningAppProcesses → 过滤敏感进程
- *  6. Throwable.getStackTrace → 清除堆栈中Xposed痕迹
+ *  6. Throwable.getStackTrace → 清除堆栈中 Xposed 痕迹
  */
 object GameDetectionHideHook {
 
@@ -35,7 +35,7 @@ object GameDetectionHideHook {
         "/data/adb/modules", "/sdcard/Shizuku"
     )
 
-    /** 需要阻止加载的安全检测so库 */
+    /** 需要阻止加载的安全检测 so 库 */
     private val BLOCK_LIBS = listOf(
         "tss_sdk", "tersafe", "tguard", "msaoaidsec", "oasis", "grsdk"
     )
@@ -54,50 +54,53 @@ object GameDetectionHideHook {
         }
     }
 
-    /** PackageManager: 隐藏安装的敏感APP */
     private fun hookPackageManager(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
-            val pm = XposedHelpers.findClass("android.content.pm.PackageManager", lpparam.classLoader)
+            val pm = XposedHelpers.findClassIfExists(
+                "android.content.pm.PackageManager", lpparam.classLoader) ?: return
 
-            // getPackageInfo 抛出异常使游戏认为APP未安装
-            XposedHelpers.findAndHookMethod(pm, "getPackageInfo",
-                String::class.java, Int::class.javaPrimitiveType,
-                object : XC_MethodHook() {
-                    override fun beforeHookedMethod(p: MethodHookParam) {
-                        val name = p.args[0] as String
-                        if (HIDE_PKGS.any { name.contains(it, true) }) {
-                            throw android.content.pm.PackageManager.NameNotFoundException()
+            try {
+                XposedHelpers.findAndHookMethod(pm, "getPackageInfo",
+                    String::class.java, Int::class.javaPrimitiveType,
+                    object : XC_MethodHook() {
+                        override fun beforeHookedMethod(p: MethodHookParam) {
+                            val name = p.args[0] as? String ?: return
+                            if (HIDE_PKGS.any { name.contains(it, true) }) {
+                                throw android.content.pm.PackageManager.NameNotFoundException()
+                            }
                         }
-                    }
-                })
+                    })
+            } catch (_: Throwable) {}
 
-            // getInstalledApplications 过滤结果
-            XposedHelpers.findAndHookMethod(pm, "getInstalledApplications",
-                Int::class.javaPrimitiveType,
-                object : XC_MethodHook() {
-                    override fun afterHookedMethod(p: MethodHookParam) {
-                        val list = p.result as? MutableList<*> ?: return
-                        val filtered = list.filter { item ->
-                            try {
-                                val field = item?.javaClass?.getDeclaredField("packageName")
-                                field?.isAccessible = true
-                                val name = field?.get(item) as? String ?: return@filter true
-                                !HIDE_PKGS.any { name.contains(it, true) }
-                            } catch (_: Exception) { true }
+            try {
+                XposedHelpers.findAndHookMethod(pm, "getInstalledApplications",
+                    Int::class.javaPrimitiveType,
+                    object : XC_MethodHook() {
+                        override fun afterHookedMethod(p: MethodHookParam) {
+                            val list = p.result as? MutableList<*> ?: return
+                            val filtered = list.filter { item ->
+                                try {
+                                    val field = item?.javaClass?.getDeclaredField("packageName")
+                                    field?.isAccessible = true
+                                    val name = field?.get(item) as? String ?: return@filter true
+                                    !HIDE_PKGS.any { name.contains(it, true) }
+                                } catch (_: Throwable) { true }
+                            }
+                            p.result = java.util.ArrayList(filtered)
                         }
-                        p.result = java.util.ArrayList(filtered)
-                    }
-                })
-            LogX.d("PackageManager检测屏蔽完成")
-        } catch (e: Exception) {
-            LogX.e("PackageManager Hook异常", e)
+                    })
+            } catch (_: Throwable) {}
+
+            LogX.hookSuccess("PackageManager", "getPackageInfo/getInstalledApplications")
+        } catch (e: Throwable) {
+            LogX.hookFailed("PackageManager", "hide", e)
         }
     }
 
-    /** ClassLoader: 阻止加载Xposed相关类 */
     private fun hookClassLoader(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
-            val cl = XposedHelpers.findClass("java.lang.ClassLoader", lpparam.classLoader)
+            val cl = XposedHelpers.findClassIfExists(
+                "java.lang.ClassLoader", lpparam.classLoader) ?: return
             val hook = object : XC_MethodHook() {
                 override fun beforeHookedMethod(p: MethodHookParam) {
                     val name = p.args[0] as? String ?: return
@@ -106,34 +109,33 @@ object GameDetectionHideHook {
                     }
                 }
             }
-            XposedHelpers.findAndHookMethod(cl, "loadClass", String::class.java, hook)
-            XposedHelpers.findAndHookMethod(cl, "findClass", String::class.java, hook)
-            LogX.d("ClassLoader Xposed类加载屏蔽完成")
-        } catch (e: Exception) {
-            LogX.e("ClassLoader Hook异常", e)
+            try { XposedHelpers.findAndHookMethod(cl, "loadClass", String::class.java, hook) } catch (_: Throwable) {}
+            try { XposedHelpers.findAndHookMethod(cl, "findClass", String::class.java, hook) } catch (_: Throwable) {}
+            LogX.hookSuccess("ClassLoader", "loadClass/findClass Xposed屏蔽")
+        } catch (e: Throwable) {
+            LogX.hookFailed("ClassLoader", "loadClass", e)
         }
     }
 
-    /** FileSystem: 隐藏敏感文件存在性 */
     private fun hookFileSystem(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
-            val file = XposedHelpers.findClass("java.io.File", lpparam.classLoader)
+            val file = XposedHelpers.findClassIfExists("java.io.File", lpparam.classLoader) ?: return
             XposedHelpers.findAndHookMethod(file, "exists", object : XC_MethodHook() {
                 override fun beforeHookedMethod(p: MethodHookParam) {
                     val path = (p.thisObject as java.io.File).absolutePath
                     if (HIDE_PATHS.any { path.contains(it, true) }) p.result = false
                 }
             })
-            LogX.d("FileSystem检测屏蔽完成")
-        } catch (e: Exception) {
-            LogX.e("FileSystem Hook异常", e)
+            LogX.hookSuccess("File", "exists")
+        } catch (e: Throwable) {
+            LogX.hookFailed("File", "exists", e)
         }
     }
 
-    /** ActivityManager: 过滤敏感进程 */
     private fun hookProcessList(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
-            val am = XposedHelpers.findClass("android.app.ActivityManager", lpparam.classLoader)
+            val am = XposedHelpers.findClassIfExists(
+                "android.app.ActivityManager", lpparam.classLoader) ?: return
             XposedHelpers.findAndHookMethod(am, "getRunningAppProcesses", object : XC_MethodHook() {
                 override fun afterHookedMethod(p: MethodHookParam) {
                     val list = p.result as? MutableList<*> ?: return
@@ -143,40 +145,39 @@ object GameDetectionHideHook {
                             f?.isAccessible = true
                             val name = f?.get(proc) as? String ?: return@filter true
                             !HIDE_PKGS.any { name.contains(it, true) }
-                        } catch (_: Exception) { true }
+                        } catch (_: Throwable) { true }
                     })
                 }
             })
-            LogX.d("进程列表检测屏蔽完成")
-        } catch (e: Exception) {
-            LogX.e("进程列表Hook异常", e)
+            LogX.hookSuccess("ActivityManager", "getRunningAppProcesses")
+        } catch (e: Throwable) {
+            LogX.hookFailed("ActivityManager", "getRunningAppProcesses", e)
         }
     }
 
-    /** System.loadLibrary: 阻止加载安全检测so */
     private fun hookNativeLibs(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
-            val sys = XposedHelpers.findClass("java.lang.System", lpparam.classLoader)
+            val sys = XposedHelpers.findClassIfExists("java.lang.System", lpparam.classLoader) ?: return
             XposedHelpers.findAndHookMethod(sys, "loadLibrary", String::class.java,
                 object : XC_MethodHook() {
                     override fun beforeHookedMethod(p: MethodHookParam) {
-                        val lib = p.args[0] as String
+                        val lib = p.args[0] as? String ?: return
                         if (BLOCK_LIBS.any { lib.contains(it, true) }) {
                             LogX.w("拦截安全库: $lib")
                             throw UnsatisfiedLinkError("Library $lib not found")
                         }
                     }
                 })
-            LogX.d("Native库检测屏蔽完成")
-        } catch (e: Exception) {
-            LogX.e("Native库Hook异常", e)
+            LogX.hookSuccess("System", "loadLibrary")
+        } catch (e: Throwable) {
+            LogX.hookFailed("System", "loadLibrary", e)
         }
     }
 
-    /** 清除堆栈中的Xposed痕迹 */
     private fun hookStackTrace(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
-            val t = XposedHelpers.findClass("java.lang.Throwable", lpparam.classLoader)
+            val t = XposedHelpers.findClassIfExists(
+                "java.lang.Throwable", lpparam.classLoader) ?: return
             XposedHelpers.findAndHookMethod(t, "getStackTrace", object : XC_MethodHook() {
                 override fun afterHookedMethod(p: MethodHookParam) {
                     val trace = p.result as? Array<StackTraceElement> ?: return
@@ -188,9 +189,9 @@ object GameDetectionHideHook {
                     if (clean.size < trace.size) p.result = clean
                 }
             })
-            LogX.d("堆栈痕迹清除完成")
-        } catch (e: Exception) {
-            LogX.e("堆栈Hook异常", e)
+            LogX.hookSuccess("Throwable", "getStackTrace")
+        } catch (e: Throwable) {
+            LogX.hookFailed("Throwable", "getStackTrace", e)
         }
     }
 }

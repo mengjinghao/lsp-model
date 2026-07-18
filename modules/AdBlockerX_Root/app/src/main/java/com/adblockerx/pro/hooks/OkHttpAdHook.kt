@@ -7,15 +7,9 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
- * OkHttp 广告拦截 Hook（Root 版与 NoRoot 版一致）
+ * OkHttp 广告拦截 Hook（Root 版同 NoRoot）
  *
- * 拦截策略：
- *  1. RealCall.execute / enqueue：对广告域名请求直接返回空 Response 或抛异常跳过
- *  2. Interceptor.Chain.proceed：拦截器链中过滤广告请求
- *
- * 注意事项：
- *  - OkHttp 在不同 APP 中可能被混淆（class 名变为 a.b.c 等）
- *  - 使用 findClassIfExists 多候选类名 + try-catch 容错
+ * 拦截 RealCall.execute / enqueue + Interceptor.Chain.proceed，多候选类名容错
  */
 object OkHttpAdHook {
 
@@ -31,7 +25,7 @@ object OkHttpAdHook {
     private val HTTP_URL_CLASS = "okhttp3.HttpUrl"
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: AdBlockConfig) {
-        if (!cfg.okHttpBlockEnabled) return
+        if (!cfg.okHttpAdEnabled) return
         LogX.i("OkHttpAdHook 启动（应用进程内，多候选类名容错）")
 
         hookRealCall(lpparam)
@@ -130,7 +124,7 @@ object OkHttpAdHook {
             val builder = XposedHelpers.newInstance(builderClass)
             XposedHelpers.callMethod(builder, "request", fakeReq)
             XposedHelpers.callMethod(builder, "code", 404)
-            try { XposedHelpers.callMethod(builder, "message", "AdBlockerX Blocked") } catch (_: Throwable) {}
+            try { XposedHelpers.callMethod(builder, "message", "AdBlockerX Pro Blocked") } catch (_: Throwable) {}
             try { XposedHelpers.callMethod(builder, "protocol",
                 XposedHelpers.getStaticObjectField(
                     XposedHelpers.findClass("okhttp3.Protocol", lpparam.classLoader), "HTTP_1_1"))

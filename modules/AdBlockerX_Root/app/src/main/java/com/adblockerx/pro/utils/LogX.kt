@@ -4,15 +4,44 @@ import android.util.Log
 
 /**
  * 统一日志工具
- * TAG: AdBlockerXPro，可用 adb logcat -s AdBlockerXPro:V 查看
+ * TAG: AdBlockerX-Pro，可用 adb logcat -s AdBlockerX:V 查看
  */
 object LogX {
-    private const val TAG = "AdBlockerXPro"
+    private const val TAG = "AdBlockerX-Pro"
     var debugEnabled = true
 
-    fun d(msg: String) { if (debugEnabled) Log.d(TAG, msg) }
-    fun i(msg: String) { Log.i(TAG, msg) }
-    fun w(msg: String) { Log.w(TAG, msg) }
-    fun e(msg: String) { Log.e(TAG, msg) }
-    fun e(msg: String, t: Throwable) { Log.e(TAG, msg, t) }
+    fun d(msg: String) {
+        if (debugEnabled) {
+            Log.d(TAG, msg)
+            try { de.robv.android.xposed.XposedBridge.log("[$TAG:DEBUG] $msg") } catch (_: Throwable) {}
+        }
+    }
+
+    fun i(msg: String) {
+        Log.i(TAG, msg)
+        try { de.robv.android.xposed.XposedBridge.log("[$TAG] $msg") } catch (_: Throwable) {}
+    }
+
+    fun w(msg: String) {
+        Log.w(TAG, msg)
+        try { de.robv.android.xposed.XposedBridge.log("[$TAG:WARN] $msg") } catch (_: Throwable) {}
+    }
+
+    fun e(msg: String) {
+        Log.e(TAG, msg)
+        try { de.robv.android.xposed.XposedBridge.log("[$TAG:ERROR] $msg") } catch (_: Throwable) {}
+    }
+
+    fun e(msg: String, t: Throwable) {
+        Log.e(TAG, msg, t)
+        try { de.robv.android.xposed.XposedBridge.log("[$TAG:ERROR] $msg\n${t.stackTraceToString()}") } catch (_: Throwable) {}
+    }
+
+    fun hookSuccess(cls: String, method: String) {
+        d("[Hook OK] $cls.$method")
+    }
+
+    fun hookFailed(cls: String, method: String, t: Throwable? = null) {
+        w("[Hook FAIL] $cls.$method : ${t?.message ?: "unknown"}")
+    }
 }

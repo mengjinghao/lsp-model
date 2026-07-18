@@ -8,11 +8,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
  * JobScheduler 优化 Hook（应用层）
- *
- * 功能：
- *  1. Hook JobScheduler.schedule，对非紧急 Job 追加 requireDeviceIdle() 约束
- *  2. 对高频重复 Job 限频（放大最小周期）
- *  3. 日志记录 Job 调度情况
  */
 object JobSchedulerHook {
 
@@ -50,7 +45,6 @@ object JobSchedulerHook {
     private fun modifyJobInfo(jobInfo: Any, cfg: BatteryConfig) {
         val cls = jobInfo.javaClass
 
-        // 1. 放大周期
         try {
             val periodField = cls.getDeclaredField("intervalMillis")
             periodField.isAccessible = true
@@ -61,7 +55,6 @@ object JobSchedulerHook {
             }
         } catch (_: Exception) {}
 
-        // 2. 追加 idle 约束
         if (cfg.jobRequireIdle) {
             try {
                 val flagsField = cls.getDeclaredField("flags")
@@ -73,7 +66,6 @@ object JobSchedulerHook {
             } catch (_: Exception) {}
         }
 
-        // 3. 日志记录 jobId
         try {
             val idField = cls.getDeclaredField("jobId")
             idField.isAccessible = true

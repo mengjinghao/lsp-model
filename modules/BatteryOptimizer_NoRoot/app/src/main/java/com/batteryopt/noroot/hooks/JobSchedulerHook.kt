@@ -10,15 +10,12 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * JobScheduler 优化 Hook（应用层）
  *
  * 功能：
- *  1. Hook JobScheduler.schedule，对非紧急 Job 设置 requireDeviceIdle()/requireCharging()
- *     约束，推迟到空闲/充电时执行
+ *  1. Hook JobScheduler.schedule，对非紧急 Job 追加 requireDeviceIdle 约束
  *  2. 对高频重复 Job 限频（放大最小周期）
- *  3. 日志记录 Job 调度情况
  *
  * 硬性限制（NoRoot 版）：
  *  - 仅作用于当前 APP 调度的 Job
  *  - 不能修改系统 JobScheduler 全局策略
- *  - 对用户感知强（如消息推送）的 Job 不强制追加 idle 约束，避免影响功能
  */
 object JobSchedulerHook {
 
@@ -28,10 +25,6 @@ object JobSchedulerHook {
         hookSchedule(lpparam, cfg)
     }
 
-    /**
-     * Hook JobScheduler.schedule(JobInfo job)
-     * 修改 JobInfo 的约束：放大周期、追加 idle/charging 约束
-     */
     private fun hookSchedule(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         try {
             val jsCls = XposedHelpers.findClassIfExists(
@@ -57,11 +50,6 @@ object JobSchedulerHook {
         }
     }
 
-    /**
-     * 通过反射修改 JobInfo 的约束
-     * JobInfo 内部存储在 Builder 中，已经构建的 JobInfo 字段大部分是 final，
-     * 这里采用"反射改字段"或"重建 Builder"两种策略
-     */
     private fun modifyJobInfo(jobInfo: Any, cfg: BatteryConfig) {
         val cls = jobInfo.javaClass
 

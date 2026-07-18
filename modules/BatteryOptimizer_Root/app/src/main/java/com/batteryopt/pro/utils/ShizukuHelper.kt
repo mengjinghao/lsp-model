@@ -18,7 +18,6 @@ package com.batteryopt.pro.utils
  */
 object ShizukuHelper {
 
-    private const val TAG = "ShizukuHelper"
     private var shizukuAvailable: Boolean? = null
 
     /** 检查 Shizuku 是否可用 */
@@ -66,7 +65,6 @@ object ShizukuHelper {
             val inputStream = process.javaClass.getMethod("getInputStream").invoke(process)
                 as? java.io.InputStream
             val stdout = inputStream?.bufferedReader()?.readText()
-            // 等待进程结束避免僵尸
             try { process.javaClass.getMethod("waitFor").invoke(process) } catch (_: Exception) {}
             stdout
         } catch (e: Exception) {
@@ -75,15 +73,13 @@ object ShizukuHelper {
         }
     }
 
-    /**
-     * 通过 Shizuku 设置系统属性
-     */
+    /** 通过 Shizuku 设置系统属性 */
     fun setSystemProperty(key: String, value: String): Boolean {
         val result = execShell("setprop $key $value")
         return result != null
     }
 
-    /** 释放资源（模块卸载或 APP 退出时调用） */
+    /** 释放资源 */
     fun release() {
         shizukuAvailable = null
     }

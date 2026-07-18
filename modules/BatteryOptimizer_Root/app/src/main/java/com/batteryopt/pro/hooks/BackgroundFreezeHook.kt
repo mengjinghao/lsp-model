@@ -21,11 +21,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - 通过 Shizuku 执行 `am kill <pkg>` 优雅 kill
  *  - 屏幕关闭后 N 分钟自动冻结黑名单 APP
  *  - 屏幕亮起时取消未执行的冻结任务
- *
- * 注意：
- *  - force-stop 会终止 APP 全部进程并清理任务栈，比 kill 更彻底
- *  - 冻结后 APP 推送/消息将无法接收，属于预期效果
- *  - 黑名单不应包含当前运行的目标 APP 自身
  */
 object BackgroundFreezeHook {
 
@@ -76,7 +71,6 @@ object BackgroundFreezeHook {
         }
     }
 
-    /** 屏幕关闭：延迟后冻结黑名单 APP */
     private fun onScreenOff(cfg: BatteryConfig) {
         LogX.i("屏幕关闭，${cfg.freezeDelayMin} 分钟后冻结黑名单 APP")
         pendingFreeze?.let { handler.removeCallbacks(it) }
@@ -85,14 +79,12 @@ object BackgroundFreezeHook {
         handler.postDelayed(r, cfg.freezeDelayMin * 60_000L)
     }
 
-    /** 屏幕亮起：取消待执行冻结 */
     private fun onScreenOn() {
         LogX.i("屏幕亮起，取消待执行冻结任务")
         pendingFreeze?.let { handler.removeCallbacks(it) }
         pendingFreeze = null
     }
 
-    /** 执行 force-stop 黑名单 APP */
     private fun freezeAll(blacklist: List<String>) {
         if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku 不可用，跳过冻结")
@@ -100,7 +92,6 @@ object BackgroundFreezeHook {
         }
         for (pkg in blacklist) {
             try {
-                // 优先 force-stop，失败则尝试 am kill
                 val out = ShizukuHelper.execShell("am force-stop $pkg")
                 LogX.i("已冻结: $pkg | out=$out")
             } catch (e: Exception) {

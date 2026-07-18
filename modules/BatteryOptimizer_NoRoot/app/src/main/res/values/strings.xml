@@ -1,40 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BatteryOptimizer NoRoot</string>
-    <string name="xposed_description">BatteryOptimizer NoRoot - 应用层省电优化（仅优化当前APP自身）</string>
-    <string name="settings_title">省电优化配置</string>
-
-    <!-- 开关标题 -->
-    <string name="opt_wakelock">WakeLock 优化</string>
-    <string name="opt_wakelock_sub">超长持有自动释放 + 拦截冗余 SDK 统计类 wake lock</string>
-    <string name="opt_alarm">Alarm 闹钟优化</string>
-    <string name="opt_alarm_sub">高频精确闹钟降级为 setWindow，重复闹钟最小间隔 5 分钟</string>
-    <string name="opt_sync">Sync 同步优化</string>
-    <string name="opt_sync_sub">非必要同步降频，周期同步最小间隔 30 分钟</string>
-    <string name="opt_job">JobScheduler 优化</string>
-    <string name="opt_job_sub">非紧急 Job 追加 requireDeviceIdle 约束，最小周期 15 分钟</string>
-    <string name="opt_location">Location 定位优化</string>
-    <string name="opt_location_sub">高频定位降频至 30s 间隔，后台 GPS 降级为网络定位</string>
-    <string name="opt_animation">Animation 动画关闭</string>
-    <string name="opt_animation_sub">关闭 APP 内动画降低 GPU 渲染负载（可能影响体验）</string>
-    <string name="opt_sensor">Sensor 传感器优化</string>
-    <string name="opt_sensor_sub">高频传感器（>50Hz）降频至 5Hz</string>
-
-    <!-- 按钮 -->
-    <string name="btn_save">保存配置</string>
-    <string name="btn_reset">恢复默认</string>
-    <string name="btn_add_app">添加应用包名</string>
-
-    <!-- Toast -->
-    <string name="toast_saved">配置已保存，重启目标 APP 生效</string>
-    <string name="toast_reset">已恢复默认配置</string>
-    <string name="toast_added">已添加: %1$s</string>
-    <string name="toast_pkg_empty">包名不能为空</string>
-
-    <!-- 标题/说明 -->
-    <string name="title_scope">作用域 APP 列表</string>
-    <string name="title_custom">添加自定义包名</string>
-    <string name="title_options">省电优化开关</string>
-    <string name="hint_custom_pkg">输入 APP 包名</string>
-    <string name="footer_note">NoRoot 版仅优化当前 APP 自身耗电行为\n无法冻结其他 APP 或修改系统 doze</string>
 </resources>

@@ -25,13 +25,11 @@ object GreenifyBridgeHook {
     private val handler = Handler(Looper.getMainLooper())
     private var periodicTask: Runnable? = null
 
-    /** 不可释放的关键 wake lock tag 关键字 */
     private val protectedKeywords = arrayOf(
         "phone", "telephony", "alarm", "location", "audio",
         "camera", "bluetooth", "nfc", "usb", "display"
     )
 
-    /** 视为孤儿 wake lock 的最小持有时长（毫秒），默认 10 分钟 */
     private const val ORPHAN_THRESHOLD_MS = 10 * 60 * 1000L
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
@@ -45,7 +43,6 @@ object GreenifyBridgeHook {
         startPeriodicCleanup(cfg.greenifyIntervalSec)
     }
 
-    /** 启动周期清理任务 */
     private fun startPeriodicCleanup(intervalSec: Int) {
         val r = object : Runnable {
             override fun run() {
@@ -57,7 +54,6 @@ object GreenifyBridgeHook {
         handler.post(r)
     }
 
-    /** 执行一次孤儿 wake lock 清理 */
     private fun cleanupOrphanWakeLocks() {
         if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku 不可用，跳过清理")
@@ -66,7 +62,6 @@ object GreenifyBridgeHook {
 
         try {
             val dump = ShizukuHelper.execShell("dumpsys power") ?: return
-            // 解析 Wake Locks 部分
             val lines = dump.lines()
             var inWakeLockSection = false
             var cleaned = 0
@@ -78,15 +73,12 @@ object GreenifyBridgeHook {
                 }
                 if (inWakeLockSection) {
                     if (trimmed.isEmpty() || trimmed.endsWith(":")) {
-                        // 进入下一节，结束
                         if (cleaned > 0) break
                         continue
                     }
-                    // 解析单条 wake lock 行
                     val tag = parseWakeLockTag(trimmed) ?: continue
                     val heldMs = parseWakeLockHeldMs(trimmed)
                     if (heldMs >= ORPHAN_THRESHOLD_MS && !isProtected(tag)) {
-                        // 尝试释放
                         releaseWakeLock(tag)
                         cleaned++
                     }
@@ -102,31 +94,25 @@ object GreenifyBridgeHook {
         }
     }
 
-    /** 解析 wake lock tag（行中 "tag=xxx" 部分） */
     private fun parseWakeLockTag(line: String): String? {
         val regex = Regex("tag=([^\\s,]+)")
         return regex.find(line)?.groupValues?.getOrNull(1)
     }
 
-    /** 解析持有时长（毫秒），失败返回 0 */
     private fun parseWakeLockHeldMs(line: String): Long {
-        // 常见格式: "held=true, time=12345ms"
         val regex = Regex("time=(\\d+)\\s*ms")
         val ms = regex.find(line)?.groupValues?.getOrNull(1)?.toLongOrNull() ?: return 0L
         return ms
     }
 
-    /** 是否为受保护的关键 wake lock */
     private fun isProtected(tag: String): Boolean {
         val lower = tag.lowercase()
         return protectedKeywords.any { lower.contains(it) }
     }
 
-    /** 通过 Shizuku 释放指定 tag 的 wake lock */
     private fun releaseWakeLock(tag: String) {
         try {
-            // 没有公开的 release-by-tag API，只能通过重启相关服务或杀进程
-            // 这里采用更保守的方式：仅记录，不强制释放
+            // 没有公开的 release-by-tag API，采用保守策略：仅记录，不强制释放
             // 真实环境如需释放，需要 Hook system_server 内的 PowerManagerService
             LogX.w("发现孤儿 wake lock: $tag（保守策略，不强制释放）")
         } catch (e: Exception) {

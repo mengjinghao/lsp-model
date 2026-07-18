@@ -12,12 +12,10 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 功能：
  *  - 关闭 APP 内不必要的动画（scale 设为 0），降低 GPU 渲染负载省电
  *  - 通过 Hook ValueAnimator/ObjectAnimator 的 start，按配置 scale 调整时长
- *  - 通过修改 View 动画相关属性，缩短或省略动画
  *
  * 硬性限制（NoRoot 版）：
  *  - 仅作用于当前 APP 内部动画，不能修改系统全局动画 scale
  *  - 默认关闭，用户开启后可能影响部分交互动画体验
- *  - 重要过渡动画（如 Activity 切换）由系统控制，本模块不处理
  */
 object AnimationOptHook {
 
@@ -25,13 +23,10 @@ object AnimationOptHook {
         LogX.i("Animation 动画优化启动 | scale=${cfg.animationScale}")
 
         hookValueAnimator(lpparam, cfg)
-        hookObjectAnimator(lpparam, cfg)
+        hookObjectAnimator(lpparam)
         hookViewAnimation(lpparam, cfg)
     }
 
-    /**
-     * Hook ValueAnimator.setDuration，按 scale 缩放
-     */
     private fun hookValueAnimator(
         lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
     ) {
@@ -47,7 +42,6 @@ object AnimationOptHook {
                     override fun beforeHookedMethod(p: MethodHookParam) {
                         val duration = p.args[0] as Long
                         if (cfg.animationScale <= 0f) {
-                            // scale=0 直接置 0 时长
                             p.args[0] = 0L
                         } else if (cfg.animationScale < 1f) {
                             p.args[0] = (duration * cfg.animationScale).toLong()
@@ -60,19 +54,12 @@ object AnimationOptHook {
         }
     }
 
-    /**
-     * Hook ObjectAnimator.setDuration
-     */
-    private fun hookObjectAnimator(
-        lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
-    ) {
+    private fun hookObjectAnimator(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val oaCls = XposedHelpers.findClassIfExists(
                 "android.animation.ObjectAnimator", lpparam.classLoader
             ) ?: return
 
-            // ObjectAnimator 继承自 ValueAnimator，setDuration 已被父类 Hook 覆盖，
-            // 这里仅记录 start 调用以监控动画使用情况
             XposedHelpers.findAndHookMethod(
                 oaCls, "start",
                 object : XC_MethodHook() {
@@ -84,11 +71,6 @@ object AnimationOptHook {
         } catch (_: Exception) {}
     }
 
-    /**
-     * Hook View 动画相关方法
-     * View.setAlpha/setTranslationX/setTranslationY 等动画基础方法
-     * 这里仅 Hook View.startAnimation，按 scale 缩短 duration
-     */
     private fun hookViewAnimation(
         lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
     ) {

@@ -1,35 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-      Xposed Scope: 模块作用域列表
-      LSPatch本地模式下可在此指定需要Hook的APP包名
-    -->
     <string-array name="xposed_scope">
-        <!-- 微信 -->
         <item>com.tencent.mm</item>
-        <!-- 手机QQ -->
         <item>com.tencent.mobileqq</item>
-        <!-- QQ国际版 -->
         <item>com.tencent.mobileqqi</item>
-        <!-- 系统设置 -->
         <item>com.android.settings</item>
-        <!-- Chrome浏览器 -->
         <item>com.android.chrome</item>
-        <!-- 小米浏览器 -->
         <item>com.mi.globalbrowser</item>
-        <!-- 支付宝 -->
         <item>com.eg.android.AlipayGphone</item>
-        <!-- 淘宝 -->
         <item>com.taobao.taobao</item>
-        <!-- 拼多多 -->
         <item>com.xunmeng.pinduoduo</item>
-        <!-- 京东 -->
         <item>com.jingdong.app.mall</item>
-        <!-- 抖音 -->
         <item>com.ss.android.ugc.aweme</item>
-        <!-- 快手 -->
         <item>com.smile.gifmaker</item>
-        <!-- 微博 -->
         <item>com.sina.weibo</item>
     </string-array>
 </resources>

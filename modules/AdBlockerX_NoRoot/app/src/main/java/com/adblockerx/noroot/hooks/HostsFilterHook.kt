@@ -10,7 +10,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 内存 hosts 过滤器（不写任何文件）
  *
  * 设计目标：
- *  - 维护一份广告域名黑名单（内置 60 条 + 用户自定义）
+ *  - 维护一份广告域名黑名单（内置 90 条 + 用户自定义）
  *  - 提供统一查询接口 [isBlocked] 供 WebViewAdHook / OkHttpAdHook / URLConnectionAdHook / AdViewHideHook 调用
  *  - 所有数据仅存于内存，绝不写入 /system/etc/hosts、不修改系统 DNS、不设置 Private DNS
  *
@@ -61,5 +61,13 @@ object HostsFilterHook {
         if (url.isNullOrBlank()) return false
         val host = AdBlockList.extractHost(url) ?: return false
         return isBlocked(host)
+    }
+
+    /** 返回当前生效的所有拦截 host 列表（内置+自定义） */
+    fun currentBlockedHosts(): List<String> {
+        val list = mutableListOf<String>()
+        if (currentConfig.builtinBlocklistEnabled) list.addAll(AdBlockList.BUILTIN_AD_DOMAINS)
+        list.addAll(currentConfig.customBlocklist.filter { it.isNotBlank() && !it.startsWith("#") })
+        return list
     }
 }

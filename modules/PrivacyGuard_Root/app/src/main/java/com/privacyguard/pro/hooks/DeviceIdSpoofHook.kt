@@ -8,18 +8,13 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
- * 设备ID伪造Hook（应用层 + 系统属性）
- *
- * Root 版说明：
- *  - 本 Hook 在应用进程内做 Java 层拦截
- *  - 配合 SystemPropSpoofHook 在系统层 setprop，双管齐下确保一致
- *  - 伪造值在进程生命周期内稳定（FakeDeviceCache 缓存）
+ * 设备ID伪造Hook（应用层 + Root 版）
  *
  * 拦截路径：
  *  1. TelephonyManager.getDeviceId / getImei / getMeid / getSubscriberId / getLine1Number
  *  2. Settings.Secure.getString(ANDROID_ID)
  *  3. WifiInfo.getMacAddress / getBSSID
- *  4. Build.getSerial
+ *  4. Build.getSerial + SERIAL 字段
  */
 object DeviceIdSpoofHook {
 
@@ -33,50 +28,62 @@ object DeviceIdSpoofHook {
         hookBuildSerial(lpparam)
     }
 
-    /** Hook TelephonyManager 设备标识相关方法 */
     private fun hookTelephonyManager(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val tm = XposedHelpers.findClassIfExists(
                 "android.telephony.TelephonyManager", lpparam.classLoader) ?: return
 
-            listOf("getDeviceId", "getImei", "getMeid", "getSubscriberId", "getLine1Number",
-                "getSimSerialNumber").forEach { methodName ->
-                // 无参版本
+            listOf("getDeviceId", "getImei", "getMeid").forEach { m ->
                 try {
-                    XposedHelpers.findAndHookMethod(tm, methodName, object : XC_MethodHook() {
+                    XposedHelpers.findAndHookMethod(tm, m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
-                            p.result = fakeValueFor(methodName)
+                            p.result = if (m == "getMeid") FakeDeviceCache.fakeMeid else FakeDeviceCache.fakeImei
                         }
                     })
-                    LogX.hookSuccess("TelephonyManager", methodName)
+                    LogX.hookSuccess("TelephonyManager", m)
                 } catch (_: Exception) {}
-
-                // 带 slot 参数版本
                 try {
-                    XposedHelpers.findAndHookMethod(tm, methodName,
+                    XposedHelpers.findAndHookMethod(tm, m,
                         Int::class.javaPrimitiveType, object : XC_MethodHook() {
                             override fun beforeHookedMethod(p: MethodHookParam) {
-                                p.result = fakeValueFor(methodName)
+                                p.result = if (m == "getMeid") FakeDeviceCache.fakeMeid else FakeDeviceCache.fakeImei
                             }
                         })
-                    LogX.hookSuccess("TelephonyManager", "$methodName(slot)")
+                    LogX.hookSuccess("TelephonyManager", "$m(slot)")
                 } catch (_: Exception) {}
             }
+
+            try {
+                XposedHelpers.findAndHookMethod(tm, "getSubscriberId", object : XC_MethodHook() {
+                    override fun beforeHookedMethod(p: MethodHookParam) {
+                        p.result = FakeDeviceCache.fakeSubscriberId
+                    }
+                })
+                LogX.hookSuccess("TelephonyManager", "getSubscriberId")
+            } catch (_: Exception) {}
+
+            try {
+                XposedHelpers.findAndHookMethod(tm, "getLine1Number", object : XC_MethodHook() {
+                    override fun beforeHookedMethod(p: MethodHookParam) {
+                        p.result = FakeDeviceCache.fakeLine1Number
+                    }
+                })
+                LogX.hookSuccess("TelephonyManager", "getLine1Number")
+            } catch (_: Exception) {}
+
+            try {
+                XposedHelpers.findAndHookMethod(tm, "getSimSerialNumber", object : XC_MethodHook() {
+                    override fun beforeHookedMethod(p: MethodHookParam) {
+                        p.result = FakeDeviceCache.fakeSimSerial
+                    }
+                })
+                LogX.hookSuccess("TelephonyManager", "getSimSerialNumber")
+            } catch (_: Exception) {}
         } catch (e: Exception) {
             LogX.hookFailed("TelephonyManager", "device-id", e)
         }
     }
 
-    private fun fakeValueFor(methodName: String): String = when (methodName) {
-        "getDeviceId", "getImei" -> FakeDeviceCache.fakeImei
-        "getMeid" -> FakeDeviceCache.fakeMeid
-        "getSubscriberId" -> FakeDeviceCache.fakeSubscriberId
-        "getLine1Number" -> FakeDeviceCache.fakeLine1Number
-        "getSimSerialNumber" -> FakeDeviceCache.fakeSimSerial
-        else -> FakeDeviceCache.fakeImei
-    }
-
-    /** Hook Settings.Secure.getString 拦截 ANDROID_ID */
     private fun hookSettingsSecure(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val ss = XposedHelpers.findClassIfExists(
@@ -89,9 +96,7 @@ object DeviceIdSpoofHook {
                     object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
                             val name = p.args[1] as? String ?: return
-                            if (name == ANDROID_ID) {
-                                p.result = FakeDeviceCache.fakeAndroidId
-                            }
+                            if (name == ANDROID_ID) p.result = FakeDeviceCache.fakeAndroidId
                         }
                     })
                 LogX.hookSuccess("Settings.Secure", "getString(ANDROID_ID)")
@@ -103,9 +108,7 @@ object DeviceIdSpoofHook {
                     object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
                             val name = p.args[1] as? String ?: return
-                            if (name == ANDROID_ID) {
-                                p.result = FakeDeviceCache.fakeAndroidId
-                            }
+                            if (name == ANDROID_ID) p.result = FakeDeviceCache.fakeAndroidId
                         }
                     })
                 LogX.hookSuccess("Settings.Secure", "getString(ANDROID_ID, def)")
@@ -115,7 +118,6 @@ object DeviceIdSpoofHook {
         }
     }
 
-    /** Hook WifiInfo MAC/BSSID */
     private fun hookWifiInfo(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val wifi = XposedHelpers.findClassIfExists(
@@ -143,7 +145,6 @@ object DeviceIdSpoofHook {
         }
     }
 
-    /** Hook Build.getSerial */
     private fun hookBuildSerial(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val build = XposedHelpers.findClassIfExists(

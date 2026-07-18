@@ -8,66 +8,68 @@ import com.privacyguard.noroot.models.PrivacyConfig
 
 /**
  * 配置管理器
- * LSPatch本地模式下使用目标APP进程的SharedPreferences存储配置。
- * 每个 APP 独立一份 PrivacyConfig，互不干扰。
+ *
+ * 双通道读取：
+ *  1. UI 侧（模块进程）：通过 SharedPreferences 读写
+ *  2. Hook 侧（目标APP进程）：通过 XSharedPreferences 读取模块 prefs（LSPosed模式）
+ *     或通过 Context.getSharedPreferences 读取（LSPatch本地模式，同进程）
+ *
+ * LSPosed 兼容：prefs 使用 MODE_WORLD_READABLE（LSPosed 拦截并放行），失败回退 MODE_PRIVATE。
  */
 object ConfigManager {
 
-    private const val PREFS_NAME = "privacy_guard_configs"
+    const val PREFS_NAME = "privacy_guard_prefs"
     private const val KEY_ALL = "all_app_configs"
+    private const val KEY_GLOBAL = "global_config"
+
     private val gson = Gson()
     private var prefs: SharedPreferences? = null
 
     fun init(ctx: Context) {
-        if (prefs == null) {
-            prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        if (prefs != null) return
+        prefs = try {
+            ctx.getSharedPreferences(PREFS_NAME, Context.MODE_WORLD_READABLE)
+        } catch (_: Throwable) {
+            ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         }
     }
 
-    /** 检查是否已初始化（用于Application.onCreate前调用判断） */
     fun isInitialized(): Boolean = prefs != null
 
+    // ===== 全局配置（UI总开关使用，作用于所有目标APP） =====
+    fun getGlobalConfig(): PrivacyConfig {
+        val def = PrivacyConfig(packageName = "global")
+        if (!isInitialized()) return def
+        val json = prefs?.getString(KEY_GLOBAL, null) ?: return def
+        return try { gson.fromJson(json, PrivacyConfig::class.java) ?: def } catch (_: Throwable) { def }
+    }
+
+    fun saveGlobalConfig(cfg: PrivacyConfig) {
+        if (!isInitialized()) return
+        cfg.lastModified = System.currentTimeMillis()
+        prefs?.edit()?.putString(KEY_GLOBAL, gson.toJson(cfg))?.apply()
+    }
+
+    // ===== 单APP配置（保留接口，兼容旧逻辑） =====
     fun getAllConfigs(): MutableMap<String, PrivacyConfig> {
+        if (!isInitialized()) return mutableMapOf()
         val json = prefs?.getString(KEY_ALL, null) ?: return mutableMapOf()
         return try {
             val type = object : TypeToken<MutableMap<String, PrivacyConfig>>() {}.type
             gson.fromJson(json, type) ?: mutableMapOf()
-        } catch (e: Exception) {
-            mutableMapOf()
-        }
-    }
-
-    private fun saveAll(configs: MutableMap<String, PrivacyConfig>) {
-        prefs?.edit()?.putString(KEY_ALL, gson.toJson(configs))?.apply()
+        } catch (_: Throwable) { mutableMapOf() }
     }
 
     fun getConfig(pkg: String): PrivacyConfig {
-        return getAllConfigs()[pkg] ?: createDefault(pkg)
+        return getAllConfigs()[pkg] ?: getGlobalConfig()
     }
 
     fun saveConfig(cfg: PrivacyConfig) {
         val all = getAllConfigs()
         cfg.lastModified = System.currentTimeMillis()
         all[cfg.packageName] = cfg
-        saveAll(all)
+        prefs?.edit()?.putString(KEY_ALL, gson.toJson(all))?.apply()
     }
-
-    fun deleteConfig(pkg: String) {
-        val all = getAllConfigs()
-        all.remove(pkg)
-        saveAll(all)
-    }
-
-    fun createDefault(pkg: String) = PrivacyConfig(
-        packageName = pkg,
-        deviceIdSpoofEnabled = true,
-        clipboardGuardEnabled = true,
-        clipboardBlockRead = false,
-        permissionSpoofEnabled = false,
-        locationSpoofEnabled = false,
-        sensorFakerEnabled = false,
-        advertisingIdBlockEnabled = true
-    )
 
     fun resetAll() { prefs?.edit()?.clear()?.apply() }
 }

@@ -12,14 +12,13 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 系统属性伪造Hook（Root 专属，需 Shizuku adb 级授权）
  *
  * 功能：
- *  - 通过 Shizuku setprop 修改 ro.serialno、ro.boot.serialno、ro.product.* 等系统属性
- *  - 同时在 Java 层 Hook SystemProperties.get 保持一致，避免 APP 检测到差异
+ *  - 应用层 Hook SystemProperties.get 保持伪造一致性
+ *  - 通过 Shizuku setprop 修改 ro.serialno / ro.boot.serialno / ro.product.* 等属性
  *
  * 硬性限制：
  *  - 必须先检查 ShizukuHelper.isShizukuAvailable()
  *  - ro.* 属性原生不可写，setprop 对部分只读属性无效
  *  - 持久化需写入 build.prop（需要 root 级 Shizuku），重启后消失
- *  - 临时 setprop 仅对当前会话生效
  */
 object SystemPropSpoofHook {
 
@@ -27,20 +26,15 @@ object SystemPropSpoofHook {
         if (!cfg.systemPropSpoofEnabled) return
         LogX.i("系统属性伪造启动（Root 专属）")
 
-        // 1. 应用层 Hook SystemProperties.get（与系统层 setprop 保持一致）
         hookSystemProperties(lpparam, cfg)
-
-        // 2. 通过 Shizuku setprop 修改底层属性
         applySystemPropsViaShizuku(cfg)
     }
 
-    /** 应用层 Hook SystemProperties.get，伪造属性返回值 */
     private fun hookSystemProperties(lpparam: XC_LoadPackage.LoadPackageParam, cfg: PrivacyConfig) {
         try {
             val sp = XposedHelpers.findClassIfExists(
                 "android.os.SystemProperties", lpparam.classLoader) ?: return
 
-            // 属性映射表：key -> 伪造值
             val props = mutableMapOf(
                 "ro.serialno" to FakeDeviceCache.fakeSerial,
                 "ro.boot.serialno" to FakeDeviceCache.fakeSerial,
@@ -51,7 +45,6 @@ object SystemPropSpoofHook {
                 "ro.product.device" to cfg.spoofProductModel.replace(" ", "_").lowercase()
             )
 
-            // get(String, String) 两参版本
             try {
                 XposedHelpers.findAndHookMethod(sp, "get",
                     String::class.java, String::class.java,
@@ -66,7 +59,6 @@ object SystemPropSpoofHook {
                 LogX.hookSuccess("SystemProperties", "get(key, def)")
             } catch (_: Exception) {}
 
-            // get(String) 单参版本
             try {
                 XposedHelpers.findAndHookMethod(sp, "get",
                     String::class.java,
@@ -87,10 +79,6 @@ object SystemPropSpoofHook {
         }
     }
 
-    /**
-     * 通过 Shizuku setprop 修改系统属性
-     * 注意：ro.* 属性在原生 Android 上不可写，需 Shizuku adb 级授权或 root 级
-     */
     private fun applySystemPropsViaShizuku(cfg: PrivacyConfig) {
         if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku不可用，跳过 setprop 系统属性修改（仅应用层 Hook 生效）")

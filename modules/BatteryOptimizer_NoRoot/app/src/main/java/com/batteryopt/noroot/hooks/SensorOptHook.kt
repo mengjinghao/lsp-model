@@ -11,11 +11,10 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *
  * 功能：
  *  - Hook registerListener，对高频传感器（>50Hz）降频到合理值
- *  - 默认上限 200000us = 5Hz，足以满足大部分场景需求
+ *  - 默认上限 200000us = 5Hz
  *
  * 硬性限制（NoRoot 版）：
  *  - 仅作用于当前 APP 的传感器注册请求
- *  - 不能修改系统 SensorService 全局批处理策略
  *  - AR/VR/运动类 APP 需要高频传感器，建议关闭此优化避免功能受损
  */
 object SensorOptHook {
@@ -29,9 +28,6 @@ object SensorOptHook {
         hookRegisterListener(lpparam, cfg)
     }
 
-    /**
-     * Hook SensorManager.registerListener 多个重载
-     */
     private fun hookRegisterListener(
         lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
     ) {

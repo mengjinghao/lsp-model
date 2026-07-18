@@ -7,15 +7,16 @@ import com.adblockerx.pro.utils.LogX
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
- * 内存 hosts 过滤器（不写文件）
+ * 内存 hosts 过滤器（不写任何文件）
  *
  * 设计目标：
- *  - 维护一份广告域名黑名单（内置 60 条 + 用户自定义）
- *  - 提供统一查询接口 [isBlocked] 供各 Hook 调用
- *  - 所有数据仅存于内存，绝不写入系统 hosts
+ *  - 维护一份广告域名黑名单（内置 90 条 + 用户自定义）
+ *  - 提供统一查询接口 [isBlocked] 供其他 Hook 调用
+ *  - 同时提供 currentBlockedHosts() 供 SystemHostsHook 写入系统 hosts
  *
- * 注意：Root 版的"系统级 hosts"由 SystemHostsHook 通过 Shizuku 单独处理，
- *      本类仅负责应用进程内的网络请求查询。
+ * 边界声明：
+ *  - 内存查询仅作用于本 APP 进程内的网络请求
+ *  - SystemHostsHook 通过 Shizuku 写入系统级 hosts 文件（独立操作）
  */
 object HostsFilterHook {
 
@@ -53,11 +54,11 @@ object HostsFilterHook {
         return isBlocked(host)
     }
 
-    /** 暴露当前配置，供系统级 Hook 读取黑名单 */
+    /** 返回当前生效的所有拦截 host 列表（内置+自定义），供 SystemHostsHook 写入 */
     fun currentBlockedHosts(): List<String> {
         val list = mutableListOf<String>()
         if (currentConfig.builtinBlocklistEnabled) list.addAll(AdBlockList.BUILTIN_AD_DOMAINS)
-        list.addAll(currentConfig.customBlocklist)
+        list.addAll(currentConfig.customBlocklist.filter { it.isNotBlank() && !it.startsWith("#") })
         return list
     }
 }

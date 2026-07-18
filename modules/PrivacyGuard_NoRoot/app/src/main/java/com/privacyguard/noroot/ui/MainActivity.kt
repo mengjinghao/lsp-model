@@ -1,93 +1,139 @@
 package com.privacyguard.noroot.ui
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
-import com.privacyguard.noroot.R
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PowerSettingsNew
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.privacyguard.noroot.models.PrivacyConfig
+import com.privacyguard.noroot.ui.screens.AboutScreen
+import com.privacyguard.noroot.ui.screens.FeaturesScreen
+import com.privacyguard.noroot.ui.screens.HomeScreen
+import com.privacyguard.noroot.ui.theme.PrivacyGuardTheme
 import com.privacyguard.noroot.utils.ConfigManager
 
-/**
- * 主界面Activity - 隐私保护开关面板
- *
- * 显示作用域内各 APP 的隐私保护开关，修改后下次 APP 启动生效。
- * 简单实现：所有 APP 共用一套全局配置（按 "global" 键存储），
- * 每个目标 APP 启动时读取 "global" 配置应用。
- */
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var container: LinearLayout
-    private lateinit var cfg: PrivacyConfig
-
-    // 开关控件引用
-    private lateinit var swDeviceId: SwitchCompat
-    private lateinit var swClipboard: SwitchCompat
-    private lateinit var swClipboardBlock: SwitchCompat
-    private lateinit var swPermission: SwitchCompat
-    private lateinit var swLocation: SwitchCompat
-    private lateinit var swSensor: SwitchCompat
-    private lateinit var swAdId: SwitchCompat
-
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        ConfigManager.init(this)
-        // 使用 "global" 作为统一配置键，所有作用域 APP 共享
-        cfg = ConfigManager.getConfig("global")
-
-        container = findViewById(R.id.configContainer)
-        inflateSwitches()
-        loadUI()
-        setupButtons()
-    }
-
-    private fun inflateSwitches() {
-        swDeviceId = findViewById(R.id.swDeviceId)
-        swClipboard = findViewById(R.id.swClipboard)
-        swClipboardBlock = findViewById(R.id.swClipboardBlock)
-        swPermission = findViewById(R.id.swPermission)
-        swLocation = findViewById(R.id.swLocation)
-        swSensor = findViewById(R.id.swSensor)
-        swAdId = findViewById(R.id.swAdId)
-    }
-
-    private fun loadUI() {
-        swDeviceId.isChecked = cfg.deviceIdSpoofEnabled
-        swClipboard.isChecked = cfg.clipboardGuardEnabled
-        swClipboardBlock.isChecked = cfg.clipboardBlockRead
-        swPermission.isChecked = cfg.permissionSpoofEnabled
-        swLocation.isChecked = cfg.locationSpoofEnabled
-        swSensor.isChecked = cfg.sensorFakerEnabled
-        swAdId.isChecked = cfg.advertisingIdBlockEnabled
-    }
-
-    private fun saveUI() {
-        cfg.deviceIdSpoofEnabled = swDeviceId.isChecked
-        cfg.clipboardGuardEnabled = swClipboard.isChecked
-        cfg.clipboardBlockRead = swClipboardBlock.isChecked
-        cfg.permissionSpoofEnabled = swPermission.isChecked
-        cfg.locationSpoofEnabled = swLocation.isChecked
-        cfg.sensorFakerEnabled = swSensor.isChecked
-        cfg.advertisingIdBlockEnabled = swAdId.isChecked
-    }
-
-    private fun setupButtons() {
-        findViewById<Button>(R.id.btnSave).setOnClickListener {
-            saveUI()
-            ConfigManager.saveConfig(cfg)
-            Toast.makeText(this, "配置已保存，重启目标APP生效", Toast.LENGTH_LONG).show()
+        ConfigManager.init(applicationContext)
+        setContent {
+            PrivacyGuardTheme {
+                MainScreen()
+            }
         }
+    }
+}
 
-        findViewById<Button>(R.id.btnReset).setOnClickListener {
-            cfg = ConfigManager.createDefault("global")
-            ConfigManager.saveConfig(cfg)
-            loadUI()
-            Toast.makeText(this, "已恢复默认", Toast.LENGTH_SHORT).show()
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val isLandscape = LocalConfiguration.current.screenWidthDp > LocalConfiguration.current.screenHeightDp
+
+    var cfg by remember { mutableStateOf(ConfigManager.getGlobalConfig()) }
+    val onCfgChange: (PrivacyConfig) -> Unit = { cfg = it }
+
+    val screens = listOf(
+        Triple("home", "总开关", Icons.Default.PowerSettingsNew),
+        Triple("features", "功能", Icons.Default.Build),
+        Triple("about", "关于", Icons.Default.Info)
+    )
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = { Text("PrivacyGuard NoRoot") },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        },
+        bottomBar = {
+            if (!isLandscape) {
+                val current by navController.currentBackStackEntryAsState()
+                val route = current?.destination?.route
+                NavigationBar {
+                    screens.forEach { (r, label, icon) ->
+                        NavigationBarItem(
+                            selected = route == r,
+                            onClick = { navController.navigate(r) { popUpTo(navController.graph.startDestinationId) { saveState = true }; launchSingleTop = true; restoreState = true } },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) }
+                        )
+                    }
+                }
+            }
         }
+    ) { inner ->
+        if (isLandscape) {
+            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxSize().padding(inner)) {
+                val current by navController.currentBackStackEntryAsState()
+                val route = current?.destination?.route
+                NavigationRail {
+                    screens.forEach { (r, label, icon) ->
+                        NavigationRailItem(
+                            selected = route == r,
+                            onClick = { navController.navigate(r) { popUpTo(navController.graph.startDestinationId) { saveState = true }; launchSingleTop = true; restoreState = true } },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) }
+                        )
+                    }
+                }
+                AppNavHost(navController, cfg, onCfgChange, PaddingValues(0.dp))
+            }
+        } else {
+            AppNavHost(navController, cfg, onCfgChange, inner)
+        }
+    }
+}
+
+@Composable
+private fun AppNavHost(
+    navController: NavHostController,
+    cfg: PrivacyConfig,
+    onCfgChange: (PrivacyConfig) -> Unit,
+    padding: PaddingValues
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "home",
+        modifier = Modifier.fillMaxSize().padding(padding)
+    ) {
+        composable("home") { HomeScreen(cfg, onCfgChange) }
+        composable("features") { FeaturesScreen(cfg, onCfgChange) }
+        composable("about") { AboutScreen() }
     }
 }

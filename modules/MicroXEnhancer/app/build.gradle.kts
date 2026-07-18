@@ -1,5 +1,3 @@
-// 微X增强模块 — 应用级构建配置
-// 编译目标：LSPatch免Root环境，仅引入LSPosed API
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -11,62 +9,81 @@ android {
 
     defaultConfig {
         applicationId = "com.microx.enhancer"
-        minSdk = 27          // Android 8.1，LSPatch最低要求
-        targetSdk = 34       // Android 14
-        versionCode = 1      // LSPatch通过版本号识别版本更新
-        versionName = "1.0.0"
-        multiDexEnabled = false
+        minSdk = 26
+        targetSdk = 34
+        versionCode = 1
+        versionName = "2.0.0"
     }
 
-    // 构建特性：关闭混淆以兼容Hook框架类查找
+    signingConfigs {
+        create("release") {
+            storeFile = file("../../keystore/mjh-release.jks")
+            storePassword = "meng411722"
+            keyAlias = "mjh"
+            keyPassword = "meng411722"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             isShrinkResources = false
-            // 不需要签名配置，LSPatch集成模式会重打包
-            setProguardFiles(
-                listOf(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
-                )
+            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
         debug {
             isMinifyEnabled = false
-            isDebuggable = true
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
-    // Java 8兼容（LSPosed API基于此）
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
-
-    // 构建特性：关闭BuildConfig生成（减小体积）
     buildFeatures {
-        buildConfig = false
+        compose = true
+        buildConfig = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.4"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
-// ===== 依赖配置：仅引入LSPosed API，不包含任何Root依赖 =====
 dependencies {
-    // LSPosed API：provided编译方式，不打包进APK
-    // LSPatch环境中由框架自身提供
+    // Xposed API
     compileOnly("de.robv.android.xposed:api:82")
-    compileOnly("de.robv.android.xposed:api:82:sources")
 
-    // AndroidX基础UI库（设置界面）
+    // Shizuku API (compileOnly, 模板一致性保留，本模块不主动调用)
+    compileOnly("dev.rikka.shizuku:api:13.1.5")
+    compileOnly("dev.rikka.shizuku:provider:13.1.5")
+
+    // AndroidX
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("com.google.android.material:material:1.11.0")
 
-    // Kotlin标准库
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    // Compose + Material3
+    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.compose.ui:ui:1.5.4")
+    implementation("androidx.compose.ui:ui-graphics:1.5.4")
+    implementation("androidx.compose.foundation:foundation:1.5.4")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("androidx.navigation:navigation-compose:2.7.4")
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")
+    implementation("com.google.code.gson:gson:2.10.1")
 }

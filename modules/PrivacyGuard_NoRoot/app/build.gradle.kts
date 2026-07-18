@@ -9,18 +9,26 @@ android {
 
     defaultConfig {
         applicationId = "com.privacyguard.noroot"
-        minSdk = 27
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "2.0.0"
+    }
 
-        // 注意：meta-data 仅在 AndroidManifest.xml 声明，defaultConfig 内不写无效的 metaData DSL 块
+    signingConfigs {
+        create("release") {
+            storeFile = file("../../keystore/mjh-release.jks")
+            storePassword = "meng411722"
+            keyAlias = "mjh"
+            keyPassword = "meng411722"
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             isShrinkResources = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -28,34 +36,54 @@ android {
         }
         debug {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.4"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
 dependencies {
-    // Xposed API (compileOnly, LSPatch运行时不打包进APK)
+    // Xposed API (compileOnly: 由 LSPosed/LSPatch 框架运行时提供，避免类冲突)
     compileOnly("de.robv.android.xposed:api:82")
-    compileOnly("de.robv.android.xposed:api:82:sources")
+
+    // Shizuku API (compileOnly, 免Root通过adb级Shizuku调用，反射兼容)
+    compileOnly("dev.rikka.shizuku:api:13.1.5")
+    compileOnly("dev.rikka.shizuku:provider:13.1.5")
 
     // AndroidX
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
+
+    // Compose + Material3 (直接版本号，避免BOM解析问题)
+    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.compose.ui:ui:1.5.4")
+    implementation("androidx.compose.ui:ui-graphics:1.5.4")
+    implementation("androidx.compose.foundation:foundation:1.5.4")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("androidx.navigation:navigation-compose:2.7.4")
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")
-
-    // Gson (配置文件序列化)
     implementation("com.google.code.gson:gson:2.10.1")
-
-    // Shizuku API (compileOnly 保留兼容，但 NoRoot 版本绝不主动调用)
-    compileOnly("dev.rikka.shizuku:api:13.1.5")
-    compileOnly("dev.rikka.shizuku:provider:13.1.5")
 }

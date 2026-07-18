@@ -8,11 +8,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
  * 动画关闭优化 Hook（应用层）
- *
- * 功能：
- *  - 关闭 APP 内不必要的动画（scale 设为 0），降低 GPU 渲染负载省电
- *  - 通过 Hook ValueAnimator/ObjectAnimator 的 setDuration 缩放时长
- *  - 通过修改 View 动画相关属性，缩短或省略动画
  */
 object AnimationOptHook {
 
@@ -20,7 +15,7 @@ object AnimationOptHook {
         LogX.i("Animation 动画优化启动 | scale=${cfg.animationScale}")
 
         hookValueAnimator(lpparam, cfg)
-        hookObjectAnimator(lpparam, cfg)
+        hookObjectAnimator(lpparam)
         hookViewAnimation(lpparam, cfg)
     }
 
@@ -51,9 +46,7 @@ object AnimationOptHook {
         }
     }
 
-    private fun hookObjectAnimator(
-        lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
-    ) {
+    private fun hookObjectAnimator(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val oaCls = XposedHelpers.findClassIfExists(
                 "android.animation.ObjectAnimator", lpparam.classLoader

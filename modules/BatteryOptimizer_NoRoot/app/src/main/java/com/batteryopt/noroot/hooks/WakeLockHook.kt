@@ -51,10 +51,7 @@ object WakeLockHook {
         hookRelease(lpparam)
     }
 
-    /**
-     * Hook acquire(timeout)
-     * 即使 SDK 指定了超时，也记录并做冗余拦截
-     */
+    /** Hook acquire(timeout) */
     private fun hookAcquireWithTimeout(
         lpparam: XC_LoadPackage.LoadPackageParam,
         cfg: BatteryConfig
@@ -71,12 +68,10 @@ object WakeLockHook {
                     override fun beforeHookedMethod(p: MethodHookParam) {
                         val tag = readTag(p.thisObject)
                         if (cfg.wakeLockBlockRedundant && isRedundant(tag)) {
-                            // 标记：acquire 完成后立即 release
                             immediateReleaseFlags.add(identity(p.thisObject))
                             LogX.d("标记冗余 wake lock(acquire_timeout) 立即释放: $tag")
                             return
                         }
-                        // 强制把超时限制在配置阈值内
                         val inputTimeout = p.args[0] as Long
                         if (inputTimeout > cfg.wakeLockMaxHoldMs) {
                             p.args[0] = cfg.wakeLockMaxHoldMs
@@ -88,7 +83,6 @@ object WakeLockHook {
                         val id = identity(p.thisObject)
                         val tag = readTag(p.thisObject)
                         if (immediateReleaseFlags.remove(id)) {
-                            // 冗余 wake lock：立即 release
                             try {
                                 val held = XposedHelpers.callMethod(p.thisObject, "isHeld") as? Boolean ?: false
                                 if (held) {
@@ -100,7 +94,6 @@ object WakeLockHook {
                             }
                             return
                         }
-                        // 正常流程：记录 + 调度自动释放
                         holdRecords[id] = System.currentTimeMillis()
                         scheduleAutoRelease(p.thisObject, id, tag, cfg.wakeLockMaxHoldMs)
                         LogX.d("WakeLock acquire(timeout): $tag")
@@ -112,10 +105,7 @@ object WakeLockHook {
         }
     }
 
-    /**
-     * Hook acquire()（无超时）
-     * 风险最高：无超时的 wake lock 是耗电大户
-     */
+    /** Hook acquire()（无超时） */
     private fun hookAcquireNoTimeout(
         lpparam: XC_LoadPackage.LoadPackageParam,
         cfg: BatteryConfig
@@ -152,7 +142,6 @@ object WakeLockHook {
                             }
                             return
                         }
-                        // 正常流程：无超时的 acquire 必须安排自动 release，避免永久持有
                         holdRecords[id] = System.currentTimeMillis()
                         scheduleAutoRelease(p.thisObject, id, tag, cfg.wakeLockMaxHoldMs)
                         LogX.w("WakeLock acquire(无超时): $tag | 已安排 ${cfg.wakeLockMaxHoldMs}ms 后自动释放")
@@ -164,9 +153,7 @@ object WakeLockHook {
         }
     }
 
-    /**
-     * Hook release()，清理记录
-     */
+    /** Hook release()，清理记录 */
     private fun hookRelease(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
             val wlCls = XposedHelpers.findClassIfExists(
@@ -185,7 +172,6 @@ object WakeLockHook {
                     }
                 })
 
-            // 部分 SDK 调用的是无参 release()
             try {
                 XposedHelpers.findAndHookMethod(
                     wlCls, "release",
@@ -203,7 +189,6 @@ object WakeLockHook {
         }
     }
 
-    /** 读取 WakeLock 的 tag（mTag 字段） */
     private fun readTag(wakeLock: Any?): String {
         return try {
             XposedHelpers.getObjectField(wakeLock, "mTag") as? String ?: "unknown"
@@ -212,20 +197,14 @@ object WakeLockHook {
         }
     }
 
-    /** 实例唯一标识（hashcode） */
     private fun identity(obj: Any?): String = System.identityHashCode(obj).toString()
 
-    /** 通过 tag 关键字判断是否为冗余统计类 wake lock */
     private fun isRedundant(tag: String): Boolean {
         val lower = tag.lowercase()
         return redundantKeywords.any { lower.contains(it) }
     }
 
-    /**
-     * 安排超时自动 release
-     * 使用守护线程 sleep 后调用 release()，避免影响主线程
-     * 注意：调用 isHeld() 判断，避免对已释放的 wake lock 重复 release 导致异常
-     */
+    /** 安排超时自动 release（守护线程 sleep 后调用 release()） */
     private fun scheduleAutoRelease(
         wakeLock: Any?, id: String, tag: String, delayMs: Long
     ) {

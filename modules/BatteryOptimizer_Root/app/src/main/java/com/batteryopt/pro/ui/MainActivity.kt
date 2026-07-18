@@ -1,269 +1,139 @@
 package com.batteryopt.pro.ui
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.View
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
-import com.batteryopt.pro.R
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BatteryChargingFull
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.batteryopt.pro.models.BatteryConfig
+import com.batteryopt.pro.ui.screens.AboutScreen
+import com.batteryopt.pro.ui.screens.FeaturesScreen
+import com.batteryopt.pro.ui.screens.HomeScreen
+import com.batteryopt.pro.ui.theme.BatteryOptimizerTheme
 import com.batteryopt.pro.utils.ConfigManager
 
-/**
- * BatteryOptimizer Pro 主界面（Root 版）
- *
- * 模块自身 APK 进程内的配置 Activity。
- * 用户在此界面修改各 APP 的省电优化开关，下次目标 APP 启动时生效。
- *
- * 界面结构：
- *  - 顶部：当前选中 APP 包名
- *  - 中部：7 个应用层优化开关 + 4 个系统级优化开关
- *  - 底部：作用域 APP 列表 + 自定义包名输入
- *
- * 注意：系统级开关需 Shizuku 授权才能实际生效
- */
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var tvPkg: TextView
-    private lateinit var appSwitchContainer: LinearLayout
-    private lateinit var sysSwitchContainer: LinearLayout
-    private lateinit var appListLayout: LinearLayout
-    private lateinit var etCustomPkg: EditText
-    private lateinit var btnAddCustom: Button
-    private lateinit var btnSave: Button
-    private lateinit var btnReset: Button
-
-    /** 当前选中 APP 的包名（用于配置编辑） */
-    private var currentPkg: String = "com.tencent.mm"
-
-    /** 作用域 APP 预设列表 */
-    private val scopeApps = listOf(
-        "com.tencent.mm" to "微信",
-        "com.tencent.mobileqq" to "QQ",
-        "com.ss.android.ugc.aweme" to "抖音",
-        "com.smile.gifmaker" to "快手",
-        "com.taobao.taobao" to "淘宝",
-        "com.jingdong.app.mall" to "京东",
-        "com.xunmeng.pinduoduo" to "拼多多",
-        "com.eg.android.AlipayGphone" to "支付宝",
-        "com.netease.cloudmusic" to "网易云音乐",
-        "com.tencent.wmusic" to "腾讯音乐",
-        "com.zhihu.android" to "知乎",
-        "com.sina.weibo" to "微博",
-        "com.netease.mail" to "网易邮箱",
-        "com.tencent.androidqqmail" to "QQ邮箱"
-    )
-
-    /** 当前编辑的配置（与 currentPkg 绑定） */
-    private var currentConfig: BatteryConfig = BatteryConfig(packageName = currentPkg)
-
-    /** 11 个开关的视图引用（key 与 BatteryConfig 字段对应） */
-    private val switchMap = LinkedHashMap<String, SwitchCompat>()
-
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        ConfigManager.init(this)
-
-        tvPkg = findViewById(R.id.tvPkg)
-        appSwitchContainer = findViewById(R.id.appSwitchContainer)
-        sysSwitchContainer = findViewById(R.id.sysSwitchContainer)
-        appListLayout = findViewById(R.id.appListLayout)
-        etCustomPkg = findViewById(R.id.etCustomPkg)
-        btnAddCustom = findViewById(R.id.btnAddCustom)
-        btnSave = findViewById(R.id.btnSave)
-        btnReset = findViewById(R.id.btnReset)
-
-        buildSwitches()
-        buildAppList()
-        loadConfig(currentPkg)
-
-        btnAddCustom.setOnClickListener {
-            val pkg = etCustomPkg.text.toString().trim()
-            if (pkg.isEmpty()) {
-                Toast.makeText(this, R.string.toast_pkg_empty, Toast.LENGTH_SHORT).show()
-            } else {
-                appListLayout.addView(createAppItem(pkg, pkg))
-                Toast.makeText(this, getString(R.string.toast_added, pkg), Toast.LENGTH_SHORT).show()
-                etCustomPkg.text.clear()
+        ConfigManager.init(applicationContext)
+        setContent {
+            BatteryOptimizerTheme {
+                MainScreen()
             }
-        }
-
-        btnSave.setOnClickListener {
-            currentConfig.wakeLockOptEnabled = switchMap["wakelock"]?.isChecked ?: true
-            currentConfig.alarmOptEnabled = switchMap["alarm"]?.isChecked ?: true
-            currentConfig.syncOptEnabled = switchMap["sync"]?.isChecked ?: true
-            currentConfig.jobOptEnabled = switchMap["job"]?.isChecked ?: true
-            currentConfig.locationOptEnabled = switchMap["location"]?.isChecked ?: true
-            currentConfig.animationOptEnabled = switchMap["animation"]?.isChecked ?: false
-            currentConfig.sensorOptEnabled = switchMap["sensor"]?.isChecked ?: true
-            currentConfig.dozeEnabled = switchMap["doze"]?.isChecked ?: false
-            currentConfig.freezeEnabled = switchMap["freeze"]?.isChecked ?: false
-            currentConfig.cpuGovernorEnabled = switchMap["cpu"]?.isChecked ?: false
-            currentConfig.greenifyEnabled = switchMap["greenify"]?.isChecked ?: false
-            ConfigManager.saveAppConfig(currentConfig)
-            Toast.makeText(this, R.string.toast_saved, Toast.LENGTH_LONG).show()
-        }
-
-        btnReset.setOnClickListener {
-            ConfigManager.deleteAppConfig(currentPkg)
-            currentConfig = ConfigManager.createDefault(currentPkg)
-            syncSwitches()
-            Toast.makeText(this, R.string.toast_reset, Toast.LENGTH_SHORT).show()
         }
     }
+}
 
-    /** 构建 11 个开关（7 应用层 + 4 系统级） */
-    private fun buildSwitches() {
-        appSwitchContainer.removeAllViews()
-        sysSwitchContainer.removeAllViews()
-        switchMap.clear()
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val isLandscape = LocalConfiguration.current.screenWidthDp > LocalConfiguration.current.screenHeightDp
 
-        val appItems = listOf(
-            "wakelock" to (getString(R.string.opt_wakelock) to getString(R.string.opt_wakelock_sub)),
-            "alarm" to (getString(R.string.opt_alarm) to getString(R.string.opt_alarm_sub)),
-            "sync" to (getString(R.string.opt_sync) to getString(R.string.opt_sync_sub)),
-            "job" to (getString(R.string.opt_job) to getString(R.string.opt_job_sub)),
-            "location" to (getString(R.string.opt_location) to getString(R.string.opt_location_sub)),
-            "animation" to (getString(R.string.opt_animation) to getString(R.string.opt_animation_sub)),
-            "sensor" to (getString(R.string.opt_sensor) to getString(R.string.opt_sensor_sub))
-        )
+    var cfg by remember { mutableStateOf(ConfigManager.getGlobalConfig()) }
+    val onCfgChange: (BatteryConfig) -> Unit = { cfg = it }
 
-        val sysItems = listOf(
-            "doze" to (getString(R.string.opt_doze) to getString(R.string.opt_doze_sub)),
-            "freeze" to (getString(R.string.opt_freeze) to getString(R.string.opt_freeze_sub)),
-            "cpu" to (getString(R.string.opt_cpu) to getString(R.string.opt_cpu_sub)),
-            "greenify" to (getString(R.string.opt_greenify) to getString(R.string.opt_greenify_sub))
-        )
+    val screens = listOf(
+        Triple("home", "总开关", Icons.Default.BatteryChargingFull),
+        Triple("features", "功能", Icons.Default.Build),
+        Triple("about", "关于", Icons.Default.Info)
+    )
 
-        for ((key, pair) in appItems) {
-            val (title, sub) = pair
-            val switch = SwitchCompat(this).apply {
-                text = title
-                textSize = 15f
-                setTextColor(0xFFFFFFFF.toInt())
-                isChecked = true
-            }
-            val tvSub = TextView(this).apply {
-                text = sub
-                textSize = 11f
-                setTextColor(0x99FFFFFF.toInt())
-                setPadding(switch.paddingLeft, 0, switch.paddingRight, 0)
-            }
-            val container = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(24, 24, 24, 24)
-                addView(switch)
-                addView(tvSub)
-            }
-            val divider = View(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, 1
+    Scaffold(
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = { Text("BatteryOptimizer Pro") },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
-                setBackgroundColor(0x22FFFFFF.toInt())
+            )
+        },
+        bottomBar = {
+            if (!isLandscape) {
+                val current by navController.currentBackStackEntryAsState()
+                val route = current?.destination?.route
+                NavigationBar {
+                    screens.forEach { (r, label, icon) ->
+                        NavigationBarItem(
+                            selected = route == r,
+                            onClick = { navController.navigate(r) { popUpTo(navController.graph.startDestinationId) { saveState = true }; launchSingleTop = true; restoreState = true } },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) }
+                        )
+                    }
+                }
             }
-            appSwitchContainer.addView(container)
-            appSwitchContainer.addView(divider)
-            switchMap[key] = switch
         }
-
-        for ((key, pair) in sysItems) {
-            val (title, sub) = pair
-            val switch = SwitchCompat(this).apply {
-                text = title
-                textSize = 15f
-                setTextColor(0xFFFFFFFF.toInt())
-                isChecked = false
+    ) { inner ->
+        if (isLandscape) {
+            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxSize().padding(inner)) {
+                val current by navController.currentBackStackEntryAsState()
+                val route = current?.destination?.route
+                NavigationRail {
+                    screens.forEach { (r, label, icon) ->
+                        NavigationRailItem(
+                            selected = route == r,
+                            onClick = { navController.navigate(r) { popUpTo(navController.graph.startDestinationId) { saveState = true }; launchSingleTop = true; restoreState = true } },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) }
+                        )
+                    }
+                }
+                AppNavHost(navController, cfg, onCfgChange, PaddingValues(0.dp))
             }
-            val tvSub = TextView(this).apply {
-                text = sub
-                textSize = 11f
-                setTextColor(0xFFFFAB91.toInt())
-                setPadding(switch.paddingLeft, 0, switch.paddingRight, 0)
-            }
-            val container = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(24, 24, 24, 24)
-                addView(switch)
-                addView(tvSub)
-            }
-            val divider = View(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, 1
-                )
-                setBackgroundColor(0x22FFFFFF.toInt())
-            }
-            sysSwitchContainer.addView(container)
-            sysSwitchContainer.addView(divider)
-            switchMap[key] = switch
+        } else {
+            AppNavHost(navController, cfg, onCfgChange, inner)
         }
     }
+}
 
-    /** 构建作用域 APP 列表 */
-    private fun buildAppList() {
-        appListLayout.removeAllViews()
-        for ((pkg, name) in scopeApps) {
-            appListLayout.addView(createAppItem(pkg, name))
-        }
-    }
-
-    /** 创建单个 APP 条目 */
-    private fun createAppItem(pkg: String, name: String): LinearLayout {
-        val item = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(24, 24, 24, 24)
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        val tvName = TextView(this).apply {
-            text = name
-            textSize = 15f
-            setTextColor(0xFFFFFFFF.toInt())
-        }
-        val tvPkgView = TextView(this).apply {
-            text = pkg
-            textSize = 11f
-            setTextColor(0x99FFFFFF.toInt())
-        }
-        item.addView(tvName)
-        item.addView(tvPkgView)
-        val divider = View(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, 1
-            ).apply { topMargin = 16 }
-            setBackgroundColor(0x22FFFFFF.toInt())
-        }
-        item.addView(divider)
-
-        item.setOnClickListener {
-            currentPkg = pkg
-            loadConfig(pkg)
-            Toast.makeText(this, "已切换至 $name", Toast.LENGTH_SHORT).show()
-        }
-        return item
-    }
-
-    /** 加载指定 APP 的配置到 UI */
-    private fun loadConfig(pkg: String) {
-        currentPkg = pkg
-        currentConfig = ConfigManager.getAppConfig(pkg)
-        tvPkg.text = "当前配置: $pkg"
-        syncSwitches()
-    }
-
-    /** 把 currentConfig 同步到 UI 开关 */
-    private fun syncSwitches() {
-        switchMap["wakelock"]?.isChecked = currentConfig.wakeLockOptEnabled
-        switchMap["alarm"]?.isChecked = currentConfig.alarmOptEnabled
-        switchMap["sync"]?.isChecked = currentConfig.syncOptEnabled
-        switchMap["job"]?.isChecked = currentConfig.jobOptEnabled
-        switchMap["location"]?.isChecked = currentConfig.locationOptEnabled
-        switchMap["animation"]?.isChecked = currentConfig.animationOptEnabled
-        switchMap["sensor"]?.isChecked = currentConfig.sensorOptEnabled
-        switchMap["doze"]?.isChecked = currentConfig.dozeEnabled
-        switchMap["freeze"]?.isChecked = currentConfig.freezeEnabled
-        switchMap["cpu"]?.isChecked = currentConfig.cpuGovernorEnabled
-        switchMap["greenify"]?.isChecked = currentConfig.greenifyEnabled
+@Composable
+private fun AppNavHost(
+    navController: NavHostController,
+    cfg: BatteryConfig,
+    onCfgChange: (BatteryConfig) -> Unit,
+    padding: PaddingValues
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "home",
+        modifier = Modifier.fillMaxSize().padding(padding)
+    ) {
+        composable("home") { HomeScreen(cfg, onCfgChange) }
+        composable("features") { FeaturesScreen(cfg, onCfgChange) }
+        composable("about") { AboutScreen() }
     }
 }

@@ -1,89 +1,139 @@
 package com.adblockerx.noroot.ui
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
-import com.adblockerx.noroot.R
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PowerSettingsNew
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.adblockerx.noroot.models.AdBlockConfig
+import com.adblockerx.noroot.ui.screens.AboutScreen
+import com.adblockerx.noroot.ui.screens.FeaturesScreen
+import com.adblockerx.noroot.ui.screens.HomeScreen
+import com.adblockerx.noroot.ui.theme.AdBlockerXTheme
 import com.adblockerx.noroot.utils.ConfigManager
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var swWebView: SwitchCompat
-    private lateinit var swOkHttp: SwitchCompat
-    private lateinit var swUrlConn: SwitchCompat
-    private lateinit var swHosts: SwitchCompat
-    private lateinit var swAdView: SwitchCompat
-    private lateinit var swInjectJs: SwitchCompat
-    private lateinit var swBuiltin: SwitchCompat
-    private lateinit var swLog: SwitchCompat
-    private lateinit var etCustomList: android.widget.EditText
-    private lateinit var tvBlockedCount: TextView
-
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        ConfigManager.init(this)
-
-        bindViews()
-        loadConfig()
-
-        findViewById<Button>(R.id.btnSave).setOnClickListener {
-            saveConfig()
-            Toast.makeText(this, "配置已保存，重启目标APP生效", Toast.LENGTH_SHORT).show()
-        }
-        findViewById<Button>(R.id.btnReset).setOnClickListener {
-            ConfigManager.resetAll()
-            loadConfig()
-            Toast.makeText(this, "已恢复默认配置", Toast.LENGTH_SHORT).show()
-        }
-        findViewById<Button>(R.id.btnResetCount).setOnClickListener {
-            ConfigManager.resetBlockedCount()
-            tvBlockedCount.text = "已拦截次数：0"
-            Toast.makeText(this, "计数已清零", Toast.LENGTH_SHORT).show()
+        ConfigManager.init(applicationContext)
+        setContent {
+            AdBlockerXTheme {
+                MainScreen()
+            }
         }
     }
+}
 
-    private fun bindViews() {
-        swWebView = findViewById(R.id.swWebView)
-        swOkHttp = findViewById(R.id.swOkHttp)
-        swUrlConn = findViewById(R.id.swUrlConn)
-        swHosts = findViewById(R.id.swHosts)
-        swAdView = findViewById(R.id.swAdView)
-        swInjectJs = findViewById(R.id.swInjectJs)
-        swBuiltin = findViewById(R.id.swBuiltin)
-        swLog = findViewById(R.id.swLog)
-        etCustomList = findViewById(R.id.etCustomList)
-        tvBlockedCount = findViewById(R.id.tvBlockedCount)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val isLandscape = LocalConfiguration.current.screenWidthDp > LocalConfiguration.current.screenHeightDp
+
+    var cfg by remember { mutableStateOf(ConfigManager.getGlobalConfig()) }
+    val onCfgChange: (AdBlockConfig) -> Unit = { cfg = it }
+
+    val screens = listOf(
+        Triple("home", "总开关", Icons.Default.PowerSettingsNew),
+        Triple("features", "功能", Icons.Default.Build),
+        Triple("about", "关于", Icons.Default.Info)
+    )
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = { Text("AdBlockerX NoRoot") },
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            )
+        },
+        bottomBar = {
+            if (!isLandscape) {
+                val current by navController.currentBackStackEntryAsState()
+                val route = current?.destination?.route
+                NavigationBar {
+                    screens.forEach { (r, label, icon) ->
+                        NavigationBarItem(
+                            selected = route == r,
+                            onClick = { navController.navigate(r) { popUpTo(navController.graph.startDestinationId) { saveState = true }; launchSingleTop = true; restoreState = true } },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) }
+                        )
+                    }
+                }
+            }
+        }
+    ) { inner ->
+        if (isLandscape) {
+            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxSize().padding(inner)) {
+                val current by navController.currentBackStackEntryAsState()
+                val route = current?.destination?.route
+                NavigationRail {
+                    screens.forEach { (r, label, icon) ->
+                        NavigationRailItem(
+                            selected = route == r,
+                            onClick = { navController.navigate(r) { popUpTo(navController.graph.startDestinationId) { saveState = true }; launchSingleTop = true; restoreState = true } },
+                            icon = { Icon(icon, contentDescription = label) },
+                            label = { Text(label) }
+                        )
+                    }
+                }
+                AppNavHost(navController, cfg, onCfgChange, PaddingValues(0.dp))
+            }
+        } else {
+            AppNavHost(navController, cfg, onCfgChange, inner)
+        }
     }
+}
 
-    private fun loadConfig() {
-        val cfg = ConfigManager.getConfig()
-        swWebView.isChecked = cfg.webViewBlockEnabled
-        swOkHttp.isChecked = cfg.okHttpBlockEnabled
-        swUrlConn.isChecked = cfg.urlConnectionBlockEnabled
-        swHosts.isChecked = cfg.hostsFilterEnabled
-        swAdView.isChecked = cfg.adViewHideEnabled
-        swInjectJs.isChecked = cfg.injectJsEnabled
-        swBuiltin.isChecked = cfg.builtinBlocklistEnabled
-        swLog.isChecked = cfg.logEnabled
-        etCustomList.setText(cfg.customBlocklist.joinToString("\n"))
-        tvBlockedCount.text = "已拦截次数：${ConfigManager.getBlockedCount()}"
-    }
-
-    private fun saveConfig() {
-        val cfg = ConfigManager.getConfig()
-        cfg.webViewBlockEnabled = swWebView.isChecked
-        cfg.okHttpBlockEnabled = swOkHttp.isChecked
-        cfg.urlConnectionBlockEnabled = swUrlConn.isChecked
-        cfg.hostsFilterEnabled = swHosts.isChecked
-        cfg.adViewHideEnabled = swAdView.isChecked
-        cfg.injectJsEnabled = swInjectJs.isChecked
-        cfg.builtinBlocklistEnabled = swBuiltin.isChecked
-        cfg.logEnabled = swLog.isChecked
-        ConfigManager.saveConfig(cfg)
-        ConfigManager.saveCustomBlocklistRaw(etCustomList.text.toString())
+@Composable
+private fun AppNavHost(
+    navController: NavHostController,
+    cfg: AdBlockConfig,
+    onCfgChange: (AdBlockConfig) -> Unit,
+    padding: PaddingValues
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "home",
+        modifier = Modifier.fillMaxSize().padding(padding)
+    ) {
+        composable("home") { HomeScreen(cfg, onCfgChange) }
+        composable("features") { FeaturesScreen(cfg, onCfgChange) }
+        composable("about") { AboutScreen() }
     }
 }
