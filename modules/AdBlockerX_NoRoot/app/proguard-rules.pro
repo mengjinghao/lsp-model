@@ -1,0 +1,8 @@
+-keep class com.adblockerx.noroot.MainHook { *; }
+-keep class com.adblockerx.noroot.hooks.** { *; }
+-keep class com.adblockerx.noroot.utils.** { *; }
+-keep class com.adblockerx.noroot.models.** { *; }
+-keep class de.robv.android.xposed.** { *; }
+-dontwarn de.robv.android.xposed.**
+-keepclassmembers class com.adblockerx.noroot.models.** { *; }
+-keepattributes *Annotation*,Signature,EnclosingMethod

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Xposed Scope: 模块作用域列表
+      覆盖常见耗电大户 APP（与 NoRoot 版同步）
+    -->
+    <string-array name="xposed_scope">
+        <!-- 微信 -->
+        <item>com.tencent.mm</item>
+        <!-- QQ -->
+        <item>com.tencent.mobileqq</item>
+        <!-- 抖音 -->
+        <item>com.ss.android.ugc.aweme</item>
+        <!-- 快手 -->
+        <item>com.smile.gifmaker</item>
+        <!-- 淘宝 -->
+        <item>com.taobao.taobao</item>
+        <!-- 京东 -->
+        <item>com.jingdong.app.mall</item>
+        <!-- 拼多多 -->
+        <item>com.xunmeng.pinduoduo</item>
+        <!-- 支付宝 -->
+        <item>com.eg.android.AlipayGphone</item>
+        <!-- 网易云音乐 -->
+        <item>com.netease.cloudmusic</item>
+        <!-- 腾讯音乐 -->
+        <item>com.tencent.wmusic</item>
+        <!-- 知乎 -->
+        <item>com.zhihu.android</item>
+        <!-- 微博 -->
+        <item>com.sina.weibo</item>
+        <!-- 网易邮箱 -->
+        <item>com.netease.mail</item>
+        <!-- QQ邮箱 -->
+        <item>com.tencent.androidqqmail</item>
+    </string-array>
+</resources>

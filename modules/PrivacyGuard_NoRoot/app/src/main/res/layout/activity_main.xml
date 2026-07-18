@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF0A1A0E">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 标题 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PrivacyGuard"
+            android:textSize="24sp"
+            android:textColor="#FF4CAF50"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NoRoot版 · 应用层隐私保护 · LSPatch本地模式"
+            android:textSize="12sp"
+            android:textColor="#99FFFFFF"
+            android:gravity="center"
+            android:paddingBottom="16dp" />
+
+        <!-- 说明 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="注意：仅在目标APP进程内生效，无法影响系统全局。修改后需重启目标APP。"
+            android:textSize="11sp"
+            android:textColor="#66FFFFFF"
+            android:background="#11FFFFFF"
+            android:padding="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <!-- 配置开关容器 -->
+        <LinearLayout
+            android:id="@+id/configContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 设备ID伪造 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="设备标识伪造"
+                android:textSize="16sp"
+                android:textColor="#FF4CAF50"
+                android:textStyle="bold"
+                android:paddingBottom="4dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swDeviceId"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="伪造IMEI/MEID/ANDROID_ID/MAC/Serial"
+                android:textColor="#FFFFFFFF"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="每个APP独立随机，本次运行稳定"
+                android:textSize="11sp"
+                android:textColor="#66FFFFFF"
+                android:paddingStart="40dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginVertical="12dp" />
+
+            <!-- 剪贴板保护 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="剪贴板保护"
+                android:textSize="16sp"
+                android:textColor="#FF4CAF50"
+                android:textStyle="bold"
+                android:paddingBottom="4dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swClipboard"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="记录APP读取剪贴板行为"
+                android:textColor="#FFFFFFFF"
+                android:checked="true" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swClipboardBlock"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:text="  阻断读取（返回空）"
+                android:textColor="#99FFFFFF"
+                android:checked="false" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginVertical="12dp" />
+
+            <!-- 权限欺骗 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="权限欺骗（仅欺骗APP自身检查）"
+                android:textSize="16sp"
+                android:textColor="#FF4CAF50"
+                android:textStyle="bold"
+                android:paddingBottom="4dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swPermission"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="欺骗危险权限检查（通讯录/通话记录/电话状态）"
+                android:textColor="#FFFFFFFF"
+                android:checked="false" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="不影响系统真实授权，仅欺骗APP"
+                android:textSize="11sp"
+                android:textColor="#66FFFFFF"
+                android:paddingStart="40dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginVertical="12dp" />
+
+            <!-- 位置伪造 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="位置伪造"
+                android:textSize="16sp"
+                android:textColor="#FF4CAF50"
+                android:textStyle="bold"
+                android:paddingBottom="4dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swLocation"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="伪造GPS定位（默认上海 31.23, 121.47）"
+                android:textColor="#FFFFFFFF"
+                android:checked="false" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginVertical="12dp" />
+
+            <!-- 传感器伪造 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="传感器伪造"
+                android:textSize="16sp"
+                android:textColor="#FF4CAF50"
+                android:textStyle="bold"
+                android:paddingBottom="4dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swSensor"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="伪造加速度/陀螺仪读数（防指纹追踪）"
+                android:textColor="#FFFFFFFF"
+                android:checked="false" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginVertical="12dp" />
+
+            <!-- 广告ID屏蔽 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="广告ID屏蔽"
+                android:textSize="16sp"
+                android:textColor="#FF4CAF50"
+                android:textStyle="bold"
+                android:paddingBottom="4dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swAdId"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="屏蔽Google Advertising ID"
+                android:textColor="#FFFFFFFF"
+                android:checked="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginVertical="16dp" />
+
+            <!-- 操作按钮区 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/btnReset"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:text="恢复默认"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1"
+                    android:text="保存配置" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

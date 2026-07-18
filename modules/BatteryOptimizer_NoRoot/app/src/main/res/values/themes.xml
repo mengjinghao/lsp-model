@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.BatteryOptimizer" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#FF2E7D32</item>
+        <item name="colorPrimaryVariant">#FF1B5E20</item>
+        <item name="colorOnPrimary">#FFFFFFFF</item>
+        <item name="colorSecondary">#FF66BB6A</item>
+        <item name="colorOnSecondary">#FF000000</item>
+        <item name="android:statusBarColor">#FF1B5E20</item>
+        <item name="android:navigationBarColor">#FF0A1A0A</item>
+    </style>
+</resources>

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FF1A0E0E"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="22sp"
+            android:textColor="#FFFF5722"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Root版 · 应用层 + 系统级 hosts/Private DNS（需 Shizuku/Root）"
+            android:textSize="11sp"
+            android:textColor="#99FFFFFF"
+            android:gravity="center"
+            android:paddingBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Shizuku 状态：检测中..."
+            android:id="@+id/tvShizukuStatus"
+            android:textSize="12sp"
+            android:textColor="#FFFFC107"
+            android:gravity="center"
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="已拦截次数：0"
+            android:id="@+id/tvBlockedCount"
+            android:textSize="13sp"
+            android:textColor="#FFFFC107"
+            android:gravity="center"
+            android:paddingBottom="12dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="应用层拦截开关"
+            android:textSize="15sp"
+            android:textColor="#FFFFFFFF"
+            android:textStyle="bold"
+            android:padding="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swWebView"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="WebView 广告拦截"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swOkHttp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="OkHttp 请求拦截"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swUrlConn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="URLConnection 拦截"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swHosts"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="内存 hosts 黑名单"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swAdView"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="广告 SDK View 隐藏"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swInjectJs"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="注入 JS 隐藏广告 DOM (实验)"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="黑名单管理"
+            android:textSize="15sp"
+            android:textColor="#FFFFFFFF"
+            android:textStyle="bold"
+            android:padding="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swBuiltin"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="启用内置黑名单 (60+ 条)"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="自定义广告域名（一行一个，支持子域名匹配）"
+            android:textSize="12sp"
+            android:textColor="#CCFFFFFF"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/etCustomList"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:hint="例如：\nad.example.com\ntracker.example.com"
+            android:textColor="#FFFFFFFF"
+            android:textColorHint="#66FFFFFF"
+            android:textSize="12sp"
+            android:gravity="top|start"
+            android:background="#FF2A1414"
+            android:padding="10dp"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="系统级能力（需 Shizuku/Root）"
+            android:textSize="15sp"
+            android:textColor="#FFFF5722"
+            android:textStyle="bold"
+            android:padding="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swSystemHosts"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="系统级 hosts 修改 (Magisk overlay)"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swPrivateDns"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="系统级 Private DNS 广告过滤"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Private DNS 主机名"
+            android:textSize="12sp"
+            android:textColor="#CCFFFFFF"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/etPrivateDnsHost"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="例如：dns.adblockplus.org"
+            android:textColor="#FFFFFFFF"
+            android:textColorHint="#66FFFFFF"
+            android:textSize="13sp"
+            android:background="#FF2A1414"
+            android:paddingHorizontal="10dp"
+            android:inputType="textUri" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swDnsResolverHook"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="DNS 解析 Hook (实验，可能不稳定)"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp"
+            android:layout_marginTop="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swShizukuBridge"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Shizuku 桥接刷新 DNS 缓存"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginVertical="12dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swLog"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="启用日志输出 (adb logcat -s AdBlockerXPro:V)"
+            android:textColor="#FFFFFFFF"
+            android:paddingHorizontal="8dp" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="保存配置"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/btnRestoreHosts"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="恢复系统 hosts"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btnRestoreDns"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="恢复 Private DNS"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="恢复默认配置"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/btnResetCount"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="清零拦截计数"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="说明：Root 版包含 NoRoot 版全部应用层 Hook，并额外支持系统级 hosts/Private DNS。系统级操作需 Shizuku/Root 授权。"
+            android:textSize="11sp"
+            android:textColor="#88FFFFFF"
+            android:padding="16dp"
+            android:gravity="center" />
+
+    </LinearLayout>
+</ScrollView>

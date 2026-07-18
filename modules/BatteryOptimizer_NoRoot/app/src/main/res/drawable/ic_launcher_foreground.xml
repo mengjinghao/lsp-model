@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 电池外壳 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M40,32 L64,32 L64,28 Q64,26 66,26 L70,26 Q72,26 72,28 L72,36 L78,36 Q80,36 80,38 L80,76 Q80,78 78,78 L30,78 Q28,78 28,76 L28,38 Q28,36 30,36 L36,36 L36,28 Q36,26 38,26 L42,26 Q44,26 44,28 L44,32 Z" />
+    <!-- 电池电量（充满） -->
+    <path
+        android:fillColor="#FF66BB6A"
+        android:pathData="M34,42 L74,42 L74,74 Q74,75 73,75 L35,75 Q34,75 34,74 Z" />
+    <!-- 闪电符号 -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M58,48 L46,62 L54,62 L50,76 L66,58 L58,58 Z" />
+</vector>

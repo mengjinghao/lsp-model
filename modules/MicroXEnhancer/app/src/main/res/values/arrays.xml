@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Xposed Scope: 微X增强模块作用域
+      LSPatch本地模式通过此声明自动识别需要注入的目标APP
+    -->
+    <string-array name="xposed_scope">
+        <!-- 微信 -->
+        <item>com.tencent.mm</item>
+        <!-- QQ -->
+        <item>com.tencent.mobileqq</item>
+    </string-array>
+</resources>
