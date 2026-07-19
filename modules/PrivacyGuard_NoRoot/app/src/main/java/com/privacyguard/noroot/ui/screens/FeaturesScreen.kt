@@ -170,3 +170,5 @@ fun FeaturesScreen(cfg: PrivacyConfig, onConfigChange: (PrivacyConfig) -> Unit) 
             )
     }
 }
+
+}
