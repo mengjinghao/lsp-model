@@ -1,4 +1,4 @@
-package com.privacyguard.noroot.ui.screens
+package com.adblockerx.pro.ui.screens
 
 import android.content.Intent
 import android.net.Uri
@@ -44,9 +44,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.privacyguard.noroot.XposedLoader
-import com.privacyguard.noroot.utils.ApkDownloader
-import com.privacyguard.noroot.utils.UpdateChecker
+import com.adblockerx.pro.XposedLoader
+import com.adblockerx.pro.utils.ApkDownloader
+import com.adblockerx.pro.utils.UpdateChecker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -224,7 +224,7 @@ fun UpdateScreen() {
             // 下载安装
             if (ui.hasUpdate && !ui.isIgnored) {
                 Spacer(Modifier.height(12.dp))
-                val apk = UpdateChecker.findMatchingApk(ui, "PrivacyGuard_NoRoot")
+                val apk = UpdateChecker.findMatchingApk(ui, "AdBlockerX_Root")
                 if (apk != null) {
                     Text("下载: ${apk.name} (${"%.2f".format(apk.sizeBytes / 1024.0 / 1024.0)} MB)", style = MaterialTheme.typography.bodySmall)
                     Spacer(Modifier.height(8.dp))

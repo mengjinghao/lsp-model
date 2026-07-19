@@ -98,10 +98,10 @@ jobs:
       - name: Create Release and Upload APKs
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.4
-          name: LSP-Model 模块合集 v1.0.4
+          tag_name: v1.0.5
+          name: LSP-Model 模块合集 v1.0.5
           body: |
-            # LSP-Model Xposed 模块合集 v1.0.4
+            # LSP-Model Xposed 模块合集 v1.0.5
 
             10 个模块 APK（Root 版与 NoRoot 版分离），Material3 + Compose 架构。
 

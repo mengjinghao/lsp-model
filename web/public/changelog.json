@@ -1,38 +1,33 @@
 [
   {
+    "version": "1.0.5",
+    "date": "2026-07-19",
+    "summary": "完善热更新: 应用内自动检查+忽略版本+缓存管理+下载通知+SHA256校验",
+    "changes": [
+      "[热更新] 进入更新页自动检查(5分钟内不重复请求GitHub API)",
+      "[热更新] 自动检查开关(可在设置关闭)",
+      "[热更新] 忽略此版本功能(不喜欢的版本不再提示)",
+      "[热更新] 下载缓存管理(显示占用+一键清理)",
+      "[热更新] 下载完成系统通知(点击通知直接安装)",
+      "[热更新] APK文件SHA256校验(防篡改)",
+      "[热更新] 安装Intent兼容Android 7-14(ACTION_VIEW+fallback)",
+      "[热更新] 下载进度限频(200ms一次,避免UI卡顿)",
+      "[热更新] 已下载APK缓存复用(避免重复下载)",
+      "[热更新] 更新说明可展开收起",
+      "[权限] 补全 POST_NOTIFICATIONS (Android 13+通知必需)",
+      "[修复] UpdateScreen路径统一到 ui/screens/"
+    ]
+  },
+  {
     "version": "1.0.4",
     "date": "2026-07-19",
-    "summary": "热更新功能 + Hook增强 + 体检优化",
-    "changes": [
-      "[新功能] 10模块全部接入 GitHub Release 热更新检查",
-      "[新功能] UpdateChecker: 调用 GitHub API 检查最新版本",
-      "[新功能] ApkDownloader: 下载 APK + FileProvider 触发系统安装",
-      "[新功能] UpdateScreen: 更新检查/下载进度/安装界面",
-      "[新功能] 10模块 MainActivity 增加\"更新\"导航(5栏)",
-      "[权限] 补全 REQUEST_INSTALL_PACKAGES (APK安装必需)",
-      "[配置] FileProvider + file_paths.xml (Android 7+ 安装必需)",
-      "[依赖] 全模块增加 kotlinx-coroutines-android (协程支持)",
-      "[Hook增强] TrackerBlockHook: 追踪SDK 8→18个 (Firebase/AppsFlyer/Adjust/OneSignal等)",
-      "[Hook增强] JobSchedulerHook: 增加 cancel+enqueue Hook (原仅schedule)",
-      "健康分: 94.0% → 95.7% (弱实现4→2)"
-    ]
+    "summary": "热更新功能 + Hook增强",
+    "changes": ["GitHub Release 热更新检查", "UpdateChecker/ApkDownloader/UpdateScreen", "追踪SDK 8→18个"]
   },
   {
     "version": "1.0.3",
     "date": "2026-07-19",
-    "summary": "深度体检优化(签名环境变量/空catch/诊断页/导入导出)",
-    "changes": ["签名密码环境变量化", "489处空catch修复", "AtomicBoolean线程安全", "诊断页+导入导出+暗色模式"]
-  },
-  {
-    "version": "1.0.2",
-    "date": "2026-07-19",
-    "summary": "全模块深度体检细节修复",
-    "changes": ["修复 AdBlockerX_Root 缺失文件", "补全权限声明", "统一版本号"]
-  },
-  {
-    "version": "1.0.1",
-    "date": "2026-07-19",
-    "summary": "Compose+M3架构 + UI bug修复 + 空壳清零",
-    "changes": ["10模块重写为Compose+M3", "修复134处开关bug", "空壳12→0"]
+    "summary": "深度体检优化",
+    "changes": ["签名环境变量化", "489处空catch修复", "诊断页+导入导出"]
   }
 ]

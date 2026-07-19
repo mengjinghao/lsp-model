@@ -1,10 +1,10 @@
 {
-  "version": "1.0.4",
-  "timestamp": "2026-07-19T07:16:24.423920+00:00",
+  "version": "1.0.5",
+  "timestamp": "2026-07-19T11:44:14.414882+00:00",
   "modules": [
     {
       "name": "AdBlockerX_NoRoot",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AdViewHideHook.kt",
@@ -100,7 +100,7 @@
     },
     {
       "name": "AdBlockerX_Root",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AdViewHideHook.kt",
@@ -250,7 +250,7 @@
     },
     {
       "name": "BatteryOptimizer_NoRoot",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -355,7 +355,7 @@
     },
     {
       "name": "BatteryOptimizer_Root",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -523,7 +523,7 @@
     },
     {
       "name": "GameUnlockerPro_NoRoot",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -619,7 +619,7 @@
     },
     {
       "name": "GameUnlockerPro_Root",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -760,7 +760,7 @@
     },
     {
       "name": "MicroXEnhancer",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AdBlockHook.kt",
@@ -874,7 +874,7 @@
     },
     {
       "name": "PrivacyGuard_NoRoot",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -979,7 +979,7 @@
     },
     {
       "name": "PrivacyGuard_Root",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1138,7 +1138,7 @@
     },
     {
       "name": "ShizukuSceneFix",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "hooks": [
         {
           "file": "AutoGrantHelperHook.kt",
