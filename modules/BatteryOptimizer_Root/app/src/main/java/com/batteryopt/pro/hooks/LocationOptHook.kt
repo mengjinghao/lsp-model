@@ -73,7 +73,7 @@ object LocationOptHook {
                     }
                 })
             LogX.hookSuccess("LocationManager", "requestLocationUpdates(minTime,minDistance,Criteria,listener,looper)")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(
@@ -100,6 +100,6 @@ object LocationOptHook {
                     }
                 })
             LogX.hookSuccess("LocationManager", "requestLocationUpdates(provider,minTime,minDistance,intent)")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 }

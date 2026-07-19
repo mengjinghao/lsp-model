@@ -1,4 +1,4 @@
-package com.gameunlocker.noroot.model
+package com.gameunlocker.noroot.models
 
 /**
  * 设备机型伪装参数

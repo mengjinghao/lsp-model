@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import com.gameunlocker.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
@@ -75,7 +75,7 @@ object CpuBigCoreAffinityHook {
                         }
                     })
                 LogX.hookSuccess("Process", "setThreadPriority -> URGENT_DISPLAY")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // setThreadPriority(int tid, int priority)
             try {
@@ -86,7 +86,7 @@ object CpuBigCoreAffinityHook {
                             p.args[1] = -8
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("Process", "setThreadPriority", e)
         }

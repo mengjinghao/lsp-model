@@ -41,7 +41,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.2"
+        const val VERSION = "1.0.3"
 
         /** Scene 主包名 */
         const val SCENE_PACKAGE = "com.omarea.vtools"
@@ -129,7 +129,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
             val cat = XposedHelpers.callStaticMethod(at, "currentActivityThread")
             val app = XposedHelpers.callMethod(cat, "getApplication") as? Application
             if (app != null) ConfigManager.init(app)
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** Hook Application.onCreate 在 Application 重建时补初始化 ConfigManager */
@@ -140,10 +140,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(p: MethodHookParam) {
                         val app = p.thisObject as? Application ?: return
-                        try { ConfigManager.init(app) } catch (_: Throwable) {}
+                        try { ConfigManager.init(app) } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** 晚期变体检测：基于 Context 重新判定 */
@@ -166,9 +166,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                                 if (cfg.autoGrantHelperEnabled) AutoGrantHelperHook.apply(lpparam, cfg)
                             }
                             ConfigManager.init(ctx)
-                        } catch (_: Throwable) {}
+                        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

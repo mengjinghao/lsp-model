@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
@@ -61,11 +61,11 @@ object ThermalBypassHook {
                                             }
                                         }
                                     }
-                                } catch (_: Throwable) {}
+                                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                             }
                         })
                     LogX.hookSuccess("HardwarePropertiesManager", "getDeviceTemperatures")
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
 
             val thermalServiceClass = XposedHelpers.findClassIfExists(
@@ -85,13 +85,13 @@ object ThermalBypassHook {
                                         if (currentValue > thermalThreshold) {
                                             valueField.setFloat(temp, thermalThreshold.toFloat())
                                         }
-                                    } catch (_: Throwable) {}
+                                    } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                                     temp
                                 }
                             }
                         })
                     LogX.hookSuccess("IThermalService", "getCurrentTemperatures")
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
         } catch (e: Throwable) {
             LogX.hookFailed("ThermalService", "getDeviceTemperatures", e)
@@ -117,7 +117,7 @@ object ThermalBypassHook {
                         LogX.hookSuccess(cls.name, method.name)
                     }
                 }
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 
@@ -140,7 +140,7 @@ object ThermalBypassHook {
                         LogX.hookSuccess(cls.name, method.name)
                     }
                 }
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 
@@ -158,7 +158,7 @@ object ThermalBypassHook {
                         }
                     })
                 LogX.hookSuccess("PowerManager", "getCurrentThermalStatus -> STATUS_NONE")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(pm, "addThermalStatusListener",
@@ -169,7 +169,7 @@ object ThermalBypassHook {
                         }
                     })
                 LogX.hookSuccess("PowerManager", "addThermalStatusListener(blocked)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("PowerManager", "thermal", e)
         }
@@ -197,7 +197,7 @@ object ThermalBypassHook {
                         LogX.hookSuccess(cls, method.name)
                     }
                 }
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 }

@@ -47,7 +47,7 @@ object PackageVisibilitySpoofHook {
                     }
                 })
             LogX.hookSuccess("PackageManager", "getInstalledApplications")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // getInstalledPackages(int)
         try {
@@ -58,7 +58,7 @@ object PackageVisibilitySpoofHook {
                     }
                 })
             LogX.hookSuccess("PackageManager", "getInstalledPackages")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // getInstalledApplicationsAsUser
         try {
@@ -70,7 +70,7 @@ object PackageVisibilitySpoofHook {
                     }
                 })
             LogX.hookSuccess("PackageManager", "getInstalledApplicationsAsUser")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookGetPackageInfo(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -88,7 +88,7 @@ object PackageVisibilitySpoofHook {
                     }
                 })
             LogX.hookSuccess("PackageManager", "getPackageInfo")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun filterList(result: Any?): Any? {

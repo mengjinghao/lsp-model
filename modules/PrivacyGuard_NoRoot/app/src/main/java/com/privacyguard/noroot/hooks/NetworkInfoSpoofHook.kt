@@ -37,7 +37,7 @@ object NetworkInfoSpoofHook {
                 }
             })
             LogX.hookSuccess("WifiInfo", "getIpAddress")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // getIpAddressAsString (部分厂商扩展)
         try {
@@ -47,7 +47,7 @@ object NetworkInfoSpoofHook {
                 }
             })
             LogX.hookSuccess("WifiInfo", "getIpAddressAsString")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** DhcpInfo.ipAddress / dns1 / dns2 / gateway */
@@ -62,7 +62,7 @@ object NetworkInfoSpoofHook {
                     }
                 })
             LogX.hookSuccess("DhcpInfo", "getIpAddress")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // 直接覆盖字段
         try {
@@ -75,7 +75,7 @@ object NetworkInfoSpoofHook {
                 }
             })
             LogX.hookSuccess("DhcpInfo", "<init>")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** NetworkInterface.getHardwareAddress 返回空（防MAC指纹） */
@@ -89,7 +89,7 @@ object NetworkInfoSpoofHook {
                 }
             })
             LogX.hookSuccess("NetworkInterface", "getHardwareAddress")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun ipToInt(ip: String): Int {

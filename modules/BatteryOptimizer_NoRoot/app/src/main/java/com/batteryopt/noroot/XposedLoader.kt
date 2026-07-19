@@ -39,7 +39,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.2"
+        const val VERSION = "1.0.3"
         var currentPkg: String? = null
     }
 
@@ -117,7 +117,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
             val cat = XposedHelpers.callStaticMethod(at, "currentActivityThread")
             val app = XposedHelpers.callMethod(cat, "getApplication") as? Application
             if (app != null) ConfigManager.init(app)
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookAppLifecycle(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -127,9 +127,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(p: MethodHookParam) {
                         val app = p.thisObject as? Application ?: return
-                        try { ConfigManager.init(app) } catch (_: Throwable) {}
+                        try { ConfigManager.init(app) } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

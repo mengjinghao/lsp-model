@@ -50,7 +50,7 @@ object HostsFilterHook {
             customList = currentConfig.customBlocklist
         )
         if (hit) {
-            try { ConfigManager.incrementBlockedCount(1) } catch (_: Throwable) {}
+            try { ConfigManager.incrementBlockedCount(1) } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             LogX.d("[拦截命中] host=$host")
         }
         return hit

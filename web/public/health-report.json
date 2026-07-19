@@ -1,16 +1,16 @@
 {
-  "version": "1.0.1",
-  "timestamp": "2026-07-19T03:15:36.933960+00:00",
+  "version": "1.0.3",
+  "timestamp": "2026-07-19T05:04:30.848000+00:00",
   "modules": [
     {
       "name": "AdBlockerX_NoRoot",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AdViewHideHook.kt",
           "hookCalls": 2,
           "tryCatch": 4,
-          "logs": 5,
+          "logs": 7,
           "todo": 0,
           "lines": 112,
           "status": "ok"
@@ -19,7 +19,7 @@
           "file": "CookieCleanHook.kt",
           "hookCalls": 3,
           "tryCatch": 4,
-          "logs": 7,
+          "logs": 10,
           "todo": 0,
           "lines": 107,
           "status": "ok"
@@ -28,7 +28,7 @@
           "file": "HostsFilterHook.kt",
           "hookCalls": 0,
           "tryCatch": 1,
-          "logs": 3,
+          "logs": 4,
           "todo": 0,
           "lines": 74,
           "status": "utility"
@@ -37,7 +37,7 @@
           "file": "IntentInterceptorHook.kt",
           "hookCalls": 3,
           "tryCatch": 5,
-          "logs": 9,
+          "logs": 12,
           "todo": 0,
           "lines": 133,
           "status": "ok"
@@ -46,7 +46,7 @@
           "file": "OkHttpAdHook.kt",
           "hookCalls": 3,
           "tryCatch": 14,
-          "logs": 8,
+          "logs": 13,
           "todo": 0,
           "lines": 145,
           "status": "ok"
@@ -55,7 +55,7 @@
           "file": "RedirectBlockHook.kt",
           "hookCalls": 3,
           "tryCatch": 6,
-          "logs": 9,
+          "logs": 12,
           "todo": 0,
           "lines": 141,
           "status": "ok"
@@ -64,7 +64,7 @@
           "file": "TrackerBlockHook.kt",
           "hookCalls": 1,
           "tryCatch": 3,
-          "logs": 4,
+          "logs": 6,
           "todo": 0,
           "lines": 101,
           "status": "weak"
@@ -73,7 +73,7 @@
           "file": "URLConnectionAdHook.kt",
           "hookCalls": 6,
           "tryCatch": 8,
-          "logs": 8,
+          "logs": 14,
           "todo": 0,
           "lines": 138,
           "status": "ok"
@@ -82,14 +82,16 @@
           "file": "WebViewAdHook.kt",
           "hookCalls": 7,
           "tryCatch": 15,
-          "logs": 14,
+          "logs": 20,
           "todo": 0,
           "lines": 209,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 9,
         "ok": 7,
@@ -100,13 +102,13 @@
     },
     {
       "name": "AdBlockerX_Root",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AdViewHideHook.kt",
           "hookCalls": 2,
           "tryCatch": 4,
-          "logs": 5,
+          "logs": 7,
           "todo": 0,
           "lines": 97,
           "status": "ok"
@@ -115,7 +117,7 @@
           "file": "CookieCleanHook.kt",
           "hookCalls": 2,
           "tryCatch": 3,
-          "logs": 6,
+          "logs": 8,
           "todo": 0,
           "lines": 83,
           "status": "ok"
@@ -124,7 +126,7 @@
           "file": "DnsResolverHook.kt",
           "hookCalls": 3,
           "tryCatch": 7,
-          "logs": 12,
+          "logs": 13,
           "todo": 0,
           "lines": 115,
           "status": "ok"
@@ -133,7 +135,7 @@
           "file": "HostsFilterHook.kt",
           "hookCalls": 0,
           "tryCatch": 1,
-          "logs": 3,
+          "logs": 4,
           "todo": 0,
           "lines": 70,
           "status": "utility"
@@ -142,7 +144,7 @@
           "file": "IntentInterceptorHook.kt",
           "hookCalls": 3,
           "tryCatch": 5,
-          "logs": 9,
+          "logs": 12,
           "todo": 0,
           "lines": 115,
           "status": "ok"
@@ -160,7 +162,7 @@
           "file": "OkHttpAdHook.kt",
           "hookCalls": 3,
           "tryCatch": 13,
-          "logs": 8,
+          "logs": 13,
           "todo": 0,
           "lines": 139,
           "status": "ok"
@@ -178,7 +180,7 @@
           "file": "RedirectBlockHook.kt",
           "hookCalls": 3,
           "tryCatch": 6,
-          "logs": 9,
+          "logs": 12,
           "todo": 0,
           "lines": 125,
           "status": "ok"
@@ -205,7 +207,7 @@
           "file": "TrackerBlockHook.kt",
           "hookCalls": 1,
           "tryCatch": 3,
-          "logs": 4,
+          "logs": 6,
           "todo": 0,
           "lines": 76,
           "status": "weak"
@@ -214,7 +216,7 @@
           "file": "URLConnectionAdHook.kt",
           "hookCalls": 6,
           "tryCatch": 8,
-          "logs": 8,
+          "logs": 14,
           "todo": 0,
           "lines": 132,
           "status": "ok"
@@ -223,7 +225,7 @@
           "file": "VpnBasedBlockHook.kt",
           "hookCalls": 3,
           "tryCatch": 5,
-          "logs": 9,
+          "logs": 12,
           "todo": 0,
           "lines": 104,
           "status": "ok"
@@ -232,14 +234,16 @@
           "file": "WebViewAdHook.kt",
           "hookCalls": 7,
           "tryCatch": 15,
-          "logs": 14,
+          "logs": 20,
           "todo": 0,
           "lines": 204,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 15,
         "ok": 13,
@@ -250,13 +254,13 @@
     },
     {
       "name": "BatteryOptimizer_NoRoot",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
           "hookCalls": 5,
           "tryCatch": 8,
-          "logs": 18,
+          "logs": 20,
           "todo": 0,
           "lines": 179,
           "status": "ok"
@@ -265,7 +269,7 @@
           "file": "AnimationOptHook.kt",
           "hookCalls": 3,
           "tryCatch": 4,
-          "logs": 7,
+          "logs": 9,
           "todo": 0,
           "lines": 107,
           "status": "ok"
@@ -283,7 +287,7 @@
           "file": "BluetoothScanThrottleHook.kt",
           "hookCalls": 4,
           "tryCatch": 4,
-          "logs": 9,
+          "logs": 13,
           "todo": 0,
           "lines": 131,
           "status": "ok"
@@ -292,7 +296,7 @@
           "file": "CameraBackgroundBlockHook.kt",
           "hookCalls": 3,
           "tryCatch": 4,
-          "logs": 7,
+          "logs": 10,
           "todo": 0,
           "lines": 120,
           "status": "ok"
@@ -301,7 +305,7 @@
           "file": "JobSchedulerHook.kt",
           "hookCalls": 1,
           "tryCatch": 5,
-          "logs": 7,
+          "logs": 9,
           "todo": 0,
           "lines": 91,
           "status": "weak"
@@ -310,7 +314,7 @@
           "file": "LocationOptHook.kt",
           "hookCalls": 3,
           "tryCatch": 3,
-          "logs": 10,
+          "logs": 12,
           "todo": 0,
           "lines": 118,
           "status": "ok"
@@ -319,7 +323,7 @@
           "file": "SensorOptHook.kt",
           "hookCalls": 3,
           "tryCatch": 3,
-          "logs": 8,
+          "logs": 10,
           "todo": 0,
           "lines": 103,
           "status": "ok"
@@ -328,7 +332,7 @@
           "file": "VibratorThrottleHook.kt",
           "hookCalls": 4,
           "tryCatch": 4,
-          "logs": 9,
+          "logs": 13,
           "todo": 0,
           "lines": 142,
           "status": "ok"
@@ -337,14 +341,16 @@
           "file": "WakeLockHook.kt",
           "hookCalls": 4,
           "tryCatch": 11,
-          "logs": 20,
+          "logs": 21,
           "todo": 0,
           "lines": 235,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 10,
         "ok": 9,
@@ -355,13 +361,13 @@
     },
     {
       "name": "BatteryOptimizer_Root",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
           "hookCalls": 5,
           "tryCatch": 8,
-          "logs": 18,
+          "logs": 20,
           "todo": 0,
           "lines": 171,
           "status": "ok"
@@ -370,7 +376,7 @@
           "file": "AnimationOptHook.kt",
           "hookCalls": 3,
           "tryCatch": 4,
-          "logs": 7,
+          "logs": 9,
           "todo": 0,
           "lines": 99,
           "status": "ok"
@@ -406,7 +412,7 @@
           "file": "BluetoothScanThrottleHook.kt",
           "hookCalls": 4,
           "tryCatch": 4,
-          "logs": 9,
+          "logs": 13,
           "todo": 0,
           "lines": 110,
           "status": "ok"
@@ -415,7 +421,7 @@
           "file": "CameraBackgroundBlockHook.kt",
           "hookCalls": 3,
           "tryCatch": 4,
-          "logs": 7,
+          "logs": 10,
           "todo": 0,
           "lines": 97,
           "status": "ok"
@@ -442,7 +448,7 @@
           "file": "JobSchedulerHook.kt",
           "hookCalls": 1,
           "tryCatch": 5,
-          "logs": 7,
+          "logs": 10,
           "todo": 0,
           "lines": 77,
           "status": "weak"
@@ -451,7 +457,7 @@
           "file": "LocationOptHook.kt",
           "hookCalls": 3,
           "tryCatch": 3,
-          "logs": 10,
+          "logs": 12,
           "todo": 0,
           "lines": 106,
           "status": "ok"
@@ -469,7 +475,7 @@
           "file": "SensorOptHook.kt",
           "hookCalls": 3,
           "tryCatch": 3,
-          "logs": 8,
+          "logs": 10,
           "todo": 0,
           "lines": 91,
           "status": "ok"
@@ -496,7 +502,7 @@
           "file": "VibratorThrottleHook.kt",
           "hookCalls": 4,
           "tryCatch": 4,
-          "logs": 9,
+          "logs": 13,
           "todo": 0,
           "lines": 119,
           "status": "ok"
@@ -505,14 +511,16 @@
           "file": "WakeLockHook.kt",
           "hookCalls": 4,
           "tryCatch": 11,
-          "logs": 20,
+          "logs": 21,
           "todo": 0,
           "lines": 218,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 17,
         "ok": 16,
@@ -523,13 +531,13 @@
     },
     {
       "name": "GameUnlockerPro_NoRoot",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
           "hookCalls": 3,
           "tryCatch": 8,
-          "logs": 7,
+          "logs": 13,
           "todo": 0,
           "lines": 108,
           "status": "ok"
@@ -538,7 +546,7 @@
           "file": "DeviceSpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 8,
-          "logs": 9,
+          "logs": 12,
           "todo": 0,
           "lines": 156,
           "status": "ok"
@@ -547,7 +555,7 @@
           "file": "FrameRateUnlockHook.kt",
           "hookCalls": 7,
           "tryCatch": 14,
-          "logs": 13,
+          "logs": 24,
           "todo": 0,
           "lines": 192,
           "status": "ok"
@@ -556,7 +564,7 @@
           "file": "GameDetectionHideHook.kt",
           "hookCalls": 8,
           "tryCatch": 12,
-          "logs": 14,
+          "logs": 18,
           "todo": 0,
           "lines": 198,
           "status": "ok"
@@ -565,7 +573,7 @@
           "file": "MemoryDefragHook.kt",
           "hookCalls": 4,
           "tryCatch": 9,
-          "logs": 9,
+          "logs": 15,
           "todo": 0,
           "lines": 127,
           "status": "ok"
@@ -574,7 +582,7 @@
           "file": "NetworkLatencyOptHook.kt",
           "hookCalls": 7,
           "tryCatch": 13,
-          "logs": 9,
+          "logs": 19,
           "todo": 0,
           "lines": 160,
           "status": "ok"
@@ -583,7 +591,7 @@
           "file": "ProcessOptimizerHook.kt",
           "hookCalls": 2,
           "tryCatch": 5,
-          "logs": 6,
+          "logs": 9,
           "todo": 0,
           "lines": 94,
           "status": "ok"
@@ -592,7 +600,7 @@
           "file": "ResolutionSpoofHook.kt",
           "hookCalls": 3,
           "tryCatch": 7,
-          "logs": 5,
+          "logs": 10,
           "todo": 0,
           "lines": 92,
           "status": "ok"
@@ -601,14 +609,16 @@
           "file": "TouchSamplingBoostHook.kt",
           "hookCalls": 2,
           "tryCatch": 7,
-          "logs": 6,
+          "logs": 11,
           "todo": 0,
           "lines": 97,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 9,
         "ok": 9,
@@ -619,13 +629,13 @@
     },
     {
       "name": "GameUnlockerPro_Root",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
           "hookCalls": 3,
           "tryCatch": 8,
-          "logs": 7,
+          "logs": 13,
           "todo": 0,
           "lines": 93,
           "status": "ok"
@@ -634,7 +644,7 @@
           "file": "CpuBigCoreAffinityHook.kt",
           "hookCalls": 2,
           "tryCatch": 3,
-          "logs": 5,
+          "logs": 7,
           "todo": 0,
           "lines": 95,
           "status": "ok"
@@ -643,7 +653,7 @@
           "file": "DeviceSpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 8,
-          "logs": 9,
+          "logs": 13,
           "todo": 0,
           "lines": 144,
           "status": "ok"
@@ -652,7 +662,7 @@
           "file": "FrameRateUnlockHook.kt",
           "hookCalls": 7,
           "tryCatch": 14,
-          "logs": 11,
+          "logs": 22,
           "todo": 0,
           "lines": 167,
           "status": "ok"
@@ -661,7 +671,7 @@
           "file": "GPUSchedulerHook.kt",
           "hookCalls": 7,
           "tryCatch": 11,
-          "logs": 15,
+          "logs": 22,
           "todo": 0,
           "lines": 145,
           "status": "ok"
@@ -670,7 +680,7 @@
           "file": "GameDetectionHideHook.kt",
           "hookCalls": 8,
           "tryCatch": 12,
-          "logs": 14,
+          "logs": 18,
           "todo": 0,
           "lines": 189,
           "status": "ok"
@@ -679,7 +689,7 @@
           "file": "GameModeActivationHook.kt",
           "hookCalls": 2,
           "tryCatch": 3,
-          "logs": 5,
+          "logs": 7,
           "todo": 0,
           "lines": 86,
           "status": "ok"
@@ -688,7 +698,7 @@
           "file": "MemoryDefragHook.kt",
           "hookCalls": 4,
           "tryCatch": 9,
-          "logs": 9,
+          "logs": 15,
           "todo": 0,
           "lines": 111,
           "status": "ok"
@@ -697,7 +707,7 @@
           "file": "NetworkLatencyOptHook.kt",
           "hookCalls": 7,
           "tryCatch": 13,
-          "logs": 9,
+          "logs": 19,
           "todo": 0,
           "lines": 147,
           "status": "ok"
@@ -706,7 +716,7 @@
           "file": "ProcessOptimizerHook.kt",
           "hookCalls": 2,
           "tryCatch": 5,
-          "logs": 8,
+          "logs": 11,
           "todo": 0,
           "lines": 101,
           "status": "ok"
@@ -715,7 +725,7 @@
           "file": "ResolutionSpoofHook.kt",
           "hookCalls": 3,
           "tryCatch": 7,
-          "logs": 5,
+          "logs": 10,
           "todo": 0,
           "lines": 91,
           "status": "ok"
@@ -724,7 +734,7 @@
           "file": "ShizukuBridgeHook.kt",
           "hookCalls": 1,
           "tryCatch": 2,
-          "logs": 6,
+          "logs": 7,
           "todo": 0,
           "lines": 106,
           "status": "ok"
@@ -733,7 +743,7 @@
           "file": "ThermalBypassHook.kt",
           "hookCalls": 7,
           "tryCatch": 11,
-          "logs": 10,
+          "logs": 19,
           "todo": 0,
           "lines": 204,
           "status": "ok"
@@ -742,14 +752,16 @@
           "file": "TouchSamplingBoostHook.kt",
           "hookCalls": 2,
           "tryCatch": 7,
-          "logs": 6,
+          "logs": 11,
           "todo": 0,
           "lines": 88,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 14,
         "ok": 14,
@@ -760,7 +772,7 @@
     },
     {
       "name": "MicroXEnhancer",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AdBlockHook.kt",
@@ -802,18 +814,18 @@
           "file": "CustomThemeHook.kt",
           "hookCalls": 3,
           "tryCatch": 3,
-          "logs": 0,
+          "logs": 3,
           "todo": 0,
-          "lines": 119,
+          "lines": 120,
           "status": "ok"
         },
         {
           "file": "MessageSearchEnhanceHook.kt",
           "hookCalls": 5,
           "tryCatch": 5,
-          "logs": 0,
+          "logs": 5,
           "todo": 0,
-          "lines": 142,
+          "lines": 143,
           "status": "ok"
         },
         {
@@ -856,14 +868,16 @@
           "file": "VoiceMessageExportHook.kt",
           "hookCalls": 2,
           "tryCatch": 4,
-          "logs": 0,
+          "logs": 1,
           "todo": 0,
-          "lines": 130,
+          "lines": 131,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 11,
         "ok": 11,
@@ -874,13 +888,13 @@
     },
     {
       "name": "PrivacyGuard_NoRoot",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
           "hookCalls": 4,
           "tryCatch": 6,
-          "logs": 10,
+          "logs": 14,
           "todo": 0,
           "lines": 102,
           "status": "ok"
@@ -889,7 +903,7 @@
           "file": "ClipboardGuardHook.kt",
           "hookCalls": 4,
           "tryCatch": 5,
-          "logs": 9,
+          "logs": 13,
           "todo": 0,
           "lines": 85,
           "status": "ok"
@@ -898,7 +912,7 @@
           "file": "DeviceIdSpoofHook.kt",
           "hookCalls": 14,
           "tryCatch": 19,
-          "logs": 20,
+          "logs": 35,
           "todo": 0,
           "lines": 235,
           "status": "ok"
@@ -907,7 +921,7 @@
           "file": "LocationSpoofHook.kt",
           "hookCalls": 7,
           "tryCatch": 11,
-          "logs": 11,
+          "logs": 20,
           "todo": 0,
           "lines": 154,
           "status": "ok"
@@ -916,7 +930,7 @@
           "file": "NetworkInfoSpoofHook.kt",
           "hookCalls": 5,
           "tryCatch": 6,
-          "logs": 6,
+          "logs": 11,
           "todo": 0,
           "lines": 107,
           "status": "ok"
@@ -925,7 +939,7 @@
           "file": "PackageVisibilitySpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 5,
-          "logs": 5,
+          "logs": 9,
           "todo": 0,
           "lines": 107,
           "status": "ok"
@@ -934,7 +948,7 @@
           "file": "PermissionSpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 7,
-          "logs": 10,
+          "logs": 14,
           "todo": 0,
           "lines": 135,
           "status": "ok"
@@ -943,7 +957,7 @@
           "file": "ScreenMetricsSpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 4,
-          "logs": 5,
+          "logs": 9,
           "todo": 0,
           "lines": 98,
           "status": "ok"
@@ -952,7 +966,7 @@
           "file": "SensorFakerHook.kt",
           "hookCalls": 2,
           "tryCatch": 4,
-          "logs": 4,
+          "logs": 7,
           "todo": 0,
           "lines": 122,
           "status": "ok"
@@ -961,14 +975,16 @@
           "file": "StoragePathSpoofHook.kt",
           "hookCalls": 3,
           "tryCatch": 3,
-          "logs": 5,
+          "logs": 8,
           "todo": 0,
           "lines": 66,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 10,
         "ok": 10,
@@ -979,13 +995,13 @@
     },
     {
       "name": "PrivacyGuard_Root",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
           "hookCalls": 4,
           "tryCatch": 6,
-          "logs": 10,
+          "logs": 14,
           "todo": 0,
           "lines": 85,
           "status": "ok"
@@ -994,7 +1010,7 @@
           "file": "ClipboardGuardHook.kt",
           "hookCalls": 4,
           "tryCatch": 5,
-          "logs": 9,
+          "logs": 13,
           "todo": 0,
           "lines": 73,
           "status": "ok"
@@ -1003,7 +1019,7 @@
           "file": "DeviceIdSpoofHook.kt",
           "hookCalls": 10,
           "tryCatch": 15,
-          "logs": 16,
+          "logs": 27,
           "todo": 0,
           "lines": 171,
           "status": "ok"
@@ -1012,7 +1028,7 @@
           "file": "GlobalPermissionHook.kt",
           "hookCalls": 2,
           "tryCatch": 3,
-          "logs": 9,
+          "logs": 11,
           "todo": 0,
           "lines": 99,
           "status": "ok"
@@ -1021,7 +1037,7 @@
           "file": "KernelCmdlineHideHook.kt",
           "hookCalls": 7,
           "tryCatch": 16,
-          "logs": 13,
+          "logs": 27,
           "todo": 0,
           "lines": 202,
           "status": "ok"
@@ -1030,7 +1046,7 @@
           "file": "LocationSpoofHook.kt",
           "hookCalls": 7,
           "tryCatch": 11,
-          "logs": 11,
+          "logs": 20,
           "todo": 0,
           "lines": 136,
           "status": "ok"
@@ -1039,7 +1055,7 @@
           "file": "NetworkIdentifierHook.kt",
           "hookCalls": 1,
           "tryCatch": 2,
-          "logs": 7,
+          "logs": 8,
           "todo": 0,
           "lines": 77,
           "status": "ok"
@@ -1048,7 +1064,7 @@
           "file": "NetworkInfoSpoofHook.kt",
           "hookCalls": 5,
           "tryCatch": 6,
-          "logs": 6,
+          "logs": 11,
           "todo": 0,
           "lines": 97,
           "status": "ok"
@@ -1057,7 +1073,7 @@
           "file": "PackageVisibilitySpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 5,
-          "logs": 5,
+          "logs": 9,
           "todo": 0,
           "lines": 101,
           "status": "ok"
@@ -1066,7 +1082,7 @@
           "file": "PermissionSpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 7,
-          "logs": 10,
+          "logs": 14,
           "todo": 0,
           "lines": 122,
           "status": "ok"
@@ -1075,7 +1091,7 @@
           "file": "ScreenMetricsSpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 4,
-          "logs": 5,
+          "logs": 9,
           "todo": 0,
           "lines": 91,
           "status": "ok"
@@ -1084,7 +1100,7 @@
           "file": "SelinuxContextSpoofHook.kt",
           "hookCalls": 5,
           "tryCatch": 11,
-          "logs": 11,
+          "logs": 20,
           "todo": 0,
           "lines": 169,
           "status": "ok"
@@ -1093,7 +1109,7 @@
           "file": "SensorFakerHook.kt",
           "hookCalls": 2,
           "tryCatch": 4,
-          "logs": 4,
+          "logs": 7,
           "todo": 0,
           "lines": 97,
           "status": "ok"
@@ -1102,7 +1118,7 @@
           "file": "ShizukuBridgeHook.kt",
           "hookCalls": 1,
           "tryCatch": 2,
-          "logs": 9,
+          "logs": 10,
           "todo": 0,
           "lines": 97,
           "status": "ok"
@@ -1111,7 +1127,7 @@
           "file": "StoragePathSpoofHook.kt",
           "hookCalls": 3,
           "tryCatch": 3,
-          "logs": 5,
+          "logs": 8,
           "todo": 0,
           "lines": 58,
           "status": "ok"
@@ -1120,14 +1136,16 @@
           "file": "SystemPropSpoofHook.kt",
           "hookCalls": 2,
           "tryCatch": 3,
-          "logs": 7,
+          "logs": 9,
           "todo": 0,
           "lines": 106,
           "status": "ok"
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 16,
         "ok": 16,
@@ -1138,13 +1156,13 @@
     },
     {
       "name": "ShizukuSceneFix",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "hooks": [
         {
           "file": "AutoGrantHelperHook.kt",
           "hookCalls": 2,
           "tryCatch": 5,
-          "logs": 8,
+          "logs": 10,
           "todo": 0,
           "lines": 129,
           "status": "ok"
@@ -1153,7 +1171,7 @@
           "file": "HideFromSceneHook.kt",
           "hookCalls": 4,
           "tryCatch": 5,
-          "logs": 5,
+          "logs": 9,
           "todo": 0,
           "lines": 121,
           "status": "ok"
@@ -1162,7 +1180,7 @@
           "file": "ScenePermissionRequesterHook.kt",
           "hookCalls": 3,
           "tryCatch": 8,
-          "logs": 20,
+          "logs": 21,
           "todo": 0,
           "lines": 180,
           "status": "ok"
@@ -1171,18 +1189,18 @@
           "file": "ServiceWatchdogHook.kt",
           "hookCalls": 3,
           "tryCatch": 7,
-          "logs": 11,
+          "logs": 15,
           "todo": 0,
-          "lines": 161,
+          "lines": 160,
           "status": "ok"
         },
         {
           "file": "ShizukuListInjectorHook.kt",
           "hookCalls": 8,
           "tryCatch": 16,
-          "logs": 23,
+          "logs": 35,
           "todo": 0,
-          "lines": 366,
+          "lines": 365,
           "status": "ok"
         },
         {
@@ -1196,7 +1214,9 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [],
+      "configIssues": [
+        "versionName=1.0.1"
+      ],
       "stats": {
         "hookFiles": 6,
         "ok": 5,

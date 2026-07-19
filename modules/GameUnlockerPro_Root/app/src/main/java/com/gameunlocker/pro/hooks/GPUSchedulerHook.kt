@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -44,7 +44,7 @@ object GPUSchedulerHook {
                         }
                     })
                 LogX.hookSuccess("EGL14", "eglInitialize")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("EGL14", "eglInitialize", e)
         }
@@ -68,7 +68,7 @@ object GPUSchedulerHook {
                         }
                     })
                 LogX.hookSuccess("GLSurfaceView", "setRenderMode")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(glsv, "setEGLContextClientVersion",
@@ -78,7 +78,7 @@ object GPUSchedulerHook {
                             LogX.d("GLSurfaceView EGL Context 版本: ${p.args[0]}")
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("GLSurfaceView", "setRenderMode", e)
         }
@@ -96,7 +96,7 @@ object GPUSchedulerHook {
                             LogX.d("HardwareRenderer 帧提交回调已 Hook")
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             try {
                 XposedHelpers.findAndHookMethod(hw, "setFrameCompleteCallback",
                     "android.graphics.HardwareRenderer\$FrameCompleteCallback",
@@ -105,7 +105,7 @@ object GPUSchedulerHook {
                             LogX.d("HardwareRenderer 帧完成回调已 Hook")
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             LogX.hookSuccess("HardwareRenderer", "frame callbacks")
         } catch (e: Throwable) {
             LogX.hookFailed("HardwareRenderer", "frame callbacks", e)
@@ -125,7 +125,7 @@ object GPUSchedulerHook {
                         }
                     })
                 LogX.hookSuccess("Choreographer", "getFrameDelay -> 0")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(ch, "getFrameIntervalNanos",
@@ -136,7 +136,7 @@ object GPUSchedulerHook {
                         }
                     })
                 LogX.hookSuccess("Choreographer", "getFrameIntervalNanos -> 8.33ms")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("Choreographer", "frameDelay", e)
         }

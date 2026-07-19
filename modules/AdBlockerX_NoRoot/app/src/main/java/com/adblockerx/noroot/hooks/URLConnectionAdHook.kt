@@ -46,7 +46,7 @@ object URLConnectionAdHook {
                             }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 val proxyClass = XposedHelpers.findClassIfExists(
@@ -63,7 +63,7 @@ object URLConnectionAdHook {
                             }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("URLConnectionAdHook.openConnection 异常", e)
         }
@@ -84,7 +84,7 @@ object URLConnectionAdHook {
                         }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(httpUrlConnClass, "getResponseCode",
@@ -97,7 +97,7 @@ object URLConnectionAdHook {
                         }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(httpUrlConnClass, "getInputStream",
@@ -110,7 +110,7 @@ object URLConnectionAdHook {
                         }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             val httpsClass = XposedHelpers.findClassIfExists(
@@ -125,7 +125,7 @@ object URLConnectionAdHook {
                         }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun extractHostFromConn(conn: Any): String? {

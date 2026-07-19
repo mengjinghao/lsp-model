@@ -61,11 +61,11 @@ object KernelCmdlineHideHook {
                                     InstanceTagger.setTag(p.thisObject, "isCmdline", true)
                                     LogX.d("检测到 APP 读取 /proc/cmdline")
                                 }
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("FileInputStream", "<init>(String) cmdline")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // FileInputStream(File file)
             try {
@@ -81,11 +81,11 @@ object KernelCmdlineHideHook {
                                     InstanceTagger.setTag(p.thisObject, "isCmdline", true)
                                     LogX.d("检测到 APP 通过 File 读取 /proc/cmdline")
                                 }
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("FileInputStream", "<init>(File) cmdline")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // Hook read(byte[], int, int)
             try {
@@ -102,11 +102,11 @@ object KernelCmdlineHideHook {
                                 val n = minOf(fakeBytes.size, len)
                                 System.arraycopy(fakeBytes, 0, buf, off, n)
                                 p.result = n
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("FileInputStream", "read(buf) cmdline")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("FileInputStream", "cmdline", e)
         }
@@ -133,11 +133,11 @@ object KernelCmdlineHideHook {
                                     InstanceTagger.setTag(p.thisObject, "isCmdline", true)
                                     LogX.d("检测到 APP 通过 RandomAccessFile 读取 /proc/cmdline")
                                 }
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("RandomAccessFile", "<init>(String, mode) cmdline")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // RandomAccessFile(File file, String mode)
             try {
@@ -152,11 +152,11 @@ object KernelCmdlineHideHook {
                                 if (path == CMDLINE_PATH) {
                                     InstanceTagger.setTag(p.thisObject, "isCmdline", true)
                                 }
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("RandomAccessFile", "<init>(File, mode) cmdline")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // Hook readLine()
             try {
@@ -168,11 +168,11 @@ object KernelCmdlineHideHook {
                                 if (flag) {
                                     p.result = FAKE_CMDLINE
                                 }
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("RandomAccessFile", "readLine cmdline")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // Hook read(byte[], int, int)
             try {
@@ -189,11 +189,11 @@ object KernelCmdlineHideHook {
                                 val n = minOf(fakeBytes.size, len)
                                 System.arraycopy(fakeBytes, 0, buf, off, n)
                                 p.result = n
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("RandomAccessFile", "read(buf) cmdline")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("RandomAccessFile", "cmdline", e)
         }

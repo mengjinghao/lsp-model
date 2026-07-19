@@ -35,7 +35,7 @@ object ClipboardGuardHook {
                     }
                 })
                 LogX.hookSuccess("ClipboardManager", "getPrimaryClip")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(cm, "getPrimaryClipDescription", object : XC_MethodHook() {
@@ -45,7 +45,7 @@ object ClipboardGuardHook {
                     }
                 })
                 LogX.hookSuccess("ClipboardManager", "getPrimaryClipDescription")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(cm, "hasPrimaryClip", object : XC_MethodHook() {
@@ -54,7 +54,7 @@ object ClipboardGuardHook {
                     }
                 })
                 LogX.hookSuccess("ClipboardManager", "hasPrimaryClip")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(cm, "setPrimaryClip",
@@ -64,7 +64,7 @@ object ClipboardGuardHook {
                         }
                     })
                 LogX.hookSuccess("ClipboardManager", "setPrimaryClip")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("ClipboardManager", "primary-clip", e)
         }

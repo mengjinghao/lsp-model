@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.utils
 
-import com.gameunlocker.pro.model.DeviceProfile
+import com.gameunlocker.pro.models.DeviceProfile
 
 /**
  * 内置旗舰机型参数库（应用层伪装用 + Root 版 Shizuku setprop 修改用）

@@ -1,6 +1,6 @@
 package com.gameunlocker.noroot.hooks
 
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.GameConfig
 import com.gameunlocker.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -50,7 +50,7 @@ object NetworkLatencyOptHook {
                         applyTcpNoDelay(p.thisObject as? Socket)
                     }
                 })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // Socket(String host, int port)
             try {
@@ -61,7 +61,7 @@ object NetworkLatencyOptHook {
                             applyTcpNoDelay(p.thisObject as? Socket)
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // Socket(InetAddress address, int port)
             try {
@@ -72,7 +72,7 @@ object NetworkLatencyOptHook {
                             applyTcpNoDelay(p.thisObject as? Socket)
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             LogX.hookSuccess("Socket", "constructors -> TCP_NODELAY")
         } catch (e: Throwable) {
@@ -95,7 +95,7 @@ object NetworkLatencyOptHook {
                         }
                     })
                 LogX.hookSuccess("Socket", "setTcpNoDelay -> true")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(sk, "setReceiveBufferSize",
@@ -107,7 +107,7 @@ object NetworkLatencyOptHook {
                         }
                     })
                 LogX.hookSuccess("Socket", "setReceiveBufferSize -> >= $RECV_BUFFER")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(sk, "setSendBufferSize",
@@ -119,7 +119,7 @@ object NetworkLatencyOptHook {
                         }
                     })
                 LogX.hookSuccess("Socket", "setSendBufferSize -> >= $SEND_BUFFER")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("Socket", "setSocketOptions", e)
         }
@@ -131,9 +131,9 @@ object NetworkLatencyOptHook {
             socket ?: return
             if (!socket.isConnected) return
             socket.tcpNoDelay = true
-            try { socket.receiveBufferSize = RECV_BUFFER } catch (_: Throwable) {}
-            try { socket.sendBufferSize = SEND_BUFFER } catch (_: Throwable) {}
-        } catch (_: Throwable) {}
+            try { socket.receiveBufferSize = RECV_BUFFER } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+            try { socket.sendBufferSize = SEND_BUFFER } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** Hook DatagramSocket 提升数据报处理（仅日志） */
@@ -151,7 +151,7 @@ object NetworkLatencyOptHook {
                         }
                     })
                 LogX.hookSuccess("DatagramSocket", "setReceiveBufferSize")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("DatagramSocket", "setReceiveBufferSize", e)
         }

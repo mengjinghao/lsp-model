@@ -76,7 +76,7 @@ object JobSchedulerHook {
                 val newFlags = curFlags or (1 shl 0)
                 flagsField.setInt(jobInfo, newFlags)
                 LogX.d("Job 追加 requireDeviceIdle 约束")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         }
 
         // 3. 日志记录 jobId
@@ -85,6 +85,6 @@ object JobSchedulerHook {
             idField.isAccessible = true
             val jobId = idField.getInt(jobInfo)
             LogX.d("Job schedule: id=$jobId")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 }

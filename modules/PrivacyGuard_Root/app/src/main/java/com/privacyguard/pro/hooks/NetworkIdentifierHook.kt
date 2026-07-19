@@ -41,7 +41,7 @@ object NetworkIdentifierHook {
                     }
                 })
                 LogX.hookSuccess("NetworkInterface", "getHardwareAddress")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("NetworkInterface", "getHardwareAddress", e)
         }

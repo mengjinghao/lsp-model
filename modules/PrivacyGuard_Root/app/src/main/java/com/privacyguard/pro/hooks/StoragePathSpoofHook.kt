@@ -32,7 +32,7 @@ object StoragePathSpoofHook {
                 }
             })
             LogX.hookSuccess("Environment", "getExternalStorageDirectory")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(env, "isExternalStorageEmulated",
@@ -42,7 +42,7 @@ object StoragePathSpoofHook {
                 }
             })
             LogX.hookSuccess("Environment", "isExternalStorageEmulated")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(env, "isExternalStorageRemovable",
@@ -52,6 +52,6 @@ object StoragePathSpoofHook {
                 }
             })
             LogX.hookSuccess("Environment", "isExternalStorageRemovable")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

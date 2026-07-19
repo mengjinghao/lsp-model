@@ -64,7 +64,7 @@ object AutoGrantHelperHook {
                     }
                 })
                 LogX.hookSuccess(clsName, "onResume")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // 同时 Hook onCreate 作为冗余
             try {
@@ -76,7 +76,7 @@ object AutoGrantHelperHook {
                     }
                 })
                 LogX.hookSuccess(clsName, "onCreate")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 

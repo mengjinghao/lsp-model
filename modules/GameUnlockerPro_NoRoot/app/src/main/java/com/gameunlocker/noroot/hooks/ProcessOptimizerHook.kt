@@ -1,6 +1,6 @@
 package com.gameunlocker.noroot.hooks
 
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.GameConfig
 import com.gameunlocker.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -52,7 +52,7 @@ object ProcessOptimizerHook {
                             }
                         })
                     LogX.hookSuccess("GLSurfaceView", "setRenderMode -> CONTINUOUSLY")
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
 
             // 提升主线程优先级
@@ -62,7 +62,7 @@ object ProcessOptimizerHook {
                 // THREAD_PRIORITY_URGENT_DISPLAY = -8
                 setThreadPriority.invoke(null, -8)
                 LogX.d("主线程优先级提升至 URGENT_DISPLAY(-8)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("渲染线程优先级提升异常", e)
         }
@@ -85,7 +85,7 @@ object ProcessOptimizerHook {
                         }
                     })
                 LogX.hookSuccess("PowerManager", "getCurrentThermalStatus -> STATUS_NONE")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("PowerManager", "getCurrentThermalStatus", e)
         }

@@ -51,7 +51,7 @@ object CookieCleanHook {
                         }
                     })
                 LogX.hookSuccess("CookieManager", "getCookie(url)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(cm, "setCookie",
@@ -62,7 +62,7 @@ object CookieCleanHook {
                         }
                     })
                 LogX.hookSuccess("CookieManager", "setCookie")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("CookieCleanHook 异常", e)
         }

@@ -109,7 +109,7 @@ object AlarmOptimizerHook {
                         }
                     })
                 LogX.hookSuccess("AlarmManager", "setExact")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(
@@ -134,7 +134,7 @@ object AlarmOptimizerHook {
                         }
                     })
                 LogX.hookSuccess("AlarmManager", "setExactAndAllowWhileIdle")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.e("Hook setExact 异常", e)
         }

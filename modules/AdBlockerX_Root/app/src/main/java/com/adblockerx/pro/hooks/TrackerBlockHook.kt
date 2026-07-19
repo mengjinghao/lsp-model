@@ -49,7 +49,7 @@ object TrackerBlockHook {
                 try {
                     XposedBridge.hookMethod(m, object : XC_MethodHook() {
                         override fun beforeHookedMethod(p: MethodHookParam) {
-                            try { ConfigManager.incrementBlockedCount(1) } catch (_: Throwable) {}
+                            try { ConfigManager.incrementBlockedCount(1) } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                             LogX.d("[Tracker] 拦截上报: ${clazz.name}.$methodName")
                             val ret = m.returnType
                             p.result = when (ret) {
@@ -64,7 +64,7 @@ object TrackerBlockHook {
                         }
                     })
                     success = true
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
             success
         } catch (e: Throwable) {

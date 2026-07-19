@@ -67,7 +67,7 @@ object WebViewAdHook {
                             }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 val wrrClass = XposedHelpers.findClassIfExists(
@@ -86,7 +86,7 @@ object WebViewAdHook {
                             }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("WebViewAdHook.shouldOverrideUrlLoading 异常", e)
         }
@@ -118,7 +118,7 @@ object WebViewAdHook {
                                 java.io.InputStream::class.java
                             ).newInstance("text/plain", "utf-8", empty)
                             XposedHelpers.callMethod(resp, "setStatusCode", 404)
-                            try { XposedHelpers.callMethod(resp, "setReasonPhrase", "Not Found") } catch (_: Throwable) {}
+                            try { XposedHelpers.callMethod(resp, "setReasonPhrase", "Not Found") } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                             LogX.i("[WebView] 拦截请求 404: $url")
                             p.result = resp
                         } catch (e: Throwable) {
@@ -148,7 +148,7 @@ object WebViewAdHook {
                             }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(wvClass, "loadUrl",
@@ -162,7 +162,7 @@ object WebViewAdHook {
                             }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(wvClass, "loadDataWithBaseURL",
@@ -177,7 +177,7 @@ object WebViewAdHook {
                             }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("WebViewAdHook.loadUrl 异常", e)
         }

@@ -1,7 +1,7 @@
 package com.gameunlocker.noroot.hooks
 
-import com.gameunlocker.noroot.model.DeviceProfile
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.DeviceProfile
+import com.gameunlocker.noroot.models.GameConfig
 import com.gameunlocker.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -97,7 +97,7 @@ object DeviceSpoofHook {
                             if (props.containsKey(key)) p.result = props[key]
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // get(String)
             try {
@@ -109,7 +109,7 @@ object DeviceSpoofHook {
                             if (props.containsKey(key)) p.result = props[key]
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             LogX.hookSuccess("SystemProperties", "get(${props.size} props)")
         } catch (e: Throwable) {
@@ -130,7 +130,7 @@ object DeviceSpoofHook {
                         }
                     })
                 LogX.hookSuccess("TelephonyManager", "getDeviceId")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("TelephonyManager", "getDeviceId", e)
         }

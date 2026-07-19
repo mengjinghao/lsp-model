@@ -52,7 +52,7 @@ object VpnBasedBlockHook {
                         }
                     })
                 LogX.hookSuccess("VpnService.Builder", "establish")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("VpnBasedBlockHook.hookVpnServiceEstablish 异常", e)
         }
@@ -77,7 +77,7 @@ object VpnBasedBlockHook {
                         }
                     })
                 LogX.hookSuccess("ConnectivityManager", "getActiveNetworkInfo")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // registerNetworkCallback
             try {
@@ -95,7 +95,7 @@ object VpnBasedBlockHook {
                         })
                     LogX.hookSuccess("ConnectivityManager", "registerNetworkCallback")
                 }
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("VpnBasedBlockHook.hookConnectivityManager 异常", e)
         }

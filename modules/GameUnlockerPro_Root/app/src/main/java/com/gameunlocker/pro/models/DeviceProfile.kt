@@ -1,4 +1,4 @@
-package com.gameunlocker.pro.model
+package com.gameunlocker.pro.models
 
 /**
  * 设备机型伪装参数

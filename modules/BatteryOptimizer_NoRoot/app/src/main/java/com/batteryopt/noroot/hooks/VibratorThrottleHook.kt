@@ -59,7 +59,7 @@ object VibratorThrottleHook {
                     }
                 })
             LogX.hookSuccess("Vibrator", "vibrate(long)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** Hook vibrate(long[] pattern, int repeat) */
@@ -82,7 +82,7 @@ object VibratorThrottleHook {
                     }
                 })
             LogX.hookSuccess("Vibrator", "vibrate(long[],int)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** Hook vibrate(VibrationEffect) API26+ */
@@ -108,7 +108,7 @@ object VibratorThrottleHook {
                     }
                 })
             LogX.hookSuccess("Vibrator", "vibrate(VibrationEffect)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // vibrate(VibrationEffect, AudioAttributes)
         try {
@@ -125,7 +125,7 @@ object VibratorThrottleHook {
                     }
                 })
             LogX.hookSuccess("Vibrator", "vibrate(VibrationEffect,AudioAttributes)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun shouldThrottle(key: String, cfg: BatteryConfig): Boolean {

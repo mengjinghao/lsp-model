@@ -1,6 +1,7 @@
 package com.microx.enhancer.hooks
 
 import com.microx.enhancer.utils.ConfigManager
+import com.microx.enhancer.utils.LogX
 import com.microx.enhancer.utils.HookHelper
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -57,7 +58,7 @@ object MessageSearchEnhanceHook {
                         }
                     })
                 HookHelper.logD("搜索时间范围 Hook 成功: $clsName")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // Hook 设置最大返回条数的方法（强制放大）
             try {
@@ -73,7 +74,7 @@ object MessageSearchEnhanceHook {
                         }
                     })
                 HookHelper.logD("搜索条数限制 Hook 成功: $clsName")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 
@@ -100,7 +101,7 @@ object MessageSearchEnhanceHook {
                         }
                     })
                 HookHelper.logD("search(String, int) Hook 成功: $clsName")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 
@@ -124,7 +125,7 @@ object MessageSearchEnhanceHook {
                         }
                     })
                 HookHelper.logD("时间范围过滤 Hook 成功: $clsName")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // Hook shouldFilterByTime 强制返回 false
             try {
@@ -135,7 +136,7 @@ object MessageSearchEnhanceHook {
                         }
                     })
                 HookHelper.logD("时间过滤禁用 Hook 成功: $clsName")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 }

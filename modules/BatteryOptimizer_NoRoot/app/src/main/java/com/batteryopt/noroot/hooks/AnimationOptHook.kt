@@ -68,7 +68,7 @@ object AnimationOptHook {
                     }
                 })
             LogX.hookSuccess("ObjectAnimator", "start")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookViewAnimation(
@@ -95,7 +95,7 @@ object AnimationOptHook {
                             } else if (cfg.animationScale < 1f) {
                                 durMethod.invoke(anim, (cur * cfg.animationScale).toLong())
                             }
-                        } catch (_: Exception) {}
+                        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
                     }
                 })
             LogX.hookSuccess("View", "startAnimation")

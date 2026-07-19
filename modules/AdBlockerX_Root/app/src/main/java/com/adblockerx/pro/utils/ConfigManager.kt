@@ -52,11 +52,42 @@ object ConfigManager {
     fun incrementBlockedCount(delta: Long = 1L) {
         try {
             prefs?.edit()?.putLong(KEY_BLOCKED_COUNT, getBlockedCount() + delta)?.apply()
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 
     fun resetBlockedCount() {
         prefs?.edit()?.putLong(KEY_BLOCKED_COUNT, 0L)?.apply()
+    }
+
+
+    /** 导出全部配置为 JSON 字符串 */
+    fun exportConfig(): String {
+        val data = mutableMapOf<String, Any?>()
+        try {
+            prefs?.all?.forEach { (k, v) -> data[k] = v }
+        } catch (_: Throwable) {}
+        return gson.toJson(data)
+    }
+
+    /** 从 JSON 字符串导入配置，返回是否成功 */
+    fun importConfig(json: String): Boolean {
+        return try {
+            val type = object : com.google.gson.reflect.TypeToken<Map<String, Any?>>() {}.type
+            val data: Map<String, Any?> = gson.fromJson(json, type) ?: return false
+            prefs?.edit()?.clear()?.apply()
+            val ed = prefs?.edit()
+            data.forEach { (k, v) ->
+                when (v) {
+                    is String -> ed?.putString(k, v)
+                    is Boolean -> ed?.putBoolean(k, v)
+                    is Number -> ed?.putFloat(k, v.toFloat())
+                    is com.google.gson.JsonObject -> ed?.putString(k, v.toString())
+                    else -> ed?.putString(k, v?.toString())
+                }
+            }
+            ed?.apply()
+            true
+        } catch (e: Throwable) { false }
     }
 
     fun resetAll() {

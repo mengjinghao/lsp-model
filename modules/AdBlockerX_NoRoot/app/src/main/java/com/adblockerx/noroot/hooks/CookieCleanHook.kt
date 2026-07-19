@@ -60,7 +60,7 @@ object CookieCleanHook {
                         }
                     })
                 LogX.hookSuccess("CookieManager", "getCookie(url)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // getCookie(String url, String[] additionalInfo) API 26+
             try {
@@ -73,7 +73,7 @@ object CookieCleanHook {
                         }
                     })
                 LogX.hookSuccess("CookieManager", "getCookie(url, factory)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // setCookie 记录但不阻断
             try {
@@ -85,7 +85,7 @@ object CookieCleanHook {
                         }
                     })
                 LogX.hookSuccess("CookieManager", "setCookie")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("CookieCleanHook 异常", e)
         }

@@ -24,3 +24,12 @@ Thumbs.db
 
 # Logs
 *.log
+
+# 签名密钥(本地开发时避免误提交新密钥)
+*.jks
+*.keystore
+!modules/keystore/mjh-release.jks
+
+# Android 额外
+captures/
+.cxx/

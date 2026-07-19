@@ -39,7 +39,7 @@ object BluetoothScanThrottleHook {
                     }
                 })
             LogX.hookSuccess("BluetoothLeScanner", "startScan(callback)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(
@@ -56,7 +56,7 @@ object BluetoothScanThrottleHook {
                     }
                 })
             LogX.hookSuccess("BluetoothLeScanner", "startScan(filters,settings,callback)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(
@@ -73,7 +73,7 @@ object BluetoothScanThrottleHook {
                     }
                 })
             LogX.hookSuccess("BluetoothLeScanner", "startScan(filters,settings,intent)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookStartDiscovery(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
@@ -93,7 +93,7 @@ object BluetoothScanThrottleHook {
                     }
                 })
             LogX.hookSuccess("BluetoothAdapter", "startDiscovery")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun shouldThrottle(key: String, cfg: BatteryConfig): Boolean {

@@ -65,7 +65,7 @@ object ShizukuHelper {
             val inputStream = process.javaClass.getMethod("getInputStream").invoke(process)
                 as? java.io.InputStream
             val stdout = inputStream?.bufferedReader()?.readText()
-            try { process.javaClass.getMethod("waitFor").invoke(process) } catch (_: Exception) {}
+            try { process.javaClass.getMethod("waitFor").invoke(process) } catch (e: Exception) { LogX.w("异常: ${e.message}") }
             stdout
         } catch (e: Exception) {
             LogX.e("Shizuku Shell 执行异常: $command", e)

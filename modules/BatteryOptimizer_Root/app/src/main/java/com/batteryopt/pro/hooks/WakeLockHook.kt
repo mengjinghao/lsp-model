@@ -168,7 +168,7 @@ object WakeLockHook {
                             LogX.d("WakeLock release(): ${readTag(p.thisObject)} 持有 ${held}ms")
                         }
                     })
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.e("Hook release 异常", e)
         }

@@ -43,7 +43,7 @@ object VibratorThrottleHook {
                     }
                 })
             LogX.hookSuccess("Vibrator", "vibrate(long)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookVibratePattern(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
@@ -65,7 +65,7 @@ object VibratorThrottleHook {
                     }
                 })
             LogX.hookSuccess("Vibrator", "vibrate(long[],int)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookVibrateVibrationEffect(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
@@ -86,7 +86,7 @@ object VibratorThrottleHook {
                     }
                 })
             LogX.hookSuccess("Vibrator", "vibrate(VibrationEffect)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(
@@ -102,7 +102,7 @@ object VibratorThrottleHook {
                     }
                 })
             LogX.hookSuccess("Vibrator", "vibrate(VibrationEffect,AudioAttributes)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun shouldThrottle(key: String, cfg: BatteryConfig): Boolean {

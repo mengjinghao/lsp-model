@@ -1,6 +1,6 @@
 package com.gameunlocker.noroot.hooks
 
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.GameConfig
 import com.gameunlocker.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -70,7 +70,7 @@ object GameDetectionHideHook {
                             }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(pm, "getInstalledApplications",
@@ -89,7 +89,7 @@ object GameDetectionHideHook {
                             p.result = java.util.ArrayList(filtered)
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             LogX.hookSuccess("PackageManager", "getPackageInfo/getInstalledApplications")
         } catch (e: Throwable) {
@@ -109,8 +109,8 @@ object GameDetectionHideHook {
                     }
                 }
             }
-            try { XposedHelpers.findAndHookMethod(cl, "loadClass", String::class.java, hook) } catch (_: Throwable) {}
-            try { XposedHelpers.findAndHookMethod(cl, "findClass", String::class.java, hook) } catch (_: Throwable) {}
+            try { XposedHelpers.findAndHookMethod(cl, "loadClass", String::class.java, hook) } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+            try { XposedHelpers.findAndHookMethod(cl, "findClass", String::class.java, hook) } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             LogX.hookSuccess("ClassLoader", "loadClass/findClass Xposed屏蔽")
         } catch (e: Throwable) {
             LogX.hookFailed("ClassLoader", "loadClass", e)

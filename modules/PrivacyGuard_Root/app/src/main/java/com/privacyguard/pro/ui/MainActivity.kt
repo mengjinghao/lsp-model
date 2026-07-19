@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +38,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.privacyguard.pro.models.PrivacyConfig
 import com.privacyguard.pro.ui.screens.AboutScreen
+import com.privacyguard.pro.ui.screens.DiagnosticsScreen
 import com.privacyguard.pro.ui.screens.FeaturesScreen
 import com.privacyguard.pro.ui.screens.HomeScreen
 import com.privacyguard.pro.ui.theme.PrivacyGuardTheme
@@ -67,7 +69,8 @@ fun MainScreen() {
     val screens = listOf(
         Triple("home", "总开关", Icons.Default.PowerSettingsNew),
         Triple("features", "功能", Icons.Default.Build),
-        Triple("about", "关于", Icons.Default.Info)
+        Triple("diagnostics", "诊断", Icons.Default.BugReport),
+            Triple("about", "关于", Icons.Default.Info)
     )
 
     Scaffold(
@@ -134,6 +137,7 @@ private fun AppNavHost(
     ) {
         composable("home") { HomeScreen(cfg, onCfgChange) }
         composable("features") { FeaturesScreen(cfg, onCfgChange) }
+        composable("diagnostics") { DiagnosticsScreen() }
         composable("about") { AboutScreen() }
     }
 }

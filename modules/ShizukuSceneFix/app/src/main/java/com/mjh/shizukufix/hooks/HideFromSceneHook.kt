@@ -55,7 +55,7 @@ object HideFromSceneHook {
                     }
                 })
             LogX.hookSuccess("ApplicationPackageManager", "getInstalledApplications")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(pm, "getInstalledApplicationsAsUser",
@@ -66,7 +66,7 @@ object HideFromSceneHook {
                     }
                 })
             LogX.hookSuccess("ApplicationPackageManager", "getInstalledApplicationsAsUser")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** Hook getInstalledPackages 过滤敏感包名 */
@@ -82,7 +82,7 @@ object HideFromSceneHook {
                     }
                 })
             LogX.hookSuccess("ApplicationPackageManager", "getInstalledPackages")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** Hook getPackageInfo 对敏感包名抛 NameNotFoundException */
@@ -101,7 +101,7 @@ object HideFromSceneHook {
                     }
                 })
             LogX.hookSuccess("ApplicationPackageManager", "getPackageInfo")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** 从返回列表中过滤掉敏感包名 */

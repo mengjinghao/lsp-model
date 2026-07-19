@@ -56,7 +56,7 @@ object CameraBackgroundBlockHook {
                     }
                 })
             LogX.hookSuccess("CameraManager", "openCamera")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** Hook android.hardware.Camera.open（旧 API） */
@@ -80,7 +80,7 @@ object CameraBackgroundBlockHook {
                     }
                 })
             LogX.hookSuccess("Camera", "open(int)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // open() 无参
         try {
@@ -95,7 +95,7 @@ object CameraBackgroundBlockHook {
                     }
                 })
             LogX.hookSuccess("Camera", "open()")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** 判断当前 APP 是否在后台 */

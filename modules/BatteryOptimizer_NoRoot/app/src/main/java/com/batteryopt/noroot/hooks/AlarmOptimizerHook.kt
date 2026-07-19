@@ -116,7 +116,7 @@ object AlarmOptimizerHook {
                         }
                     })
                 LogX.hookSuccess("AlarmManager", "setExact")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // setExactAndAllowWhileIdle（最耗电，优先降级）
             try {
@@ -142,7 +142,7 @@ object AlarmOptimizerHook {
                         }
                     })
                 LogX.hookSuccess("AlarmManager", "setExactAndAllowWhileIdle")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.e("Hook setExact 异常", e)
         }

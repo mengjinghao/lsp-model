@@ -17,7 +17,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.ui.components.FeatureCard
 import com.gameunlocker.pro.utils.ConfigManager
 

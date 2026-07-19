@@ -47,7 +47,7 @@ object IntentInterceptorHook {
                         }
                     })
                 LogX.hookSuccess("ContextWrapper", "startActivity")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(cw, "startActivityForResult",
@@ -62,7 +62,7 @@ object IntentInterceptorHook {
                         }
                     })
                 LogX.hookSuccess("ContextWrapper", "startActivityForResult")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("IntentInterceptorHook.ContextWrapper 异常", e)
         }
@@ -85,7 +85,7 @@ object IntentInterceptorHook {
                             }
                         }
                     })
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
             LogX.hookSuccess("Instrumentation", "execStartActivity x${methods.size}")
         } catch (e: Throwable) {

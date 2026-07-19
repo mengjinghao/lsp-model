@@ -66,7 +66,7 @@ object RedirectBlockHook {
                         }
                     })
                 LogX.hookSuccess("WebViewClient", "shouldOverrideUrlLoading(String)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // 新版 API
             try {
@@ -87,7 +87,7 @@ object RedirectBlockHook {
                         }
                     })
                 LogX.hookSuccess("WebViewClient", "shouldOverrideUrlLoading(Request)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("RedirectBlockHook.shouldOverrideUrlLoading 异常", e)
         }
@@ -111,7 +111,7 @@ object RedirectBlockHook {
                         }
                     })
                 LogX.hookSuccess("WebView", "loadUrl(redirect)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("RedirectBlockHook.loadUrl 异常", e)
         }

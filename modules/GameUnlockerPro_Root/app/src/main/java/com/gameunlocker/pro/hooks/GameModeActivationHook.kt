@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import com.gameunlocker.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
@@ -66,7 +66,7 @@ object GameModeActivationHook {
                         }
                     })
                 LogX.hookSuccess("GameManager", "getGameMode -> PERFORMANCE")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // isAngleEnabled 强制 true（部分游戏用 ANGLE 提升渲染稳定性）
             try {
@@ -77,7 +77,7 @@ object GameModeActivationHook {
                             p.result = false  // 保持默认，不强制 ANGLE
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("GameManager", "getGameMode", e)
         }

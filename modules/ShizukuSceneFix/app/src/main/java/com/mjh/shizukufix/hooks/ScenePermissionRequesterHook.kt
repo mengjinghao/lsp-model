@@ -101,7 +101,7 @@ object ScenePermissionRequesterHook {
                 })
                 LogX.hookSuccess(clsName, "onCreate")
                 return
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
         LogX.i("未找到 Scene 主 Activity 候选类，跳过 MainActivity Hook")
     }

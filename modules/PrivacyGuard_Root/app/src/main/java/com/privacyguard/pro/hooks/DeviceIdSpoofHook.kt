@@ -41,7 +41,7 @@ object DeviceIdSpoofHook {
                         }
                     })
                     LogX.hookSuccess("TelephonyManager", m)
-                } catch (_: Exception) {}
+                } catch (e: Exception) { LogX.w("异常: ${e.message}") }
                 try {
                     XposedHelpers.findAndHookMethod(tm, m,
                         Int::class.javaPrimitiveType, object : XC_MethodHook() {
@@ -50,7 +50,7 @@ object DeviceIdSpoofHook {
                             }
                         })
                     LogX.hookSuccess("TelephonyManager", "$m(slot)")
-                } catch (_: Exception) {}
+                } catch (e: Exception) { LogX.w("异常: ${e.message}") }
             }
 
             try {
@@ -60,7 +60,7 @@ object DeviceIdSpoofHook {
                     }
                 })
                 LogX.hookSuccess("TelephonyManager", "getSubscriberId")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(tm, "getLine1Number", object : XC_MethodHook() {
@@ -69,7 +69,7 @@ object DeviceIdSpoofHook {
                     }
                 })
                 LogX.hookSuccess("TelephonyManager", "getLine1Number")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(tm, "getSimSerialNumber", object : XC_MethodHook() {
@@ -78,7 +78,7 @@ object DeviceIdSpoofHook {
                     }
                 })
                 LogX.hookSuccess("TelephonyManager", "getSimSerialNumber")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("TelephonyManager", "device-id", e)
         }
@@ -100,7 +100,7 @@ object DeviceIdSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Settings.Secure", "getString(ANDROID_ID)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(ss, "getString",
@@ -112,7 +112,7 @@ object DeviceIdSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Settings.Secure", "getString(ANDROID_ID, def)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("Settings.Secure", "getString", e)
         }
@@ -130,7 +130,7 @@ object DeviceIdSpoofHook {
                     }
                 })
                 LogX.hookSuccess("WifiInfo", "getMacAddress")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(wifi, "getBSSID", object : XC_MethodHook() {
@@ -139,7 +139,7 @@ object DeviceIdSpoofHook {
                     }
                 })
                 LogX.hookSuccess("WifiInfo", "getBSSID")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("WifiInfo", "mac/bssid", e)
         }
@@ -157,12 +157,12 @@ object DeviceIdSpoofHook {
                     }
                 })
                 LogX.hookSuccess("Build", "getSerial")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.setStaticObjectField(build, "SERIAL", FakeDeviceCache.fakeSerial)
                 LogX.d("Build.SERIAL 字段已覆盖")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("Build", "getSerial", e)
         }

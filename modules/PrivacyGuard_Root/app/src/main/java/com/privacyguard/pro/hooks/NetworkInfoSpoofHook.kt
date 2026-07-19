@@ -33,7 +33,7 @@ object NetworkInfoSpoofHook {
                 }
             })
             LogX.hookSuccess("WifiInfo", "getIpAddress")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(wifi, "getIpAddressAsString", object : XC_MethodHook() {
@@ -42,7 +42,7 @@ object NetworkInfoSpoofHook {
                 }
             })
             LogX.hookSuccess("WifiInfo", "getIpAddressAsString")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookDhcpInfo(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -56,7 +56,7 @@ object NetworkInfoSpoofHook {
                     }
                 })
             LogX.hookSuccess("DhcpInfo", "getIpAddress")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookConstructor(dhcp, object : XC_MethodHook() {
@@ -68,7 +68,7 @@ object NetworkInfoSpoofHook {
                 }
             })
             LogX.hookSuccess("DhcpInfo", "<init>")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookNetworkInterface(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -81,7 +81,7 @@ object NetworkInfoSpoofHook {
                 }
             })
             LogX.hookSuccess("NetworkInterface", "getHardwareAddress")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun ipToInt(ip: String): Int {

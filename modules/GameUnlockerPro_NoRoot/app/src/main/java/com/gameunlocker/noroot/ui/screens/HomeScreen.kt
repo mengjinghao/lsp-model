@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gameunlocker.noroot.XposedLoader
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.GameConfig
 import com.gameunlocker.noroot.utils.ConfigManager
 
 @Composable

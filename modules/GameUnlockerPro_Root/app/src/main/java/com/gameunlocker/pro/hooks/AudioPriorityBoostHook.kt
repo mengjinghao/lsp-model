@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -40,7 +40,7 @@ object AudioPriorityBoostHook {
                         }
                     })
                 LogX.hookSuccess("AudioTrack", "setPerformanceMode -> LOW_LATENCY")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(at, "play", object : XC_MethodHook() {
@@ -49,11 +49,11 @@ object AudioPriorityBoostHook {
                             val pt = Class.forName("android.os.Process")
                             val m = pt.getMethod("setThreadPriority", Int::class.javaPrimitiveType)
                             m.invoke(null, -16)
-                        } catch (_: Throwable) {}
+                        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
                 LogX.hookSuccess("AudioTrack", "play -> threadPriority AUDIO")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("AudioTrack", "setPerformanceMode", e)
         }
@@ -71,11 +71,11 @@ object AudioPriorityBoostHook {
                                 val pt = Class.forName("android.os.Process")
                                 val m = pt.getMethod("setThreadPriority", Int::class.javaPrimitiveType)
                                 m.invoke(null, -16)
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("AudioRecord", "startRecording -> threadPriority AUDIO")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("AudioRecord", "startRecording", e)
         }
@@ -87,6 +87,6 @@ object AudioPriorityBoostHook {
             val m = pt.getMethod("setThreadPriority", Int::class.javaPrimitiveType)
             m.invoke(null, -16)
             LogX.d("音频线程优先级提升至 AUDIO(-16)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

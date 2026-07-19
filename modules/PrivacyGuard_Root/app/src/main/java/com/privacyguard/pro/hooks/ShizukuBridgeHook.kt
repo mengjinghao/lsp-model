@@ -78,7 +78,7 @@ object ShizukuBridgeHook {
                                 ShizukuHelper.execShell(
                                     "rm -f /data/data/$pkg/shared_prefs/adid_prefs.xml")
                                 LogX.d("已清理 $pkg 的广告ID缓存")
-                            } catch (_: Exception) {}
+                            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
                         }
                     }
                 })

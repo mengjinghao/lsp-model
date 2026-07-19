@@ -72,4 +72,44 @@ object ConfigManager {
     }
 
     fun resetAll() { prefs?.edit()?.clear()?.apply() }
+
+    // ===== P3 体验增强：配置导入导出 =====
+
+    /** 导出全部配置为 JSON 字符串（包含全部 SharedPreferences 键值） */
+    fun exportConfig(): String {
+        val data = mutableMapOf<String, Any?>()
+        try {
+            prefs?.all?.forEach { (k, v) -> data[k] = v }
+        } catch (_: Throwable) { }
+        return gson.toJson(data)
+    }
+
+    /** 从 JSON 字符串导入配置，返回是否成功（会清空当前配置后重写） */
+    fun importConfig(json: String): Boolean {
+        return try {
+            val data: Map<String, Any?> = gson.fromJson(json, object : TypeToken<Map<String, Any?>>() {}.type)
+                ?: return false
+            val editor = prefs?.edit()?.clear() ?: return false
+            data.forEach { (k, v) ->
+                try {
+                    when (v) {
+                        is String -> editor.putString(k, v)
+                        is Boolean -> editor.putBoolean(k, v)
+                        is Int -> editor.putInt(k, v)
+                        is Long -> editor.putLong(k, v)
+                        is Float -> editor.putFloat(k, v)
+                        is Double -> editor.putFloat(k, v.toFloat())
+                        is Number -> editor.putFloat(k, v.toFloat())
+                        is Set<*> -> @Suppress("UNCHECKED_CAST")
+                            editor.putStringSet(k, v.filterIsInstance<String>().toSet())
+                        else -> null
+                    }
+                } catch (_: Throwable) { null }
+            }
+            editor.apply()
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,6 +38,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.batteryopt.pro.models.BatteryConfig
 import com.batteryopt.pro.ui.screens.AboutScreen
+import com.batteryopt.pro.ui.screens.DiagnosticsScreen
 import com.batteryopt.pro.ui.screens.FeaturesScreen
 import com.batteryopt.pro.ui.screens.HomeScreen
 import com.batteryopt.pro.ui.theme.BatteryOptimizerTheme
@@ -67,7 +69,8 @@ fun MainScreen() {
     val screens = listOf(
         Triple("home", "总开关", Icons.Default.BatteryChargingFull),
         Triple("features", "功能", Icons.Default.Build),
-        Triple("about", "关于", Icons.Default.Info)
+        Triple("diagnostics", "诊断", Icons.Default.BugReport),
+            Triple("about", "关于", Icons.Default.Info)
     )
 
     Scaffold(
@@ -134,6 +137,7 @@ private fun AppNavHost(
     ) {
         composable("home") { HomeScreen(cfg, onCfgChange) }
         composable("features") { FeaturesScreen(cfg, onCfgChange) }
+        composable("diagnostics") { DiagnosticsScreen() }
         composable("about") { AboutScreen() }
     }
 }

@@ -2,6 +2,7 @@ package com.microx.enhancer.hooks
 
 import android.graphics.Color
 import com.microx.enhancer.utils.ConfigManager
+import com.microx.enhancer.utils.LogX
 import com.microx.enhancer.utils.HookHelper
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -70,7 +71,7 @@ object CustomThemeHook {
                     }
                 })
             HookHelper.logD("Resources.getColor(int) Hook 成功")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // getColor(int, Resources.Theme) API23+
         try {
@@ -88,7 +89,7 @@ object CustomThemeHook {
                     }
                 })
             HookHelper.logD("Resources.getColor(int, Theme) Hook 成功")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // Hook Color.parseColor，对已知颜色字符串做替换
         try {
@@ -113,6 +114,6 @@ object CustomThemeHook {
                     }
                 })
             HookHelper.logD("Color.parseColor Hook 成功")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

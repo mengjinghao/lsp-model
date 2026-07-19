@@ -43,7 +43,7 @@ object PackageVisibilitySpoofHook {
                     }
                 })
             LogX.hookSuccess("PackageManager", "getInstalledApplications")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(pm, "getInstalledPackages",
@@ -53,7 +53,7 @@ object PackageVisibilitySpoofHook {
                     }
                 })
             LogX.hookSuccess("PackageManager", "getInstalledPackages")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(pm, "getInstalledApplicationsAsUser",
@@ -64,7 +64,7 @@ object PackageVisibilitySpoofHook {
                     }
                 })
             LogX.hookSuccess("PackageManager", "getInstalledApplicationsAsUser")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookGetPackageInfo(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -82,7 +82,7 @@ object PackageVisibilitySpoofHook {
                     }
                 })
             LogX.hookSuccess("PackageManager", "getPackageInfo")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun filterList(result: Any?): Any? {

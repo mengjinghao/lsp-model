@@ -1,4 +1,4 @@
-package com.gameunlocker.pro.model
+package com.gameunlocker.pro.models
 
 /**
  * 单个游戏配置（Root 版）

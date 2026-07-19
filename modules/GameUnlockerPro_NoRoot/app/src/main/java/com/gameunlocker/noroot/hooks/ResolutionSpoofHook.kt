@@ -1,6 +1,6 @@
 package com.gameunlocker.noroot.hooks
 
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.GameConfig
 import com.gameunlocker.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -41,10 +41,10 @@ object ResolutionSpoofHook {
                             val point = p.args[0] ?: return
                             point.javaClass.getField("x").setInt(point, w)
                             point.javaClass.getField("y").setInt(point, h)
-                        } catch (_: Throwable) {}
+                        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(dc, "getSize", pt, object : XC_MethodHook() {
@@ -53,10 +53,10 @@ object ResolutionSpoofHook {
                             val point = p.args[0] ?: return
                             point.javaClass.getField("x").setInt(point, w)
                             point.javaClass.getField("y").setInt(point, h)
-                        } catch (_: Throwable) {}
+                        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             LogX.hookSuccess("Display", "getRealSize/getSize -> ${w}x${h}")
         } catch (e: Throwable) {
@@ -80,7 +80,7 @@ object ResolutionSpoofHook {
                         dm.javaClass.getField("scaledDensity").setFloat(dm, density)
                         dm.javaClass.getField("xdpi").setFloat(dm, d.toFloat())
                         dm.javaClass.getField("ydpi").setFloat(dm, d.toFloat())
-                    } catch (_: Throwable) {}
+                    } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                 }
             })
             LogX.hookSuccess("DisplayMetrics", "setToDefaults -> ${w}x${h} @${d}dpi")

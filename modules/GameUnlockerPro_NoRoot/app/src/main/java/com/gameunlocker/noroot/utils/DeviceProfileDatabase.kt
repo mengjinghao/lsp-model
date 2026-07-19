@@ -1,6 +1,6 @@
 package com.gameunlocker.noroot.utils
 
-import com.gameunlocker.noroot.model.DeviceProfile
+import com.gameunlocker.noroot.models.DeviceProfile
 
 /**
  * 内置旗舰机型参数库（应用层伪装用）

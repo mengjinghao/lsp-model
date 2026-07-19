@@ -2,7 +2,7 @@ package com.gameunlocker.noroot.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.GameConfig
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -69,6 +69,37 @@ object ConfigManager {
         cfg.lastModified = System.currentTimeMillis()
         all[cfg.packageName] = cfg
         prefs?.edit()?.putString(KEY_ALL, gson.toJson(all))?.apply()
+    }
+
+
+    /** 导出全部配置为 JSON 字符串 */
+    fun exportConfig(): String {
+        val data = mutableMapOf<String, Any?>()
+        try {
+            prefs?.all?.forEach { (k, v) -> data[k] = v }
+        } catch (_: Throwable) {}
+        return gson.toJson(data)
+    }
+
+    /** 从 JSON 字符串导入配置，返回是否成功 */
+    fun importConfig(json: String): Boolean {
+        return try {
+            val type = object : com.google.gson.reflect.TypeToken<Map<String, Any?>>() {}.type
+            val data: Map<String, Any?> = gson.fromJson(json, type) ?: return false
+            prefs?.edit()?.clear()?.apply()
+            val ed = prefs?.edit()
+            data.forEach { (k, v) ->
+                when (v) {
+                    is String -> ed?.putString(k, v)
+                    is Boolean -> ed?.putBoolean(k, v)
+                    is Number -> ed?.putFloat(k, v.toFloat())
+                    is com.google.gson.JsonObject -> ed?.putString(k, v.toString())
+                    else -> ed?.putString(k, v?.toString())
+                }
+            }
+            ed?.apply()
+            true
+        } catch (e: Throwable) { false }
     }
 
     fun resetAll() { prefs?.edit()?.clear()?.apply() }

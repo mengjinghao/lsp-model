@@ -61,8 +61,7 @@ object ShizukuListInjectorHook {
     )
 
     /** 进程级单次注入标记 */
-    @Volatile
-    private var sceneInjected = false
+    private val sceneInjected = java.util.concurrent.atomic.AtomicBoolean(false)
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: ShizukuFixConfig) {
         if (!cfg.listInjectorEnabled) return
@@ -90,19 +89,19 @@ object ShizukuListInjectorHook {
                 override fun afterHookedMethod(p: MethodHookParam) {
                     val result = p.result as? List<*> ?: return
                     if (result.isEmpty()) return
-                    if (sceneInjected) return
+                    if (sceneInjected.get()) return
                     if (result.any { (it as? ApplicationInfo)?.packageName == XposedLoader.SCENE_PACKAGE }) return
                     val ctx = getContext(lpparam) ?: return
                     val sceneInfo = PackageHelper.getApplicationInfo(ctx, XposedLoader.SCENE_PACKAGE) ?: return
                     val newList = ArrayList(result)
                     newList.add(sceneInfo)
                     p.result = newList
-                    sceneInjected = true
+                    sceneInjected.set(true)
                     LogX.i("  [PM] Injected Scene into getInstalledApplications()")
                 }
             })
             LogX.hookSuccess("ApplicationPackageManager", "getInstalledApplications")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // getInstalledPackages(int)
         try {
@@ -111,19 +110,19 @@ object ShizukuListInjectorHook {
                 override fun afterHookedMethod(p: MethodHookParam) {
                     val result = p.result as? List<*> ?: return
                     if (result.isEmpty()) return
-                    if (sceneInjected) return
+                    if (sceneInjected.get()) return
                     if (result.any { (it as? PackageInfo)?.packageName == XposedLoader.SCENE_PACKAGE }) return
                     val ctx = getContext(lpparam) ?: return
                     val scenePkg = PackageHelper.getPackageInfo(ctx, XposedLoader.SCENE_PACKAGE) ?: return
                     val newList = ArrayList(result)
                     newList.add(scenePkg)
                     p.result = newList
-                    sceneInjected = true
+                    sceneInjected.set(true)
                     LogX.i("  [PM] Injected Scene into getInstalledPackages()")
                 }
             })
             LogX.hookSuccess("ApplicationPackageManager", "getInstalledPackages")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // queryIntentActivities(Intent, int)
         try {
@@ -137,13 +136,13 @@ object ShizukuListInjectorHook {
                         val ai = (it as? ResolveInfo)?.activityInfo
                         ai?.packageName?.lowercase()?.contains("shizuku") == true
                     }
-                    if (hasShizuku && !sceneInjected) {
+                    if (hasShizuku && !sceneInjected.get()) {
                         LogX.d("  [PM] queryIntentActivities returned Shizuku-related results")
                     }
                 }
             })
             LogX.hookSuccess("ApplicationPackageManager", "queryIntentActivities")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     // ============ 策略2: Hook RecyclerView.Adapter.getItemCount ============
@@ -154,13 +153,13 @@ object ShizukuListInjectorHook {
             XposedHelpers.findAndHookMethod(adapter, "getItemCount", object : XC_MethodHook() {
                 override fun afterHookedMethod(p: MethodHookParam) {
                     val count = p.result as? Int ?: return
-                    if (count >= 0 && !sceneInjected) {
+                    if (count >= 0 && !sceneInjected.get()) {
                         // 仅观察，实际注入由其他策略完成
                     }
                 }
             })
             LogX.hookSuccess("RecyclerView.Adapter", "getItemCount")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     // ============ 策略3: Hook Shizuku API 列表型方法 ============
@@ -182,7 +181,7 @@ object ShizukuListInjectorHook {
                 XposedBridge.hookMethod(m, createListInjectionHook(methodName, lpparam))
                 LogX.i("    Hooked: ${clazz.name}.$methodName()")
             }
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun createListInjectionHook(methodName: String, lpparam: XC_LoadPackage.LoadPackageParam): XC_MethodHook {
@@ -214,7 +213,7 @@ object ShizukuListInjectorHook {
             @Suppress("UNCHECKED_CAST")
             val mutable = list as? MutableList<Any?>
             mutable?.add(0, sceneInfo)
-            sceneInjected = true
+            sceneInjected.set(true)
             LogX.i("    Injected Scene into list from method: $methodName")
             return true
         } catch (t: Throwable) {
@@ -240,13 +239,13 @@ object ShizukuListInjectorHook {
         try {
             val m = obj.javaClass.getMethod("getPackageName")
             return m.invoke(obj) as? String
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         // 反射 packageName 字段
         try {
             val f = obj.javaClass.getDeclaredField("packageName")
             f.isAccessible = true
             return f.get(obj)?.toString()
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         return null
     }
 
@@ -264,11 +263,11 @@ object ShizukuListInjectorHook {
                     try {
                         XposedBridge.hookMethod(m, object : XC_MethodHook() {
                             override fun afterHookedMethod(p: XC_MethodHook.MethodHookParam) {
-                                try { injectSceneIntoReturn(p) } catch (_: Throwable) {}
+                                try { injectSceneIntoReturn(p) } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                             }
                         })
                         LogX.i("    Hooked: ${m.name}")
-                    } catch (_: Throwable) {}
+                    } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                 }
             }
         }
@@ -281,7 +280,7 @@ object ShizukuListInjectorHook {
                 if (result.any { XposedLoader.SCENE_PACKAGE == it?.toString() }) return
                 @Suppress("UNCHECKED_CAST")
                 (result as? MutableList<Any?>)?.add(XposedLoader.SCENE_PACKAGE)
-                sceneInjected = true
+                sceneInjected.set(true)
                 LogX.i("    Injected Scene string into list")
             }
             is java.util.Map<*, *> -> {
@@ -289,7 +288,7 @@ object ShizukuListInjectorHook {
                 val map = result as? MutableMap<Any?, Any?> ?: return
                 if (!map.containsKey(XposedLoader.SCENE_PACKAGE)) {
                     map[XposedLoader.SCENE_PACKAGE] = XposedLoader.SCENE_PACKAGE
-                    sceneInjected = true
+                    sceneInjected.set(true)
                     LogX.i("    Injected Scene into Map result")
                 }
             }
@@ -297,7 +296,7 @@ object ShizukuListInjectorHook {
                 if (!result.contains(XposedLoader.SCENE_PACKAGE)) {
                     @Suppress("UNCHECKED_CAST")
                     (result as? MutableSet<Any?>)?.add(XposedLoader.SCENE_PACKAGE)
-                    sceneInjected = true
+                    sceneInjected.set(true)
                     LogX.i("    Injected Scene into Set result")
                 }
             }
@@ -315,13 +314,13 @@ object ShizukuListInjectorHook {
                 override fun beforeHookedMethod(p: MethodHookParam) {
                     try {
                         val list = p.args[0] as? List<*> ?: return
-                        if (list.isEmpty() || sceneInjected) return
+                        if (list.isEmpty() || sceneInjected.get()) return
                         ensureSceneInAdapterData(list, lpparam)
-                    } catch (_: Throwable) {}
+                    } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                 }
             })
             LogX.hookSuccess("ListAdapter", "submitList")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // ArrayAdapter.addAll / add / clear（旧版 ListView）
         val arrayAdapter = XposedHelpers.findClassIfExists(
@@ -333,7 +332,7 @@ object ShizukuListInjectorHook {
                         XposedBridge.hookMethod(m, object : XC_MethodHook() {})
                     }
                 }
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 
@@ -344,7 +343,7 @@ object ShizukuListInjectorHook {
             val ctx = getContext(lpparam) ?: return
             val sceneInfo = PackageHelper.getApplicationInfo(ctx, XposedLoader.SCENE_PACKAGE) ?: return
             (list as? MutableList<Any?>)?.add(0, sceneInfo)
-            sceneInjected = true
+            sceneInjected.set(true)
             LogX.i("  [Adapter] Injected Scene into adapter data list")
         } catch (t: Throwable) {
             LogX.e("  [Adapter] Error ensuring Scene in data", t)

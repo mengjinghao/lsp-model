@@ -1,6 +1,7 @@
 package com.microx.enhancer.hooks
 
 import com.microx.enhancer.utils.ConfigManager
+import com.microx.enhancer.utils.LogX
 import com.microx.enhancer.utils.HookHelper
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -85,7 +86,7 @@ object VoiceMessageExportHook {
                     })
                 HookHelper.logD("语音 setDataSource Hook 成功: $clsName")
                 hookedAny = true
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
 
         if (!hookedAny) {

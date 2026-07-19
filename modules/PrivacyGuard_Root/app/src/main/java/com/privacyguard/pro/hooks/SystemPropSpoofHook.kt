@@ -57,7 +57,7 @@ object SystemPropSpoofHook {
                         }
                     })
                 LogX.hookSuccess("SystemProperties", "get(key, def)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(sp, "get",
@@ -71,7 +71,7 @@ object SystemPropSpoofHook {
                         }
                     })
                 LogX.hookSuccess("SystemProperties", "get(key)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             LogX.i("SystemProperties Hook完成: ${props.size}个属性")
         } catch (e: Exception) {

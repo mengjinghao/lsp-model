@@ -71,11 +71,11 @@ object SensorFakerHook {
                                             }
                                         }
                                     }
-                                } catch (_: Exception) {}
+                                } catch (e: Exception) { LogX.w("异常: ${e.message}") }
                             }
                         })
                     LogX.hookSuccess("SensorEventListener", "onSensorChanged")
-                } catch (_: Exception) {}
+                } catch (e: Exception) { LogX.w("异常: ${e.message}") }
             }
 
             try {
@@ -88,7 +88,7 @@ object SensorFakerHook {
                         })
                     LogX.hookSuccess("SensorEventListener2", "onSensorChanged")
                 }
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("SensorEventListener", "onSensorChanged", e)
         }

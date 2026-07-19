@@ -1,6 +1,6 @@
 package com.gameunlocker.noroot.utils
 
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.GameConfig
 import com.google.gson.Gson
 
 /**

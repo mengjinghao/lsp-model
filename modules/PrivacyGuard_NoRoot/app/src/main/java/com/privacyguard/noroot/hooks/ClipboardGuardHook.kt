@@ -44,7 +44,7 @@ object ClipboardGuardHook {
                     }
                 })
                 LogX.hookSuccess("ClipboardManager", "getPrimaryClip")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // getPrimaryClipDescription()
             try {
@@ -55,7 +55,7 @@ object ClipboardGuardHook {
                     }
                 })
                 LogX.hookSuccess("ClipboardManager", "getPrimaryClipDescription")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // hasPrimaryClip()
             try {
@@ -65,7 +65,7 @@ object ClipboardGuardHook {
                     }
                 })
                 LogX.hookSuccess("ClipboardManager", "hasPrimaryClip")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // setPrimaryClip() 记录写入行为（不阻断，因为合法写入需要保留）
             try {
@@ -76,7 +76,7 @@ object ClipboardGuardHook {
                         }
                     })
                 LogX.hookSuccess("ClipboardManager", "setPrimaryClip")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("ClipboardManager", "primary-clip", e)
         }

@@ -75,7 +75,7 @@ object GlobalPermissionHook {
                         }
                     })
                 LogX.hookSuccess("PackageManager", "queryIntentActivities(Intent, int)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(pm, "queryIntentActivities",
@@ -90,7 +90,7 @@ object GlobalPermissionHook {
                         }
                     })
                 LogX.hookSuccess("PackageManager", "queryIntentActivities(Intent, Flags)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("PackageManager", "queryIntentActivities", e)
         }

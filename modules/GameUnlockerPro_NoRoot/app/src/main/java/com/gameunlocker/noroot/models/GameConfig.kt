@@ -1,4 +1,4 @@
-package com.gameunlocker.noroot.model
+package com.gameunlocker.noroot.models
 
 /**
  * 单个游戏配置（免Root版）

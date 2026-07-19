@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
@@ -45,10 +45,10 @@ object FrameRateUnlockHook {
                         try {
                             val mode = p.result ?: return
                             mode.javaClass.getField("refreshRate").setFloat(mode, fps.toFloat())
-                        } catch (_: Throwable) {}
+                        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(dc, "getSupportedModes", object : XC_MethodHook() {
@@ -57,17 +57,17 @@ object FrameRateUnlockHook {
                         for (m in modes) {
                             try {
                                 m?.javaClass?.getField("refreshRate")?.setFloat(m, fps.toFloat())
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     }
                 })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(dc, "getRefreshRate", object : XC_MethodHook() {
                     override fun beforeHookedMethod(p: MethodHookParam) { p.result = fps.toFloat() }
                 })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             LogX.hookSuccess("Display", "getMode/getSupportedModes/getRefreshRate -> ${fps}fps")
         } catch (e: Throwable) {
@@ -88,7 +88,7 @@ object FrameRateUnlockHook {
                         }
                     })
                 LogX.hookSuccess("Surface", "setFrameRate")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("Surface", "setFrameRate", e)
         }
@@ -106,10 +106,10 @@ object FrameRateUnlockHook {
                         try {
                             XposedHelpers.callStaticMethod(unityPlayer, "setTargetFrameRate", fps)
                             LogX.d("Unity targetFrameRate = $fps")
-                        } catch (_: Throwable) {}
+                        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookUnreal(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -127,10 +127,10 @@ object FrameRateUnlockHook {
                                 p.thisObject,
                                 "FullscreenFrameRate=$fps")
                             LogX.d("Unreal FullscreenFrameRate=$fps")
-                        } catch (_: Throwable) {}
+                        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookOemLockers(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -150,7 +150,7 @@ object FrameRateUnlockHook {
                 val c = XposedHelpers.findClassIfExists(cls, lpparam.classLoader) ?: continue
                 XposedHelpers.findAndHookMethod(c, method, XC_MethodReplacement.DO_NOTHING)
                 LogX.d("OEM 锁屏蔽: $cls.$method")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 

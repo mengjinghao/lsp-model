@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import com.gameunlocker.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
@@ -93,7 +93,7 @@ object ShizukuBridgeHook {
                         }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** 释放 Shizuku 资源 */

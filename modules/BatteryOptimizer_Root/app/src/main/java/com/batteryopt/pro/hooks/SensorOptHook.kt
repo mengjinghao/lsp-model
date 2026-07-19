@@ -65,7 +65,7 @@ object SensorOptHook {
                     }
                 })
             LogX.hookSuccess("SensorManager", "registerListener(4参)")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(
@@ -85,6 +85,6 @@ object SensorOptHook {
                     }
                 })
             LogX.hookSuccess("SensorManager", "registerListener(带Handler)")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 }

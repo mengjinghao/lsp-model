@@ -43,7 +43,7 @@ object ScreenMetricsSpoofHook {
                 }
             })
             LogX.hookSuccess("DisplayMetrics", "setToDefaults")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookDisplay(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -57,7 +57,7 @@ object ScreenMetricsSpoofHook {
                 }
             })
             LogX.hookSuccess("Display", "getRefreshRate")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(display, "getMetrics",
@@ -71,7 +71,7 @@ object ScreenMetricsSpoofHook {
                     }
                 })
             LogX.hookSuccess("Display", "getMetrics")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(display, "getRealMetrics",
@@ -85,6 +85,6 @@ object ScreenMetricsSpoofHook {
                     }
                 })
             LogX.hookSuccess("Display", "getRealMetrics")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

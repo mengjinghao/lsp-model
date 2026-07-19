@@ -35,7 +35,7 @@ object AdvertisingIdHook {
                         }
                     })
                 LogX.hookSuccess("AdvertisingIdClient", "getAdvertisingIdInfo")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(aicCls, "getAdvertisingIdInfo",
@@ -46,7 +46,7 @@ object AdvertisingIdHook {
                         }
                     })
                 LogX.hookSuccess("AdvertisingIdClient", "getAdvertisingIdInfo(bool)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("AdvertisingIdClient", "getAdvertisingIdInfo", e)
         }
@@ -66,7 +66,7 @@ object AdvertisingIdHook {
                     }
                 })
                 LogX.hookSuccess("AdvertisingIdClient\$Info", "getId")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(infoCls, "isLimitAdTrackingEnabled",
@@ -76,7 +76,7 @@ object AdvertisingIdHook {
                         }
                     })
                 LogX.hookSuccess("AdvertisingIdClient\$Info", "isLimitAdTrackingEnabled")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("AdvertisingIdClient\$Info", "id/lat", e)
         }

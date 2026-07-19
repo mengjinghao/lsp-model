@@ -1,6 +1,6 @@
 package com.gameunlocker.noroot.hooks
 
-import com.gameunlocker.noroot.model.GameConfig
+import com.gameunlocker.noroot.models.GameConfig
 import com.gameunlocker.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -48,7 +48,7 @@ object MemoryDefragHook {
                         }
                     })
                 LogX.hookSuccess("Debug.MemoryInfo", "getTotalPrivateDirty -> 0")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("Debug.MemoryInfo", "getTotalPrivateDirty", e)
         }
@@ -72,11 +72,11 @@ object MemoryDefragHook {
                                 mi.javaClass.getField("availMem").setLong(mi, 2L * 1024 * 1024 * 1024)
                                 mi.javaClass.getField("threshold").setLong(mi, 512L * 1024 * 1024)
                                 mi.javaClass.getField("lowMemory").setBoolean(mi, false)
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("ActivityManager", "getMemoryInfo -> availMem=2GB")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("ActivityManager", "getMemoryInfo", e)
         }
@@ -98,7 +98,7 @@ object MemoryDefragHook {
                         }
                     })
                 LogX.hookSuccess("Application", "onTrimMemory -> UI_HIDDEN")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(app, "onLowMemory",
@@ -109,7 +109,7 @@ object MemoryDefragHook {
                         }
                     })
                 LogX.hookSuccess("Application", "onLowMemory -> skip")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("Application", "onTrimMemory", e)
         }
@@ -121,6 +121,6 @@ object MemoryDefragHook {
             System.gc()
             System.runFinalization()
             LogX.d("主动 System.gc 提示已发送")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

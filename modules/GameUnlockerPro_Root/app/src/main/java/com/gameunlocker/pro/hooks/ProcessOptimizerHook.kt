@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import com.gameunlocker.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
@@ -43,7 +43,7 @@ object ProcessOptimizerHook {
                             }
                         })
                     LogX.hookSuccess("GLSurfaceView", "setRenderMode -> CONTINUOUSLY")
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
 
             try {
@@ -51,7 +51,7 @@ object ProcessOptimizerHook {
                 val setThreadPriority = pt.getMethod("setThreadPriority", Int::class.javaPrimitiveType)
                 setThreadPriority.invoke(null, -8)
                 LogX.d("主线程优先级提升至 URGENT_DISPLAY(-8)")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.e("渲染线程优先级提升异常", e)
         }
@@ -69,7 +69,7 @@ object ProcessOptimizerHook {
                         }
                     })
                 LogX.hookSuccess("PowerManager", "getCurrentThermalStatus -> STATUS_NONE")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("PowerManager", "getCurrentThermalStatus", e)
         }

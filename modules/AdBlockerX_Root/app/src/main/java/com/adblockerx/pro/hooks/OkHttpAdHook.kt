@@ -48,7 +48,7 @@ object OkHttpAdHook {
                         }
                     })
                 LogX.d("[OkHttp] 已 Hook $className.execute")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(clazz, "enqueue",
@@ -63,7 +63,7 @@ object OkHttpAdHook {
                         }
                     })
                 LogX.d("[OkHttp] 已 Hook $className.enqueue")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 
@@ -86,7 +86,7 @@ object OkHttpAdHook {
                     }
                 })
             LogX.d("[OkHttp] 已 Hook Interceptor.Chain.proceed")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun extractRequestUrl(realCall: Any): String? {
@@ -124,11 +124,11 @@ object OkHttpAdHook {
             val builder = XposedHelpers.newInstance(builderClass)
             XposedHelpers.callMethod(builder, "request", fakeReq)
             XposedHelpers.callMethod(builder, "code", 404)
-            try { XposedHelpers.callMethod(builder, "message", "AdBlockerX Pro Blocked") } catch (_: Throwable) {}
+            try { XposedHelpers.callMethod(builder, "message", "AdBlockerX Pro Blocked") } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             try { XposedHelpers.callMethod(builder, "protocol",
                 XposedHelpers.getStaticObjectField(
                     XposedHelpers.findClass("okhttp3.Protocol", lpparam.classLoader), "HTTP_1_1"))
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             XposedHelpers.callMethod(builder, "build")
         } catch (e: Throwable) {
             LogX.e("[OkHttp] 构造空 Response 异常", e)

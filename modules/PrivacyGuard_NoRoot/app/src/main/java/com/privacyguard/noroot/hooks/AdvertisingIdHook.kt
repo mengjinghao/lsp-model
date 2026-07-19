@@ -48,7 +48,7 @@ object AdvertisingIdHook {
                         }
                     })
                 LogX.hookSuccess("AdvertisingIdClient", "getAdvertisingIdInfo")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // getAdvertisingIdInfo(Context, boolean) 重载
             try {
@@ -60,7 +60,7 @@ object AdvertisingIdHook {
                         }
                     })
                 LogX.hookSuccess("AdvertisingIdClient", "getAdvertisingIdInfo(bool)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("AdvertisingIdClient", "getAdvertisingIdInfo", e)
         }
@@ -82,7 +82,7 @@ object AdvertisingIdHook {
                     }
                 })
                 LogX.hookSuccess("AdvertisingIdClient\$Info", "getId")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // isLimitAdTrackingEnabled() 强制返回 true
             try {
@@ -93,7 +93,7 @@ object AdvertisingIdHook {
                         }
                     })
                 LogX.hookSuccess("AdvertisingIdClient\$Info", "isLimitAdTrackingEnabled")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("AdvertisingIdClient\$Info", "id/lat", e)
         }

@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.utils
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.google.gson.Gson
 
 /**

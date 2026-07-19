@@ -62,7 +62,7 @@ object SelinuxContextSpoofHook {
                         }
                     })
                 LogX.hookSuccess("SELinux", "getSELinuxContext")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // getSELinuxContext(String path) 静态方法
             try {
@@ -73,7 +73,7 @@ object SelinuxContextSpoofHook {
                         }
                     })
                 LogX.hookSuccess("SELinux", "getSELinuxContext(path)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // isSELinuxEnabled / isSELinuxEnforced 保留真实值（不修改，避免影响功能）
         } catch (e: Exception) {
@@ -105,11 +105,11 @@ object SelinuxContextSpoofHook {
                                     InstanceTagger.setTag(p.thisObject, "isAttrCurrent", true)
                                     LogX.d("检测到 APP 读取 /proc/self/attr/current")
                                 }
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("FileInputStream", "<init>(String) attr-current")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             // Hook read() / read(byte[]) 返回伪造内容
             val fakeBytes = FAKE_CONTEXT.toByteArray()
@@ -123,10 +123,10 @@ object SelinuxContextSpoofHook {
                                 if (flag) {
                                     p.result = if (fakeBytes.isNotEmpty()) fakeBytes[0].toInt() and 0xFF else -1
                                 }
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(fisCls, "read",
@@ -142,11 +142,11 @@ object SelinuxContextSpoofHook {
                                 val n = minOf(fakeBytes.size, len)
                                 System.arraycopy(fakeBytes, 0, buf, off, n)
                                 p.result = n
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("FileInputStream", "read(buf) attr-current")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("FileInputStream", "attr-current", e)
         }
@@ -163,6 +163,6 @@ object SelinuxContextSpoofHook {
             }
             val result = ShizukuHelper.execShell("getenforce")
             LogX.i("当前 SELinux 状态: $result")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

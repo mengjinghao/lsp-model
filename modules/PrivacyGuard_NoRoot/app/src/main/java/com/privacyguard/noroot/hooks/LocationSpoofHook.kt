@@ -49,7 +49,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("LocationManager", "getLastKnownLocation")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // getLastKnownLocation(String provider, LastLocationRequest)
             try {
@@ -62,7 +62,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("LocationManager", "getLastKnownLocation(API30+)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // requestLocationUpdates(long, float, Criteria, PendingIntent) 等多个重载
             // 因重载数量较多，统一通过反射找所有 requestLocationUpdates 重载
@@ -77,10 +77,10 @@ object LocationSpoofHook {
                                 LogX.d("requestLocationUpdates 调用拦截: ${p.method}")
                             }
                         })
-                    } catch (_: Exception) {}
+                    } catch (e: Exception) { LogX.w("异常: ${e.message}") }
                 }
                 LogX.d("requestLocationUpdates ${methods.size} 个重载已Hook")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("LocationManager", "location", e)
         }
@@ -104,7 +104,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Location", "<init>(provider)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // Location(Location l) 拷贝构造
             try {
@@ -116,7 +116,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Location", "<init>(copy)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             // setLatitude / setLongitude
             try {
@@ -127,7 +127,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Location", "setLatitude")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(locCls, "setLongitude",
@@ -137,7 +137,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Location", "setLongitude")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("Location", "constructor", e)
         }
@@ -148,6 +148,6 @@ object LocationSpoofHook {
         try {
             XposedHelpers.callMethod(loc, "setLatitude", lat)
             XposedHelpers.callMethod(loc, "setLongitude", lng)
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 }

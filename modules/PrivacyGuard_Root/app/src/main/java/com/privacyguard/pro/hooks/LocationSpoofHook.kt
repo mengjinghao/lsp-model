@@ -41,7 +41,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("LocationManager", "getLastKnownLocation")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(lm, "getLastKnownLocation",
@@ -53,7 +53,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("LocationManager", "getLastKnownLocation(API30+)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 val methods = lm.declaredMethods.filter { it.name == "requestLocationUpdates" }
@@ -64,10 +64,10 @@ object LocationSpoofHook {
                                 LogX.d("requestLocationUpdates 调用拦截: ${p.method}")
                             }
                         })
-                    } catch (_: Exception) {}
+                    } catch (e: Exception) { LogX.w("异常: ${e.message}") }
                 }
                 LogX.d("requestLocationUpdates ${methods.size} 个重载已Hook")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("LocationManager", "location", e)
         }
@@ -89,7 +89,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Location", "<init>(provider)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookConstructor(locCls, locCls,
@@ -100,7 +100,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Location", "<init>(copy)")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(locCls, "setLatitude",
@@ -110,7 +110,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Location", "setLatitude")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(locCls, "setLongitude",
@@ -120,7 +120,7 @@ object LocationSpoofHook {
                         }
                     })
                 LogX.hookSuccess("Location", "setLongitude")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("Location", "constructor", e)
         }
@@ -130,6 +130,6 @@ object LocationSpoofHook {
         try {
             XposedHelpers.callMethod(loc, "setLatitude", lat)
             XposedHelpers.callMethod(loc, "setLongitude", lng)
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 }

@@ -76,7 +76,7 @@ object SensorOptHook {
                     }
                 })
             LogX.hookSuccess("SensorManager", "registerListener(4参)")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
         // 重载3: registerListener(SensorEventListener listener, Sensor sensor, int samplingPeriodUs, Handler handler)
         try {
@@ -97,6 +97,6 @@ object SensorOptHook {
                     }
                 })
             LogX.hookSuccess("SensorManager", "registerListener(带Handler)")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 }

@@ -39,7 +39,7 @@ object CameraBackgroundBlockHook {
                     }
                 })
             LogX.hookSuccess("CameraManager", "openCamera")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookCameraLegacy(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -61,7 +61,7 @@ object CameraBackgroundBlockHook {
                     }
                 })
             LogX.hookSuccess("Camera", "open(int)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         try {
             XposedHelpers.findAndHookMethod(
@@ -75,7 +75,7 @@ object CameraBackgroundBlockHook {
                     }
                 })
             LogX.hookSuccess("Camera", "open()")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun isAppInBackground(any: Any?): Boolean {

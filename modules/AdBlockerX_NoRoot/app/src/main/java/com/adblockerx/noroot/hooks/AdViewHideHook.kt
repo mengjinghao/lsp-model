@@ -77,11 +77,11 @@ object AdViewHideHook {
                             val view = p.thisObject as? View ?: return
                             try {
                                 view.visibility = View.GONE
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                     LogX.d("[AdViewHide] Hook 构造: ${clazz.name}")
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
             constructors.isNotEmpty()
         } catch (e: Throwable) {

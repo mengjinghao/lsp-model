@@ -56,7 +56,7 @@ object BluetoothScanThrottleHook {
                     }
                 })
             LogX.hookSuccess("BluetoothLeScanner", "startScan(callback)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // startScan(List<ScanFilter>, ScanSettings, ScanCallback)
         try {
@@ -74,7 +74,7 @@ object BluetoothScanThrottleHook {
                     }
                 })
             LogX.hookSuccess("BluetoothLeScanner", "startScan(filters,settings,callback)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // startScan(List<ScanFilter>, ScanSettings, PendingIntent) API29+
         try {
@@ -92,7 +92,7 @@ object BluetoothScanThrottleHook {
                     }
                 })
             LogX.hookSuccess("BluetoothLeScanner", "startScan(filters,settings,intent)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** Hook BluetoothAdapter.startDiscovery */
@@ -113,7 +113,7 @@ object BluetoothScanThrottleHook {
                     }
                 })
             LogX.hookSuccess("BluetoothAdapter", "startDiscovery")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** 判断是否需要节流（按 key 维度，超过最小间隔才放行） */

@@ -105,7 +105,7 @@ object DnsResolverHook {
                             }
                         })
                     LogX.d("[DNS] 已 Hook Libcore.os.$name")
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
         } catch (e: Throwable) {
             LogX.d("[DNS] Hook Libcore.os 异常: ${e.message}")

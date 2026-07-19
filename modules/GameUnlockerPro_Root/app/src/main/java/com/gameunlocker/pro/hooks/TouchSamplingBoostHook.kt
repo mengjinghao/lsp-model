@@ -1,6 +1,6 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -44,11 +44,11 @@ object TouchSamplingBoostHook {
                                 val pt = Class.forName("android.os.Process")
                                 val m = pt.getMethod("setThreadPriority", Int::class.javaPrimitiveType)
                                 m.invoke(null, -8)
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("InputEventReceiver", "dispatchInputEvent")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("InputEventReceiver", "dispatchInputEvent", e)
         }
@@ -66,11 +66,11 @@ object TouchSamplingBoostHook {
                                 val pt = Class.forName("android.os.Process")
                                 val m = pt.getMethod("setThreadPriority", Int::class.javaPrimitiveType)
                                 m.invoke(null, -8)
-                            } catch (_: Throwable) {}
+                            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                         }
                     })
                 LogX.hookSuccess("InputQueue", "processInputEvents")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("InputQueue", "processInputEvents", e)
         }
@@ -82,6 +82,6 @@ object TouchSamplingBoostHook {
             val m = pt.getMethod("setThreadPriority", Int::class.javaPrimitiveType)
             m.invoke(null, -8)
             LogX.d("输入线程优先级提升至 URGENT_DISPLAY(-8)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

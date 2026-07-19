@@ -53,6 +53,10 @@ jobs:
 
       - name: Build Release APK
         working-directory: modules/${{ matrix.module }}
+        env:
+          MJH_STORE_PASSWORD: ${{ secrets.MJH_STORE_PASSWORD }}
+          MJH_KEY_ALIAS: ${{ secrets.MJH_KEY_ALIAS }}
+          MJH_KEY_PASSWORD: ${{ secrets.MJH_KEY_PASSWORD }}
         run: ./gradlew :app:assembleRelease --no-daemon --stacktrace
 
       - name: Rename APK
@@ -92,10 +96,10 @@ jobs:
       - name: Create Release and Upload APKs
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.2
-          name: LSP-Model 模块合集 v1.0.2
+          tag_name: v1.0.3
+          name: LSP-Model 模块合集 v1.0.3
           body: |
-            # LSP-Model Xposed 模块合集 v1.0.2
+            # LSP-Model Xposed 模块合集 v1.0.3
 
             10 个模块 APK（Root 版与 NoRoot 版分离），Material3 + Compose 架构。
 

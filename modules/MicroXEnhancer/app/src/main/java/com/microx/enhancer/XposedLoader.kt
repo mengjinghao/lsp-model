@@ -32,13 +32,13 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.2"
+        const val VERSION = "1.0.3"
         var currentPkg: String? = null
     }
 
     override fun initZygote(param: IXposedHookZygoteInit.StartupParam) {
         LogX.i("MicroX Enhancer v$VERSION 初始化 | LSPatch/LSPosed 兼容")
-        try { HookHelper.log("模块路径: ${param.modulePath}") } catch (_: Throwable) {}
+        try { HookHelper.log("模块路径: ${param.modulePath}") } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -134,7 +134,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
     /** 优先使用 XSharedPreferences 预读取，再延迟到 Application.onCreate 初始化 ConfigManager */
     private fun initConfig(lpparam: XC_LoadPackage.LoadPackageParam) {
         // 预读：尝试通过 XSharedPreferences 读取，让 Hook 早期能用
-        try { HookConfigReader.readGlobal() } catch (_: Throwable) {}
+        try { HookConfigReader.readGlobal() } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
         // 反射当前 Application，立即初始化 ConfigManager
         try {
@@ -142,7 +142,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
             val cat = XposedHelpers.callStaticMethod(at, "currentActivityThread")
             val app = XposedHelpers.callMethod(cat, "getApplication") as? Application
             if (app != null) ConfigManager.init(app)
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     private fun hookAppLifecycle(lpparam: XC_LoadPackage.LoadPackageParam) {
@@ -152,9 +152,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(p: MethodHookParam) {
                         val app = p.thisObject as? Application ?: return
-                        try { ConfigManager.init(app) } catch (_: Throwable) {}
+                        try { ConfigManager.init(app) } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
                     }
                 })
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 }

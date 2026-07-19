@@ -51,7 +51,7 @@ object PermissionSpoofHook {
                         }
                     })
                 LogX.hookSuccess("ContextWrapper", "checkSelfPermission")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(cw, "checkPermission",
@@ -65,7 +65,7 @@ object PermissionSpoofHook {
                         }
                     })
                 LogX.hookSuccess("ContextWrapper", "checkPermission")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("ContextWrapper", "checkSelfPermission", e)
         }
@@ -89,7 +89,7 @@ object PermissionSpoofHook {
                         }
                     })
                 LogX.hookSuccess("PackageManager", "checkPermission")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (e: Exception) {
             LogX.hookFailed("PackageManager", "checkPermission", e)
         }
@@ -113,7 +113,7 @@ object PermissionSpoofHook {
                         }
                     })
                 LogX.hookSuccess("ContextCompat", "checkSelfPermission")
-            } catch (_: Exception) {}
+            } catch (e: Exception) { LogX.w("异常: ${e.message}") }
         } catch (_: Exception) {
             LogX.d("ContextCompat 未找到，跳过 androidx 兼容Hook")
         }

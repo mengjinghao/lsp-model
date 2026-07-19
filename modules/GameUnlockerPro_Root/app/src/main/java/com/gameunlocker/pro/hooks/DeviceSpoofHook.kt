@@ -1,7 +1,7 @@
 package com.gameunlocker.pro.hooks
 
-import com.gameunlocker.pro.model.DeviceProfile
-import com.gameunlocker.pro.model.GameConfig
+import com.gameunlocker.pro.models.DeviceProfile
+import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
@@ -54,7 +54,7 @@ object DeviceSpoofHook {
             for ((name, value) in fields) {
                 try {
                     XposedHelpers.setStaticObjectField(build, name, value)
-                } catch (_: Throwable) {}
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             }
             LogX.i("Build 属性伪装完成: MODEL=${profile.model}")
         } catch (e: Throwable) {
@@ -89,7 +89,7 @@ object DeviceSpoofHook {
                             if (props.containsKey(key)) p.result = props[key]
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             try {
                 XposedHelpers.findAndHookMethod(sp, "get",
@@ -100,7 +100,7 @@ object DeviceSpoofHook {
                             if (props.containsKey(key)) p.result = props[key]
                         }
                     })
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             LogX.hookSuccess("SystemProperties", "get(${props.size} props)")
         } catch (e: Throwable) {
@@ -120,7 +120,7 @@ object DeviceSpoofHook {
                         }
                     })
                 LogX.hookSuccess("TelephonyManager", "getDeviceId")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         } catch (e: Throwable) {
             LogX.hookFailed("TelephonyManager", "getDeviceId", e)
         }

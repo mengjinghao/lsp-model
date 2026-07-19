@@ -84,7 +84,7 @@ object LocationOptHook {
                     }
                 })
             LogX.hookSuccess("LocationManager", "requestLocationUpdates(minTime,minDistance,Criteria,listener,looper)")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
 
         // 重载3: requestLocationUpdates(String provider, long minTime, float minDistance, PendingIntent intent)
         try {
@@ -112,6 +112,6 @@ object LocationOptHook {
                     }
                 })
             LogX.hookSuccess("LocationManager", "requestLocationUpdates(provider,minTime,minDistance,intent)")
-        } catch (_: Exception) {}
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
     }
 }

@@ -42,8 +42,7 @@ object ServiceWatchdogHook {
     )
 
     /** 进程级单次启动标记 */
-    @Volatile
-    private var watchdogStarted = false
+    private val watchdogStarted = java.util.concurrent.atomic.AtomicBoolean(false)
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: ShizukuFixConfig) {
         if (!cfg.serviceWatchdogEnabled) return
@@ -67,7 +66,7 @@ object ServiceWatchdogHook {
                         }
                     })
                 LogX.hookSuccess(clsName, "onStartCommand")
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }
 
@@ -85,7 +84,7 @@ object ServiceWatchdogHook {
                 })
                 LogX.hookSuccess(clsName, "onCreate")
                 return
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
 
         // 回退：通用 Application.onCreate
@@ -98,13 +97,13 @@ object ServiceWatchdogHook {
                     }
                 })
             LogX.hookSuccess("android.app.Application", "onCreate(Watchdog fallback)")
-        } catch (_: Throwable) {}
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
 
     /** 启动保活线程（进程级单次） */
     private fun startWatchdogIfNeeded(context: Context?, cfg: ShizukuFixConfig) {
-        if (watchdogStarted || context == null) return
-        watchdogStarted = true
+        if (watchdogStarted.get() || context == null) return
+        watchdogStarted.set(true)
         Thread {
             val interval = (cfg.watchdogIntervalSec.coerceIn(10, 600)) * 1000L
             var attempts = 0
@@ -153,7 +152,7 @@ object ServiceWatchdogHook {
                 context.startService(intent)
                 LogX.i("  [Watchdog] startService 重启 Shizuku 服务: $clsName")
                 return
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
         LogX.w("  [Watchdog] 无法定位 Shizuku 服务类，重启失败")
     }

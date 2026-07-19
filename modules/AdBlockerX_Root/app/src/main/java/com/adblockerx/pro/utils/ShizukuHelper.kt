@@ -62,7 +62,7 @@ object ShizukuHelper {
             try {
                 val waitFor = process.javaClass.getMethod("waitFor")
                 waitFor.invoke(process)
-            } catch (_: Throwable) {}
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
             out
         } catch (e: Exception) {
