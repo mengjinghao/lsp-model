@@ -18,7 +18,7 @@ android {
     signingConfigs {
         create("release") {
             // 优先从环境变量读取(GitHub Actions Secrets), 其次 local.properties, 最后默认值
-            val storeFilePath = System.getenv("MJH_STORE_FILE") ?: rootProject.file("../../keystore/mjh-release.jks").path
+            val storeFilePath = System.getenv("MJH_STORE_FILE") ?: rootProject.file("../keystore/mjh-release.jks").path
             storeFile = file(storeFilePath)
             storePassword = System.getenv("MJH_STORE_PASSWORD") ?: "meng411722"
             keyAlias = System.getenv("MJH_KEY_ALIAS") ?: "mjh"
