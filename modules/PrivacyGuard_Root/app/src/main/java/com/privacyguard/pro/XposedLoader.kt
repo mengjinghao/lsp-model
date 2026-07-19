@@ -34,7 +34,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.5"
+        const val VERSION = "1.0.6"
         var currentPkg: String? = null
     }
 
@@ -78,6 +78,11 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.networkInfoSpoofEnabled) NetworkInfoSpoofHook.apply(lpparam, cfg)
         if (cfg.screenMetricsSpoofEnabled) ScreenMetricsSpoofHook.apply(lpparam, cfg)
         if (cfg.storagePathSpoofEnabled) StoragePathSpoofHook.apply(lpparam, cfg)
+
+        // ===== v1.0.6 新增 =====
+        if (cfg.installStatusSpoofEnabled || cfg.mockLocationSystemLevelEnabled) {
+            PrivacyPlusHook.apply(lpparam, cfg)
+        }
 
         // ===== Root 专属：系统级 Hook（需 Shizuku） =====
         if (cfg.systemPropSpoofEnabled) SystemPropSpoofHook.apply(lpparam, cfg)

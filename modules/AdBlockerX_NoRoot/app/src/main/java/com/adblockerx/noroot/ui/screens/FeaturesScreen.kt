@@ -107,6 +107,33 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             experimental = true
         )
 
+        Spacer(Modifier.height(16.dp))
+        Text("v1.0.6 新增（对标 AdClose）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "截图录屏限制移除", "Hook FLAG_SECURE，让目标APP可截图录屏",
+            cfg.screenshotUnlockEnabled,
+            { val nc = cfg.copy(screenshotUnlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "摇一摇广告禁用", "拦截加速度计事件，阻止摇一摇触发广告跳转",
+            cfg.shakeAdBlockEnabled,
+            { val nc = cfg.copy(shakeAdBlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "VPN/代理检测绕过", "Hook NetworkInfo 返回非VPN，绕过APP的VPN检测",
+            cfg.vpnDetectBypassEnabled,
+            { val nc = cfg.copy(vpnDetectBypassEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+
         Spacer(Modifier.height(20.dp))
         Text("高级选项", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))

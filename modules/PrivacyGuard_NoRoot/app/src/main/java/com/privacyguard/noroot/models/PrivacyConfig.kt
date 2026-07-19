@@ -27,6 +27,11 @@ data class PrivacyConfig(
     var screenMetricsSpoofEnabled: Boolean = false,
     var storagePathSpoofEnabled: Boolean = false,
 
+    // ===== v1.0.6 新增（对标 HideMyAndroid/伪造安装模块） =====
+    var installStatusSpoofEnabled: Boolean = false,   // 应用安装状态伪造
+    var mockLocationSystemLevelEnabled: Boolean = false, // 系统级Mock位置(仅Root)
+    var profileSwitchEnabled: Boolean = false,          // 配置文件化(按场景切换)
+
     // ===== 参数 =====
     var spoofLatitude: Double = 31.2304,
     var spoofLongitude: Double = 121.4737,

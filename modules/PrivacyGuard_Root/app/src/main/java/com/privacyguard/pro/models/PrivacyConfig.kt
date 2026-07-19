@@ -37,6 +37,10 @@ data class PrivacyConfig(
     var networkInfoSpoofEnabled: Boolean = false,
     var screenMetricsSpoofEnabled: Boolean = false,
     var storagePathSpoofEnabled: Boolean = false,
+    // ===== v1.0.6 新增（对标 HideMyAndroid/伪造安装模块） =====
+    var installStatusSpoofEnabled: Boolean = false,   // 应用安装状态伪造
+    var mockLocationSystemLevelEnabled: Boolean = false, // 系统级Mock位置(仅Root)
+    var profileSwitchEnabled: Boolean = false,
 
     // ===== Root 专属：系统属性伪造（Shizuku setprop） =====
     var systemPropSpoofEnabled: Boolean = false,

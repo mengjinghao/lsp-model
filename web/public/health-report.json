@@ -1,11 +1,20 @@
 {
-  "version": "1.0.5",
-  "timestamp": "2026-07-19T11:44:14.414882+00:00",
+  "version": "1.0.6",
+  "timestamp": "2026-07-19T12:34:56.852712+00:00",
   "modules": [
     {
       "name": "AdBlockerX_NoRoot",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
+        {
+          "file": "AdClosePlusHook.kt",
+          "hookCalls": 8,
+          "tryCatch": 12,
+          "logs": 21,
+          "todo": 0,
+          "lines": 175,
+          "status": "ok"
+        },
         {
           "file": "AdViewHideHook.kt",
           "hookCalls": 2,
@@ -91,17 +100,26 @@
       "uiBugs": 0,
       "configIssues": [],
       "stats": {
-        "hookFiles": 9,
-        "ok": 7,
+        "hookFiles": 10,
+        "ok": 8,
         "weak": 1,
         "hollow": 0,
-        "totalHookCalls": 28
+        "totalHookCalls": 36
       }
     },
     {
       "name": "AdBlockerX_Root",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
+        {
+          "file": "AdClosePlusHook.kt",
+          "hookCalls": 8,
+          "tryCatch": 12,
+          "logs": 21,
+          "todo": 0,
+          "lines": 175,
+          "status": "ok"
+        },
         {
           "file": "AdViewHideHook.kt",
           "hookCalls": 2,
@@ -241,16 +259,16 @@
       "uiBugs": 0,
       "configIssues": [],
       "stats": {
-        "hookFiles": 15,
-        "ok": 13,
+        "hookFiles": 16,
+        "ok": 14,
         "weak": 1,
         "hollow": 0,
-        "totalHookCalls": 37
+        "totalHookCalls": 45
       }
     },
     {
       "name": "BatteryOptimizer_NoRoot",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -355,7 +373,7 @@
     },
     {
       "name": "BatteryOptimizer_Root",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -523,7 +541,7 @@
     },
     {
       "name": "GameUnlockerPro_NoRoot",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -619,7 +637,7 @@
     },
     {
       "name": "GameUnlockerPro_Root",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -760,7 +778,7 @@
     },
     {
       "name": "MicroXEnhancer",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
         {
           "file": "AdBlockHook.kt",
@@ -778,6 +796,15 @@
           "logs": 0,
           "todo": 0,
           "lines": 316,
+          "status": "ok"
+        },
+        {
+          "file": "AutoRedPacketHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 12,
+          "logs": 14,
+          "todo": 0,
+          "lines": 137,
           "status": "ok"
         },
         {
@@ -814,6 +841,15 @@
           "logs": 5,
           "todo": 0,
           "lines": 143,
+          "status": "ok"
+        },
+        {
+          "file": "MicroXPlusHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 15,
+          "logs": 21,
+          "todo": 0,
+          "lines": 224,
           "status": "ok"
         },
         {
@@ -865,16 +901,16 @@
       "uiBugs": 0,
       "configIssues": [],
       "stats": {
-        "hookFiles": 11,
-        "ok": 11,
+        "hookFiles": 13,
+        "ok": 13,
         "weak": 0,
         "hollow": 0,
-        "totalHookCalls": 114
+        "totalHookCalls": 122
       }
     },
     {
       "name": "PrivacyGuard_NoRoot",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -940,6 +976,15 @@
           "status": "ok"
         },
         {
+          "file": "PrivacyPlusHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 13,
+          "logs": 18,
+          "todo": 0,
+          "lines": 178,
+          "status": "ok"
+        },
+        {
           "file": "ScreenMetricsSpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 4,
@@ -970,16 +1015,16 @@
       "uiBugs": 0,
       "configIssues": [],
       "stats": {
-        "hookFiles": 10,
-        "ok": 10,
+        "hookFiles": 11,
+        "ok": 11,
         "weak": 0,
         "hollow": 0,
-        "totalHookCalls": 51
+        "totalHookCalls": 57
       }
     },
     {
       "name": "PrivacyGuard_Root",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1072,6 +1117,15 @@
           "status": "ok"
         },
         {
+          "file": "PrivacyPlusHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 13,
+          "logs": 18,
+          "todo": 0,
+          "lines": 178,
+          "status": "ok"
+        },
+        {
           "file": "ScreenMetricsSpoofHook.kt",
           "hookCalls": 4,
           "tryCatch": 4,
@@ -1129,16 +1183,16 @@
       "uiBugs": 0,
       "configIssues": [],
       "stats": {
-        "hookFiles": 16,
-        "ok": 16,
+        "hookFiles": 17,
+        "ok": 17,
         "weak": 0,
         "hollow": 0,
-        "totalHookCalls": 65
+        "totalHookCalls": 71
       }
     },
     {
       "name": "ShizukuSceneFix",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "hooks": [
         {
           "file": "AutoGrantHelperHook.kt",
@@ -1208,11 +1262,11 @@
   ],
   "summary": {
     "totalModules": 10,
-    "totalHookFiles": 117,
-    "ok": 112,
+    "totalHookFiles": 123,
+    "ok": 118,
     "weak": 2,
     "hollow": 0,
     "uiBugs": 0,
-    "healthScore": 95.7
+    "healthScore": 95.9
   }
 }

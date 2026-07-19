@@ -113,6 +113,64 @@ fun FeaturesScreen(cfg: MicroXConfig, onConfigChange: (MicroXConfig) -> Unit) {
         )
 
         Spacer(Modifier.height(16.dp))
+        SectionHeader("v1.0.6 新增（对标 NewMiko/FkWeChat）")
+
+        FeatureCard(
+            "自动抢红包", "监听红包消息，延迟1秒自动点击领取",
+            cfg.autoRedPacketEnabled,
+            { val nc = cfg.copy(autoRedPacketEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "自动收取转账", "监听转账消息，延迟1.5秒自动收取",
+            cfg.autoTransferEnabled,
+            { val nc = cfg.copy(autoTransferEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "微信运动步数修改", "Hook 步数上报，固定显示1万步",
+            cfg.stepModifierEnabled,
+            { val nc = cfg.copy(stepModifierEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "禁用微信热更新", "阻止 Tinker 加载热更新补丁，避免功能失效",
+            cfg.disableHotUpdateEnabled,
+            { val nc = cfg.copy(disableHotUpdateEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "朋友圈伪集赞", "点赞显示数+88，满足虚荣心",
+            cfg.momentFakeLikeEnabled,
+            { val nc = cfg.copy(momentFakeLikeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "去除9人转发限制", "转发选择上限放大到999人",
+            cfg.unlimitedForwardEnabled,
+            { val nc = cfg.copy(unlimitedForwardEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "自动发送原图", "发送图片时强制勾选原图",
+            cfg.autoOriginalImageEnabled,
+            { val nc = cfg.copy(autoOriginalImageEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+
+        Spacer(Modifier.height(16.dp))
         SectionHeader("适配辅助")
 
         FeatureCard(

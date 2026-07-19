@@ -1,33 +1,34 @@
 [
   {
+    "version": "1.0.6",
+    "date": "2026-07-19",
+    "summary": "对标GitHub同类明星项目，大幅增强功能",
+    "changes": [
+      "[MicroXEnhancer] 自动抢红包（监听红包消息延迟1秒自动领取）",
+      "[MicroXEnhancer] 自动收取转账（延迟1.5秒自动收取）",
+      "[MicroXEnhancer] 微信运动步数修改（固定1万步）",
+      "[MicroXEnhancer] 禁用微信热更新（阻止Tinker加载补丁）",
+      "[MicroXEnhancer] 朋友圈伪集赞（点赞数+88）",
+      "[MicroXEnhancer] 去除9人转发限制（放大到999人）",
+      "[MicroXEnhancer] 自动发送原图（强制勾选原图）",
+      "[AdBlockerX] 截图录屏限制移除（Hook FLAG_SECURE）",
+      "[AdBlockerX] 摇一摇广告禁用（拦截加速度计注册）",
+      "[AdBlockerX] VPN/代理检测绕过（Hook NetworkInfo返回非VPN）",
+      "[PrivacyGuard] 应用安装状态伪造（隐藏LSPosed/Shizuku/Magisk）",
+      "[PrivacyGuard] Mock位置系统级（Hook LocationManager全局）",
+      "健康分: 95.7% → 95.9%（弱实现2不变，正常+6）"
+    ]
+  },
+  {
     "version": "1.0.5",
     "date": "2026-07-19",
-    "summary": "完善热更新: 应用内自动检查+忽略版本+缓存管理+下载通知+SHA256校验",
-    "changes": [
-      "[热更新] 进入更新页自动检查(5分钟内不重复请求GitHub API)",
-      "[热更新] 自动检查开关(可在设置关闭)",
-      "[热更新] 忽略此版本功能(不喜欢的版本不再提示)",
-      "[热更新] 下载缓存管理(显示占用+一键清理)",
-      "[热更新] 下载完成系统通知(点击通知直接安装)",
-      "[热更新] APK文件SHA256校验(防篡改)",
-      "[热更新] 安装Intent兼容Android 7-14(ACTION_VIEW+fallback)",
-      "[热更新] 下载进度限频(200ms一次,避免UI卡顿)",
-      "[热更新] 已下载APK缓存复用(避免重复下载)",
-      "[热更新] 更新说明可展开收起",
-      "[权限] 补全 POST_NOTIFICATIONS (Android 13+通知必需)",
-      "[修复] UpdateScreen路径统一到 ui/screens/"
-    ]
+    "summary": "完善应用内热更新",
+    "changes": ["自动检查", "忽略版本", "缓存管理", "下载通知", "SHA256校验"]
   },
   {
     "version": "1.0.4",
     "date": "2026-07-19",
     "summary": "热更新功能 + Hook增强",
-    "changes": ["GitHub Release 热更新检查", "UpdateChecker/ApkDownloader/UpdateScreen", "追踪SDK 8→18个"]
-  },
-  {
-    "version": "1.0.3",
-    "date": "2026-07-19",
-    "summary": "深度体检优化",
-    "changes": ["签名环境变量化", "489处空catch修复", "诊断页+导入导出"]
+    "changes": ["GitHub Release 热更新", "追踪SDK 8→18个"]
   }
 ]

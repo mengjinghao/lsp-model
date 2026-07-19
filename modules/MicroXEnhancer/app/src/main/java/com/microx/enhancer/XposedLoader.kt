@@ -32,7 +32,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.5"
+        const val VERSION = "1.0.6"
         var currentPkg: String? = null
     }
 
@@ -80,7 +80,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
             // 实验性
             "语音消息导出" to { VoiceMessageExportHook.hook(lpparam) },
             "消息搜索增强" to { MessageSearchEnhanceHook.hook(lpparam) },
-            "自定义主题" to { CustomThemeHook.hook(lpparam) }
+            "自定义主题" to { CustomThemeHook.hook(lpparam) },
+            // v1.0.6 新增
+            "自动红包转账" to { AutoRedPacketHook.apply(lpparam, cfg) },
+            "步数修改/禁热更新/伪集赞/转发解除/自动原图" to { MicroXPlusHook.apply(lpparam, cfg) }
         )
 
         for ((name, hookAction) in modules) {

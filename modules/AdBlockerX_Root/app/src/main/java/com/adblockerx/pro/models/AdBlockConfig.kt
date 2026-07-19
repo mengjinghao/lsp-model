@@ -29,6 +29,13 @@ data class AdBlockConfig(
     var cookieCleanEnabled: Boolean = false,
     var redirectBlockEnabled: Boolean = false,
     var intentInterceptorEnabled: Boolean = false,
+    // ===== v1.0.6 新增（对标 AdClose） =====
+    /** 截图录屏限制移除（Hook FLAG_SECURE 让目标APP可截图录屏） */
+    var screenshotUnlockEnabled: Boolean = false,
+    /** 摇一摇广告跳转禁用（Hook SensorManager 加速度计，阻止摇一摇触发广告） */
+    var shakeAdBlockEnabled: Boolean = false,
+    /** VPN/代理检测绕过（Hook NetworkInfo/ConnectivityManager 返回非VPN） */
+    var vpnDetectBypassEnabled: Boolean = false,
 
     // ===== 参数 =====
     var injectJsEnabled: Boolean = false,

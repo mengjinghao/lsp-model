@@ -43,7 +43,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.5"
+        const val VERSION = "1.0.6"
         var currentPkg: String? = null
     }
 
@@ -88,6 +88,11 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.cookieCleanEnabled) CookieCleanHook.apply(lpparam, cfg)
         if (cfg.redirectBlockEnabled) RedirectBlockHook.apply(lpparam, cfg)
         if (cfg.intentInterceptorEnabled) IntentInterceptorHook.apply(lpparam, cfg)
+
+        // ===== v1.0.6 新增（对标 AdClose） =====
+        if (cfg.screenshotUnlockEnabled || cfg.shakeAdBlockEnabled || cfg.vpnDetectBypassEnabled) {
+            AdClosePlusHook.apply(lpparam, cfg)
+        }
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

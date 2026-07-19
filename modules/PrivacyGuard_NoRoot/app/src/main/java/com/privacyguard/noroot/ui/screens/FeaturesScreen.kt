@@ -119,6 +119,25 @@ fun FeaturesScreen(cfg: PrivacyConfig, onConfigChange: (PrivacyConfig) -> Unit) 
             experimental = true
         )
 
+        Spacer(Modifier.height(16.dp))
+        Text("v1.0.6 新增（对标 HideMyAndroid）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "应用安装状态伪造", "Hook getPackageInfo，隐藏LSPosed/Shizuku/Magisk等敏感应用",
+            cfg.installStatusSpoofEnabled,
+            { val nc = cfg.copy(installStatusSpoofEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Mock位置系统级", "Hook LocationManager 全局返回伪造坐标（含 requestLocationUpdates）",
+            cfg.mockLocationSystemLevelEnabled,
+            { val nc = cfg.copy(mockLocationSystemLevelEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+
         Spacer(Modifier.height(20.dp))
         if (cfg.locationSpoofEnabled) {
             Text("位置参数", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)

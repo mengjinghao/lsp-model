@@ -42,6 +42,15 @@ data class MicroXConfig(
     var messageSearchEnhanceEnabled: Boolean = false,
     var customThemeEnabled: Boolean = false,
 
+    // ===== v1.0.6 新增（对标 NewMiko/FkWeChat） =====
+    var autoRedPacketEnabled: Boolean = false,       // 自动抢红包
+    var autoTransferEnabled: Boolean = false,         // 自动收取转账
+    var stepModifierEnabled: Boolean = false,         // 运动步数修改
+    var disableHotUpdateEnabled: Boolean = false,     // 禁用微信热更新
+    var momentFakeLikeEnabled: Boolean = false,       // 朋友圈伪集赞
+    var unlimitedForwardEnabled: Boolean = false,     // 去除9人转发限制
+    var autoOriginalImageEnabled: Boolean = false,    // 自动发送原图
+
     // ===== 适配辅助 =====
     /** 绕过微信/QQ安全检测（保留兼容旧 KEY_BYPASS_DETECTION） */
     var bypassDetectionEnabled: Boolean = true,
