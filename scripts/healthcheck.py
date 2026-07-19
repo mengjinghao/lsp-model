@@ -79,7 +79,7 @@ def scan_module(mod_dir, mod_name):
         with open(gradle) as fh:
             gc = fh.read()
         checks = {
-            "versionName=1.0.1": 'versionName = "1.0.1"' in gc,
+            "versionName匹配VERSION": f'versionName = "{VERSION}"' in gc,
             "versionCode=1": 'versionCode = 1' in gc,
             "signingConfig": 'meng411722' in gc,
             "compose=true": 'compose = true' in gc,

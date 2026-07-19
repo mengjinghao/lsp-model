@@ -1,10 +1,10 @@
 {
-  "version": "1.0.3",
-  "timestamp": "2026-07-19T07:10:32.287990+00:00",
+  "version": "1.0.4",
+  "timestamp": "2026-07-19T07:16:24.423920+00:00",
   "modules": [
     {
       "name": "AdBlockerX_NoRoot",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AdViewHideHook.kt",
@@ -89,9 +89,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 9,
         "ok": 7,
@@ -102,7 +100,7 @@
     },
     {
       "name": "AdBlockerX_Root",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AdViewHideHook.kt",
@@ -241,9 +239,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 15,
         "ok": 13,
@@ -254,7 +250,7 @@
     },
     {
       "name": "BatteryOptimizer_NoRoot",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -348,9 +344,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 10,
         "ok": 10,
@@ -361,7 +355,7 @@
     },
     {
       "name": "BatteryOptimizer_Root",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -518,9 +512,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 17,
         "ok": 17,
@@ -531,7 +523,7 @@
     },
     {
       "name": "GameUnlockerPro_NoRoot",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -616,9 +608,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 9,
         "ok": 9,
@@ -629,7 +619,7 @@
     },
     {
       "name": "GameUnlockerPro_Root",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -759,9 +749,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 14,
         "ok": 14,
@@ -772,7 +760,7 @@
     },
     {
       "name": "MicroXEnhancer",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AdBlockHook.kt",
@@ -875,9 +863,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 11,
         "ok": 11,
@@ -888,7 +874,7 @@
     },
     {
       "name": "PrivacyGuard_NoRoot",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -982,9 +968,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 10,
         "ok": 10,
@@ -995,7 +979,7 @@
     },
     {
       "name": "PrivacyGuard_Root",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1143,9 +1127,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 16,
         "ok": 16,
@@ -1156,7 +1138,7 @@
     },
     {
       "name": "ShizukuSceneFix",
-      "version": "1.0.3",
+      "version": "1.0.4",
       "hooks": [
         {
           "file": "AutoGrantHelperHook.kt",
@@ -1214,9 +1196,7 @@
         }
       ],
       "uiBugs": 0,
-      "configIssues": [
-        "versionName=1.0.1"
-      ],
+      "configIssues": [],
       "stats": {
         "hookFiles": 6,
         "ok": 5,
