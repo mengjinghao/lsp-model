@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mjh.shizukufix.models.ShizukuFixConfig
 import com.mjh.shizukufix.ui.screens.AboutScreen
 import com.mjh.shizukufix.ui.screens.DiagnosticsScreen
+import com.mjh.shizukufix.ui.screens.UpdateScreen
 import com.mjh.shizukufix.ui.screens.FeaturesScreen
 import com.mjh.shizukufix.ui.screens.HomeScreen
 import com.mjh.shizukufix.ui.theme.ShizukuFixTheme
@@ -70,6 +72,7 @@ fun MainScreen() {
         Triple("home", "总开关", Icons.Default.PowerSettingsNew),
         Triple("features", "功能", Icons.Default.Build),
         Triple("diagnostics", "诊断", Icons.Default.BugReport),
+            Triple("update", "更新", Icons.Default.CloudDownload),
             Triple("about", "关于", Icons.Default.Info)
     )
 
@@ -138,6 +141,7 @@ private fun AppNavHost(
         composable("home") { HomeScreen(cfg, onCfgChange) }
         composable("features") { FeaturesScreen(cfg, onCfgChange) }
         composable("diagnostics") { DiagnosticsScreen() }
+        composable("update") { UpdateScreen() }
         composable("about") { AboutScreen() }
     }
 }

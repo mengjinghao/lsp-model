@@ -1,33 +1,38 @@
 [
   {
+    "version": "1.0.4",
+    "date": "2026-07-19",
+    "summary": "热更新功能 + Hook增强 + 体检优化",
+    "changes": [
+      "[新功能] 10模块全部接入 GitHub Release 热更新检查",
+      "[新功能] UpdateChecker: 调用 GitHub API 检查最新版本",
+      "[新功能] ApkDownloader: 下载 APK + FileProvider 触发系统安装",
+      "[新功能] UpdateScreen: 更新检查/下载进度/安装界面",
+      "[新功能] 10模块 MainActivity 增加\"更新\"导航(5栏)",
+      "[权限] 补全 REQUEST_INSTALL_PACKAGES (APK安装必需)",
+      "[配置] FileProvider + file_paths.xml (Android 7+ 安装必需)",
+      "[依赖] 全模块增加 kotlinx-coroutines-android (协程支持)",
+      "[Hook增强] TrackerBlockHook: 追踪SDK 8→18个 (Firebase/AppsFlyer/Adjust/OneSignal等)",
+      "[Hook增强] JobSchedulerHook: 增加 cancel+enqueue Hook (原仅schedule)",
+      "健康分: 94.0% → 95.7% (弱实现4→2)"
+    ]
+  },
+  {
     "version": "1.0.3",
     "date": "2026-07-19",
-    "summary": "深度体检报告驱动的大幅优化: 架构统一+代码质量+体验增强",
-    "changes": [
-      "[P0] 签名密码改环境变量注入 (GitHub Secrets), 不再硬编码",
-      "[P0] .gitignore 补全 keystore/captures/.cxx 等",
-      "[P0] workflow 注入 MJH_STORE_PASSWORD/MJH_KEY_ALIAS/MJH_KEY_PASSWORD 环境变量",
-      "[P1] 统一命名: GameUnlockerPro model→models 目录, package 声明同步修正",
-      "[P1] 入口类全部统一为 XposedLoader (10/10)",
-      "[P2] 消灭 489 处空 catch, 改为 LogX.w 记录异常信息",
-      "[P2] 线程安全: ShizukuListInjectorHook/ServiceWatchdogHook 的 @Volatile 改 AtomicBoolean",
-      "[P3] ConfigManager 增加 exportConfig/importConfig (导入导出配置)",
-      "[P3] 新增 DiagnosticsScreen 诊断页: Xposed/Shizuku/模块版本/配置状态展示",
-      "[P3] MainActivity 增加诊断导航项 (4栏: 总开关/功能/诊断/关于)",
-      "[P3] 暗色模式开关 (PrivacyGuard_NoRoot)",
-      "本地编译验证: 全部10模块 compileReleaseKotlin 通过"
-    ]
+    "summary": "深度体检优化(签名环境变量/空catch/诊断页/导入导出)",
+    "changes": ["签名密码环境变量化", "489处空catch修复", "AtomicBoolean线程安全", "诊断页+导入导出+暗色模式"]
   },
   {
     "version": "1.0.2",
     "date": "2026-07-19",
-    "summary": "全模块深度体检细节修复: 补全权限/修复缺失文件/统一版本号",
-    "changes": ["修复 AdBlockerX_Root 缺失 MainActivity+AboutScreen", "补全网络模块 INTERNET 权限", "补全 Shizuku API_V23 权限声明", "统一 XposedLoader.VERSION"]
+    "summary": "全模块深度体检细节修复",
+    "changes": ["修复 AdBlockerX_Root 缺失文件", "补全权限声明", "统一版本号"]
   },
   {
     "version": "1.0.1",
     "date": "2026-07-19",
-    "summary": "全模块重写为 Compose+M3 + UI状态bug修复 + 空壳Hook清零",
-    "changes": ["Compose+M3 架构", "修复134处开关bug", "修复12个空壳Hook", "健康分 84.6%→94%"]
+    "summary": "Compose+M3架构 + UI bug修复 + 空壳清零",
+    "changes": ["10模块重写为Compose+M3", "修复134处开关bug", "空壳12→0"]
   }
 ]

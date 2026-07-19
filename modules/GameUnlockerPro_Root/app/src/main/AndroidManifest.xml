@@ -5,7 +5,13 @@
     <!-- Shizuku API V23 权限：用于系统级 setprop / 写 sysfs / cmd game_mode -->
     <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
 
+        <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <application
+
+    
+
+    
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -29,6 +35,17 @@
         <meta-data android:name="xposedminversion" android:value="82" />
         <meta-data android:name="xposeddescription" android:value="GameUnlocker Pro - 游戏解锁Root版：机型伪装/帧率解锁/温控屏蔽/GPU调频/环境隐藏/Shizuku系统级修改 + 实验性功能" />
         <meta-data android:name="xposedscope" android:resource="@array/xposed_scope" />
+
+        <!-- FileProvider: APK 热更新安装 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 </manifest>

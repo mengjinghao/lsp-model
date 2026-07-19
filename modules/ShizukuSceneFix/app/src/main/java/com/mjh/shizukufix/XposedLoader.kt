@@ -41,7 +41,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.3"
+        const val VERSION = "1.0.4"
 
         /** Scene 主包名 */
         const val SCENE_PACKAGE = "com.omarea.vtools"

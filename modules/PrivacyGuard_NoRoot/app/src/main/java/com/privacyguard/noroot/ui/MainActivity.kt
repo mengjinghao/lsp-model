@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PowerSettingsNew
@@ -42,6 +43,7 @@ import com.privacyguard.noroot.ui.screens.AboutScreen
 import com.privacyguard.noroot.ui.screens.DiagnosticsScreen
 import com.privacyguard.noroot.ui.screens.FeaturesScreen
 import com.privacyguard.noroot.ui.screens.HomeScreen
+import com.privacyguard.noroot.ui.screens.UpdateScreen
 import com.privacyguard.noroot.ui.theme.PrivacyGuardTheme
 import com.privacyguard.noroot.utils.ConfigManager
 
@@ -73,6 +75,7 @@ fun MainScreen() {
             Triple("home", "总开关", Icons.Default.PowerSettingsNew),
             Triple("features", "功能", Icons.Default.Build),
             Triple("diagnostics", "诊断", Icons.Default.BugReport),
+            Triple("update", "更新", Icons.Default.CloudDownload),
             Triple("about", "关于", Icons.Default.Info)
         )
 
@@ -144,6 +147,7 @@ private fun AppNavHost(
         composable("home") { HomeScreen(cfg, onCfgChange, darkMode, onToggleDarkMode) }
         composable("features") { FeaturesScreen(cfg, onCfgChange) }
         composable("diagnostics") { DiagnosticsScreen() }
+        composable("update") { UpdateScreen() }
         composable("about") { AboutScreen() }
     }
 }

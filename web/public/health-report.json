@@ -1,6 +1,6 @@
 {
   "version": "1.0.3",
-  "timestamp": "2026-07-19T05:04:30.848000+00:00",
+  "timestamp": "2026-07-19T07:10:32.287990+00:00",
   "modules": [
     {
       "name": "AdBlockerX_NoRoot",
@@ -66,7 +66,7 @@
           "tryCatch": 3,
           "logs": 6,
           "todo": 0,
-          "lines": 101,
+          "lines": 127,
           "status": "weak"
         },
         {
@@ -209,7 +209,7 @@
           "tryCatch": 3,
           "logs": 6,
           "todo": 0,
-          "lines": 76,
+          "lines": 102,
           "status": "weak"
         },
         {
@@ -303,12 +303,12 @@
         },
         {
           "file": "JobSchedulerHook.kt",
-          "hookCalls": 1,
-          "tryCatch": 5,
-          "logs": 9,
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 15,
           "todo": 0,
-          "lines": 91,
-          "status": "weak"
+          "lines": 129,
+          "status": "ok"
         },
         {
           "file": "LocationOptHook.kt",
@@ -353,10 +353,10 @@
       ],
       "stats": {
         "hookFiles": 10,
-        "ok": 9,
-        "weak": 1,
+        "ok": 10,
+        "weak": 0,
         "hollow": 0,
-        "totalHookCalls": 32
+        "totalHookCalls": 34
       }
     },
     {
@@ -446,12 +446,12 @@
         },
         {
           "file": "JobSchedulerHook.kt",
-          "hookCalls": 1,
-          "tryCatch": 5,
-          "logs": 10,
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 16,
           "todo": 0,
-          "lines": 77,
-          "status": "weak"
+          "lines": 115,
+          "status": "ok"
         },
         {
           "file": "LocationOptHook.kt",
@@ -523,10 +523,10 @@
       ],
       "stats": {
         "hookFiles": 17,
-        "ok": 16,
-        "weak": 1,
+        "ok": 17,
+        "weak": 0,
         "hollow": 0,
-        "totalHookCalls": 39
+        "totalHookCalls": 41
       }
     },
     {
@@ -1229,10 +1229,10 @@
   "summary": {
     "totalModules": 10,
     "totalHookFiles": 117,
-    "ok": 110,
-    "weak": 4,
+    "ok": 112,
+    "weak": 2,
     "hollow": 0,
     "uiBugs": 0,
-    "healthScore": 94.0
+    "healthScore": 95.7
   }
 }

@@ -15,7 +15,45 @@ object JobSchedulerHook {
         LogX.i("JobScheduler 优化启动 | 最小周期=${cfg.jobMinPeriodMs}ms idle约束=${cfg.jobRequireIdle}")
 
         hookSchedule(lpparam, cfg)
+        hookCancel(lpparam)
+        hookEnqueue(lpparam)
     }
+
+    private fun hookCancel(lpparam: XC_LoadPackage.LoadPackageParam) {
+        try {
+            val jsCls = XposedHelpers.findClassIfExists(
+                "android.app.job.JobScheduler", lpparam.classLoader
+            ) ?: return
+            XposedHelpers.findAndHookMethod(
+                jsCls, "cancel",
+                Int::class.javaPrimitiveType,
+                object : XC_MethodHook() {
+                    override fun beforeHookedMethod(p: MethodHookParam) {
+                        LogX.d("[Job] cancel jobId=${p.args[0]}")
+                    }
+                })
+            LogX.hookSuccess("JobScheduler", "cancel")
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
+    }
+
+    private fun hookEnqueue(lpparam: XC_LoadPackage.LoadPackageParam) {
+        try {
+            val jsCls = XposedHelpers.findClassIfExists(
+                "android.app.job.JobScheduler", lpparam.classLoader
+            ) ?: return
+            // enqueue(JobInfo, JobWorkItem) Android 8+
+            XposedHelpers.findAndHookMethod(
+                jsCls, "enqueue",
+                "android.app.job.JobInfo", "android.app.job.JobWorkItem",
+                object : XC_MethodHook() {
+                    override fun beforeHookedMethod(p: MethodHookParam) {
+                        LogX.d("[Job] enqueue jobId")
+                    }
+                })
+            LogX.hookSuccess("JobScheduler", "enqueue")
+        } catch (e: Exception) { LogX.w("异常: ${e.message}") }
+    }
+
 
     private fun hookSchedule(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         try {

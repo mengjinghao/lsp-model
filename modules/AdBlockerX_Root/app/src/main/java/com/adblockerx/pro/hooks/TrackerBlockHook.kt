@@ -24,7 +24,33 @@ object TrackerBlockHook {
         "com.tencent.bugly.beta.Beta" to listOf("checkUpgrade", "uploadPatch"),
         "com.baidu.mobstat.StatService" to listOf("onEvent", "onPageStart", "onPageEnd", "traceEvent"),
         "com.qihoo.mobl.conn.ConnectionService" to listOf("reportEvent"),
-        "com.tendcloud.appcpa.TalkingDataSDK" to listOf("onEvent", "onPageBegin", "onPageEnd")
+        "com.tendcloud.appcpa.TalkingDataSDK" to listOf("onEvent", "onPageBegin", "onPageEnd"),
+        // Sensors Data
+        "com.sensorsdata.analytics.android.sdk.SensorsDataAPI" to listOf("track", "profileSet", "profileIncrement"),
+
+        // GrowingIO
+        "com.growingio.android.sdk.collection.GrowingIO" to listOf("track", "setUserId", "setVisitor"),
+
+        // 神策
+        "com.sensorsdata.analytics.android.sdk.SAConfigOptions" to listOf("enableLog"),
+
+        // Google Firebase Analytics
+        "com.google.firebase.analytics.FirebaseAnalytics" to listOf("logEvent", "setUserId", "setUserProperty"),
+
+        // Google Analytics (旧版)
+        "com.google.android.gms.analytics.Tracker" to listOf("send", "setScreenName"),
+
+        // AppsFlyer
+        "com.appsflyer.AppsFlyerLib" to listOf("trackEvent", "trackAppLaunch", "setCustomerId"),
+
+        // Adjust
+        "com.adjust.sdk.Adjust" to listOf("trackEvent", "trackAdRevenue", "setOfflineMode"),
+
+        // OneSignal
+        "com.onesignal.OneSignal" to listOf("sendTag", "sendOutcome", "setExternalUserId"),
+
+        // Branch
+        "io.branch.referral.Branch" to listOf("userCompletedAction", "sendCommerceEvent")
     )
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: AdBlockConfig) {
