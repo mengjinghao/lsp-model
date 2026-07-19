@@ -54,6 +54,8 @@ jobs:
       - name: Build Release APK
         working-directory: modules/${{ matrix.module }}
         env:
+          # 可选: 在仓库 Settings → Secrets 配置 MJH_STORE_PASSWORD/MJH_KEY_ALIAS/MJH_KEY_PASSWORD 覆盖默认值
+          # 未配置时使用 build.gradle.kts 中的默认签名
           MJH_STORE_PASSWORD: ${{ secrets.MJH_STORE_PASSWORD }}
           MJH_KEY_ALIAS: ${{ secrets.MJH_KEY_ALIAS }}
           MJH_KEY_PASSWORD: ${{ secrets.MJH_KEY_PASSWORD }}
