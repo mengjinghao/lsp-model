@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.GameUnlockerPro"
-        tools:targetApi="34">
+        tools:targetApi="34" android:extractNativeLibs="false" android:largeHeap="true">
 
         <activity
             android:name=".ui.MainActivity"

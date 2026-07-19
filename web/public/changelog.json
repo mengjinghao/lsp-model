@@ -1,0 +1,28 @@
+[
+  {
+    "version": "1.0.2",
+    "date": "2026-07-19",
+    "summary": "全模块深度体检细节修复: 补全权限/修复缺失文件/统一版本号",
+    "changes": [
+      "修复 AdBlockerX_Root 缺失 MainActivity.kt 和 AboutScreen.kt",
+      "补全网络模块 INTERNET 权限 (AdBlockerX×2, PrivacyGuard×2)",
+      "补全所有模块 Shizuku API_V23 权限声明 (NoRoot版也用Shizuku adb级)",
+      "补全 application 属性: extractNativeLibs=false + largeHeap=true + tools:targetApi=34",
+      "统一全部 XposedLoader.VERSION 与 versionName 一致",
+      "深度体检: 0 个 critical/high/medium/low 问题"
+    ]
+  },
+  {
+    "version": "1.0.1",
+    "date": "2026-07-19",
+    "summary": "全模块重写为 Compose+M3 架构 + UI状态bug修复 + 空壳Hook清零 + 体检工具上线",
+    "changes": [
+      "10个模块全部重写为 Jetpack Compose + Material Design 3 架构",
+      "入口类统一为 XposedLoader",
+      "修复134处开关无响应bug (cfg.copy)",
+      "优化15处滑块流畅度",
+      "修复12个空壳Hook",
+      "健康分: 84.6% → 94.0%"
+    ]
+  }
+]
