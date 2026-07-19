@@ -35,7 +35,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "WebView 广告拦截",
             "shouldOverrideUrlLoading / shouldInterceptRequest 404 / loadUrl 拦截 / 注入 JS",
             cfg.webviewAdEnabled,
-            { cfg.webviewAdEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(webviewAdEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
@@ -43,7 +43,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "OkHttp 请求拦截",
             "RealCall.execute/enqueue + Interceptor.Chain.proceed 多候选类名容错",
             cfg.okHttpAdEnabled,
-            { cfg.okHttpAdEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(okHttpAdEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
@@ -51,7 +51,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "URLConnection 拦截",
             "URL.openConnection 抛 IOException / HttpURLConnection 返回 404 / Https 同理",
             cfg.urlConnectionAdEnabled,
-            { cfg.urlConnectionAdEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(urlConnectionAdEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
@@ -59,7 +59,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "内存 Hosts 黑名单",
             "内置广告域名黑名单 + 用户自定义，子域名+包含匹配",
             cfg.hostsFilterEnabled,
-            { cfg.hostsFilterEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(hostsFilterEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
@@ -67,7 +67,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "广告 SDK View 隐藏",
             "Hook 21 个广告 SDK 的 View 类，构造后强制 GONE + 拦截 VISIBLE",
             cfg.adViewHideEnabled,
-            { cfg.adViewHideEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(adViewHideEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
 
         Spacer(Modifier.height(20.dp))
@@ -78,7 +78,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "追踪 SDK 拦截",
             "Hook Umeng/TalkingData/Flurry/Bugly/BaiduMtj 等上报方法直接 return",
             cfg.trackerBlockEnabled,
-            { cfg.trackerBlockEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(trackerBlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -87,7 +87,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "Cookie 清理",
             "Hook CookieManager.getCookie 返回前过滤 _ga/_gid/IDE 等追踪 Cookie",
             cfg.cookieCleanEnabled,
-            { cfg.cookieCleanEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(cookieCleanEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -96,7 +96,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "重定向拦截",
             "Hook WebViewClient.shouldOverrideUrlLoading 拦截广告跳转深链 / click 关键字",
             cfg.redirectBlockEnabled,
-            { cfg.redirectBlockEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(redirectBlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -105,7 +105,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "Intent 拦截",
             "Hook startActivity / startActivityForResult 拦截广告 Intent 跳转",
             cfg.intentInterceptorEnabled,
-            { cfg.intentInterceptorEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(intentInterceptorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
 
@@ -117,7 +117,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "系统 Hosts 修改",
             "Shizuku 写 /data/adb/modules/adblockerx/system/etc/hosts（Magisk overlay）+ mount --bind",
             cfg.systemHostsEnabled,
-            { cfg.systemHostsEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(systemHostsEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             rootLevel = true
         )
         Spacer(Modifier.height(8.dp))
@@ -126,7 +126,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "Private DNS 设置",
             "Shizuku settings put global private_dns_mode hostname + private_dns_specifier",
             cfg.privateDnsEnabled,
-            { cfg.privateDnsEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(privateDnsEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             rootLevel = true
         )
         Spacer(Modifier.height(8.dp))
@@ -134,7 +134,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
         if (cfg.privateDnsEnabled) {
             OutlinedTextField(
                 value = cfg.privateDnsHost,
-                onValueChange = { cfg.privateDnsHost = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+                onValueChange = { val nc = cfg.copy(privateDnsHost = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
                 label = { Text("Private DNS 主机名") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
@@ -146,7 +146,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "DNS 解析 Hook",
             "Hook InetAddress/Network/Libcore.os 对广告域名返回 127.0.0.1",
             cfg.dnsResolverHookEnabled,
-            { cfg.dnsResolverHookEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(dnsResolverHookEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             rootLevel = true
         )
         Spacer(Modifier.height(8.dp))
@@ -155,7 +155,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "Shizuku 桥接",
             "Shizuku ndc resolver flushdefaultif 刷新系统 DNS 缓存",
             cfg.shizukuBridgeEnabled,
-            { cfg.shizukuBridgeEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(shizukuBridgeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             rootLevel = true
         )
 
@@ -167,7 +167,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "iptables 网络层拦截",
             "Shizuku iptables -A OUTPUT -d <ad_ip> -j DROP（前 50 个域名）",
             cfg.iptablesBlockEnabled,
-            { cfg.iptablesBlockEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(iptablesBlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, rootLevel = true
         )
         Spacer(Modifier.height(8.dp))
@@ -176,7 +176,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "本地 VPN 拦截",
             "Hook VpnService.Builder.establish 阻止 APP 自建 VPN 绕过拦截",
             cfg.vpnBasedBlockEnabled,
-            { cfg.vpnBasedBlockEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(vpnBasedBlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, rootLevel = true
         )
 
@@ -187,7 +187,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "WebView 注入 JS",
             "onPageFinished 后注入 CSS 隐藏广告 DOM（可能影响页面正常显示）",
             cfg.injectJsEnabled,
-            { cfg.injectJsEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(injectJsEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -195,7 +195,7 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             "内置广告黑名单",
             "启用内置 90 条广告域名（关闭后仅匹配自定义黑名单）",
             cfg.builtinBlocklistEnabled,
-            { cfg.builtinBlocklistEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(builtinBlocklistEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
 
         Spacer(Modifier.height(40.dp))

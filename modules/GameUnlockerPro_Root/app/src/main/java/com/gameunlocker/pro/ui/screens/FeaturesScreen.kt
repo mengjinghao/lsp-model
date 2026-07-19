@@ -35,35 +35,35 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "机型伪装", "伪装 Build/SystemProperties 为旗舰机型，规避机型检测",
             cfg.deviceSpoofEnabled,
-            { cfg.deviceSpoofEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(deviceSpoofEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
         FeatureCard(
             "帧率解锁", "Hook Display/Surface/Unity/Unreal 强制目标帧率",
             cfg.frameRateUnlockEnabled,
-            { cfg.frameRateUnlockEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(frameRateUnlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
         FeatureCard(
             "环境隐藏", "隐藏 Xposed/Shizuku/LSPatch/Magisk 等敏感环境",
             cfg.detectionHideEnabled,
-            { cfg.detectionHideEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(detectionHideEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
         FeatureCard(
             "进程优化", "提升渲染线程优先级 + Shizuku 冻结后台进程",
             cfg.processOptimizeEnabled,
-            { cfg.processOptimizeEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(processOptimizeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
         FeatureCard(
             "分辨率伪装", "伪装 Display/DisplayMetrics 为 2K，强制加载高清材质",
             cfg.resolutionSpoofEnabled,
-            { cfg.resolutionSpoofEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(resolutionSpoofEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
 
         Spacer(Modifier.height(20.dp))
@@ -75,7 +75,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "温控屏蔽", "Hook HardwarePropertiesManager/PowerManager/厂商温控服务屏蔽降频",
             cfg.thermalBypassEnabled,
-            { cfg.thermalBypassEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(thermalBypassEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             systemLevel = true
         )
         Spacer(Modifier.height(8.dp))
@@ -83,7 +83,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "GPU 调频优化", "Hook EGL/Choreographer/HardwareRenderer 优化渲染管线",
             cfg.gpuOptimizeEnabled,
-            { cfg.gpuOptimizeEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(gpuOptimizeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             systemLevel = true
         )
         Spacer(Modifier.height(8.dp))
@@ -91,7 +91,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "Shizuku 系统属性修改", "通过 Shizuku setprop 修改 ro.surface_flinger.* 刷新率属性",
             cfg.shizukuBridgeEnabled,
-            { cfg.shizukuBridgeEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(shizukuBridgeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             systemLevel = true
         )
 
@@ -104,7 +104,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "触摸采样率提升", "Hook InputEventReceiver/InputQueue 提升事件线程优先级",
             cfg.touchSamplingBoostEnabled,
-            { cfg.touchSamplingBoostEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(touchSamplingBoostEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -112,7 +112,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "网络延迟优化", "Hook Socket 设置 TCP_NODELAY + 扩大接收缓冲区",
             cfg.networkLatencyOptEnabled,
-            { cfg.networkLatencyOptEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(networkLatencyOptEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -120,7 +120,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "音频优先级提升", "Hook AudioTrack 设 PERFORMANCE_MODE_LOW_LATENCY + 线程优先级",
             cfg.audioPriorityBoostEnabled,
-            { cfg.audioPriorityBoostEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(audioPriorityBoostEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -128,7 +128,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "内存整理", "Hook MemoryInfo/TrimMemory 让游戏看到更充足内存 + GC 提示",
             cfg.memoryDefragEnabled,
-            { cfg.memoryDefragEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(memoryDefragEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
 
@@ -141,7 +141,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "游戏模式激活", "通过 Shizuku 执行 cmd game_mode / settings put global game_mode",
             cfg.gameModeActivationEnabled,
-            { cfg.gameModeActivationEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(gameModeActivationEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, systemLevel = true
         )
         Spacer(Modifier.height(8.dp))
@@ -149,7 +149,7 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         FeatureCard(
             "CPU 大核亲和性", "通过 Shizuku 写 /sys/devices/system/cpu/cpuN/cpufreq 节点",
             cfg.cpuBigCoreAffinityEnabled,
-            { cfg.cpuBigCoreAffinityEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(cpuBigCoreAffinityEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, systemLevel = true
         )
 
@@ -158,14 +158,16 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
             Text("目标帧率", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             Text("当前: ${cfg.targetFps} fps", style = MaterialTheme.typography.bodySmall)
+            val targetFpsState = remember(cfg) { mutableFloatStateOf(cfg.targetFps.toFloat()) }
             Slider(
-                value = cfg.targetFps.toFloat(),
-                onValueChange = { cfg.targetFps = it.toInt(); ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
-                valueRange = 60f..160f,
-                steps = 19
+                value = targetFpsState.floatValue,
+                onValueChange = { targetFpsState.floatValue = it },
+                onValueChangeFinished = {
+                    val nc = cfg.copy(targetFps = targetFpsState.floatValue.toInt())
+                    ConfigManager.saveGlobalConfig(nc)
+                    onConfigChange(nc)
+                },
+                valueRange = 60f..160f, steps = 19
             )
-        }
-
-        Spacer(Modifier.height(40.dp))
     }
 }

@@ -88,9 +88,9 @@ fun HomeScreen(cfg: PrivacyConfig, onConfigChange: (PrivacyConfig) -> Unit) {
                     Switch(
                         checked = cfg.masterEnabled,
                         onCheckedChange = {
-                            cfg.masterEnabled = it
-                            ConfigManager.saveGlobalConfig(cfg)
-                            onConfigChange(cfg)
+                            val nc = cfg.copy(masterEnabled = it)
+                    ConfigManager.saveGlobalConfig(nc)
+                    onConfigChange(nc)
                         }
                     )
                 }

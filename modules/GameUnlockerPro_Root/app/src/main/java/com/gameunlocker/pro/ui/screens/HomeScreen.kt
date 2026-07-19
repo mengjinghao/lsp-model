@@ -89,9 +89,9 @@ fun HomeScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
                     Switch(
                         checked = cfg.masterEnabled,
                         onCheckedChange = {
-                            cfg.masterEnabled = it
-                            ConfigManager.saveGlobalConfig(cfg)
-                            onConfigChange(cfg)
+                            val nc = cfg.copy(masterEnabled = it)
+                    ConfigManager.saveGlobalConfig(nc)
+                    onConfigChange(nc)
                         }
                     )
                 }

@@ -33,37 +33,37 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
 
         FeatureCard("WakeLock 优化", "超长持有自动释放 + 拦截冗余 SDK 统计类",
             cfg.wakeLockEnabled,
-            { cfg.wakeLockEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) })
+            { val nc = cfg.copy(wakeLockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) })
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("Alarm 闹钟优化", "高频精确闹钟降级为 setWindow",
             cfg.alarmEnabled,
-            { cfg.alarmEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) })
+            { val nc = cfg.copy(alarmEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) })
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("Sync 同步降频", "requestSync 节流，周期同步最小 30 分钟",
             cfg.syncEnabled,
-            { cfg.syncEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) })
+            { val nc = cfg.copy(syncEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) })
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("JobScheduler 限频", "Job 最小周期 15 分钟 + requireDeviceIdle",
             cfg.jobEnabled,
-            { cfg.jobEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) })
+            { val nc = cfg.copy(jobEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) })
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("Location 定位降频", "最小间隔 30s，后台高频 GPS 降级 NETWORK",
             cfg.locationEnabled,
-            { cfg.locationEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) })
+            { val nc = cfg.copy(locationEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) })
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("Animation 动画优化", "scale=0 关闭动画省 GPU（默认关闭）",
             cfg.animationEnabled,
-            { cfg.animationEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) })
+            { val nc = cfg.copy(animationEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) })
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("Sensor 传感器降频", ">50Hz 高频传感器降频至 5Hz",
             cfg.sensorEnabled,
-            { cfg.sensorEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) })
+            { val nc = cfg.copy(sensorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) })
 
         Spacer(Modifier.height(20.dp))
         Text("实验性功能（应用层）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
@@ -71,19 +71,19 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
 
         FeatureCard("蓝牙扫描降频", "Hook BluetoothLeScanner.startScan，最小 60s",
             cfg.bluetoothScanThrottleEnabled,
-            { cfg.bluetoothScanThrottleEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(bluetoothScanThrottleEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true)
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("后台相机阻断", "Hook Camera2/Camera.open，APP 在后台时阻止",
             cfg.cameraBackgroundBlockEnabled,
-            { cfg.cameraBackgroundBlockEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(cameraBackgroundBlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true)
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("振动器限频", "Hook Vibrator.vibrate，最小触发间隔 1s",
             cfg.vibratorThrottleEnabled,
-            { cfg.vibratorThrottleEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(vibratorThrottleEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true)
 
         Spacer(Modifier.height(20.dp))
@@ -92,25 +92,25 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
 
         FeatureCard("系统 Doze 强制", "dumpsys deviceidle force-idle deep，屏幕关闭后延迟触发",
             cfg.dozeEnabled,
-            { cfg.dozeEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(dozeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             systemLevel = true)
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("后台 APP 冻结", "am force-stop 黑名单，屏幕关闭 N 分钟后批量冻结",
             cfg.freezeEnabled,
-            { cfg.freezeEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(freezeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             systemLevel = true)
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("CPU 调度策略", "echo governor > /sys/.../scaling_governor，屏幕关闭切 powersave",
             cfg.cpuGovernorEnabled,
-            { cfg.cpuGovernorEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(cpuGovernorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             systemLevel = true)
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("孤儿 WakeLock 清理", "dumpsys power 文本分析，识别孤儿 wake lock",
             cfg.greenifyEnabled,
-            { cfg.greenifyEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(greenifyEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             systemLevel = true)
 
         Spacer(Modifier.height(20.dp))
@@ -119,13 +119,13 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
 
         FeatureCard("低电量模式自动切换", "settings put global low_power，电量低于阈值自动开启",
             cfg.lowPowerModeAutoEnabled,
-            { cfg.lowPowerModeAutoEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(lowPowerModeAutoEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, systemLevel = true)
         Spacer(Modifier.height(8.dp))
 
         FeatureCard("电量统计重置", "dumpsys batterystats --reset，充电 N 秒后重置",
             cfg.batteryStatsResetEnabled,
-            { cfg.batteryStatsResetEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(batteryStatsResetEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, systemLevel = true)
 
         Spacer(Modifier.height(20.dp))
@@ -133,40 +133,71 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
         Spacer(Modifier.height(8.dp))
 
         Text("WakeLock 最大持有: ${cfg.wakeLockMaxHoldSec}s", style = MaterialTheme.typography.bodySmall)
-        Slider(
-            value = cfg.wakeLockMaxHoldSec.toFloat(),
-            onValueChange = { cfg.wakeLockMaxHoldSec = it.toInt(); ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
-            valueRange = 10f..300f
-        )
+        val wakeLockMaxHoldSecState = remember(cfg) { mutableFloatStateOf(cfg.wakeLockMaxHoldSec.toFloat()) }
+            Slider(
+                value = wakeLockMaxHoldSecState.floatValue,
+                onValueChange = { wakeLockMaxHoldSecState.floatValue = it },
+                onValueChangeFinished = {
+                    val nc = cfg.copy(wakeLockMaxHoldSec = wakeLockMaxHoldSecState.floatValue.toInt())
+                    ConfigManager.saveGlobalConfig(nc)
+                    onConfigChange(nc)
+                },
+                valueRange = 10f..300f
+            )
 
         Text("Alarm 最小间隔: ${cfg.alarmMinIntervalMin} 分钟", style = MaterialTheme.typography.bodySmall)
-        Slider(
-            value = cfg.alarmMinIntervalMin.toFloat(),
-            onValueChange = { cfg.alarmMinIntervalMin = it.toInt(); ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
-            valueRange = 1f..60f
-        )
+        val alarmMinIntervalMinState = remember(cfg) { mutableFloatStateOf(cfg.alarmMinIntervalMin.toFloat()) }
+            Slider(
+                value = alarmMinIntervalMinState.floatValue,
+                onValueChange = { alarmMinIntervalMinState.floatValue = it },
+                onValueChangeFinished = {
+                    val nc = cfg.copy(alarmMinIntervalMin = alarmMinIntervalMinState.floatValue.toInt())
+                    ConfigManager.saveGlobalConfig(nc)
+                    onConfigChange(nc)
+                },
+                valueRange = 1f..60f
+            )
 
         Text("Doze 进入延迟: ${cfg.dozeDelaySec}s", style = MaterialTheme.typography.bodySmall)
-        Slider(
-            value = cfg.dozeDelaySec.toFloat(),
-            onValueChange = { cfg.dozeDelaySec = it.toInt(); ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
-            valueRange = 0f..600f
-        )
+        val dozeDelaySecState = remember(cfg) { mutableFloatStateOf(cfg.dozeDelaySec.toFloat()) }
+            Slider(
+                value = dozeDelaySecState.floatValue,
+                onValueChange = { dozeDelaySecState.floatValue = it },
+                onValueChangeFinished = {
+                    val nc = cfg.copy(dozeDelaySec = dozeDelaySecState.floatValue.toInt())
+                    ConfigManager.saveGlobalConfig(nc)
+                    onConfigChange(nc)
+                },
+                valueRange = 0f..600f
+            )
 
         Text("后台冻结延迟: ${cfg.freezeDelayMin} 分钟", style = MaterialTheme.typography.bodySmall)
-        Slider(
-            value = cfg.freezeDelayMin.toFloat(),
-            onValueChange = { cfg.freezeDelayMin = it.toInt(); ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
-            valueRange = 1f..60f
-        )
+        val freezeDelayMinState = remember(cfg) { mutableFloatStateOf(cfg.freezeDelayMin.toFloat()) }
+            Slider(
+                value = freezeDelayMinState.floatValue,
+                onValueChange = { freezeDelayMinState.floatValue = it },
+                onValueChangeFinished = {
+                    val nc = cfg.copy(freezeDelayMin = freezeDelayMinState.floatValue.toInt())
+                    ConfigManager.saveGlobalConfig(nc)
+                    onConfigChange(nc)
+                },
+                valueRange = 1f..60f
+            )
 
         Text("Greenify 清理周期: ${cfg.greenifyIntervalSec}s", style = MaterialTheme.typography.bodySmall)
-        Slider(
-            value = cfg.greenifyIntervalSec.toFloat(),
-            onValueChange = { cfg.greenifyIntervalSec = it.toInt(); ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
-            valueRange = 60f..3600f
+        val greenifyIntervalSecState = remember(cfg) { mutableFloatStateOf(cfg.greenifyIntervalSec.toFloat()) }
+            Slider(
+                value = greenifyIntervalSecState.floatValue,
+                onValueChange = { greenifyIntervalSecState.floatValue = it },
+                onValueChangeFinished = {
+                    val nc = cfg.copy(greenifyIntervalSec = greenifyIntervalSecState.floatValue.toInt())
+                    ConfigManager.saveGlobalConfig(nc)
+                    onConfigChange(nc)
+                },
+                valueRange = 60f..3600f
         )
 
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(40.dp)
+            )
     }
 }

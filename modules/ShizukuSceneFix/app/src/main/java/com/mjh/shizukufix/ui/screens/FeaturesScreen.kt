@@ -34,7 +34,7 @@ fun FeaturesScreen(cfg: ShizukuFixConfig, onConfigChange: (ShizukuFixConfig) -> 
             "Scene 权限申请修复",
             "Hook Scene 启动流程，主动向 Shizuku 发送 REQUEST_PERMISSION（Path A）",
             cfg.sceneFixEnabled,
-            { cfg.sceneFixEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(sceneFixEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
@@ -42,7 +42,7 @@ fun FeaturesScreen(cfg: ShizukuFixConfig, onConfigChange: (ShizukuFixConfig) -> 
             "授权列表注入",
             "向 Shizuku getInstalledApplications/getInstalledPackages 等返回值注入 Scene（Path B）",
             cfg.listInjectorEnabled,
-            { cfg.listInjectorEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(listInjectorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
         Spacer(Modifier.height(8.dp))
 
@@ -50,7 +50,7 @@ fun FeaturesScreen(cfg: ShizukuFixConfig, onConfigChange: (ShizukuFixConfig) -> 
             "Shizuku 变体检测",
             "扫描已安装应用，识别 Shizuku 变体包名（含第三方 fork），辅助排错",
             cfg.variantDetectEnabled,
-            { cfg.variantDetectEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) }
+            { val nc = cfg.copy(variantDetectEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
         )
 
         Spacer(Modifier.height(20.dp))
@@ -61,7 +61,7 @@ fun FeaturesScreen(cfg: ShizukuFixConfig, onConfigChange: (ShizukuFixConfig) -> 
             "Shizuku 服务保活",
             "Hook ShizukuService.onStartCommand，周期检测存活并尝试 startService 重启",
             cfg.serviceWatchdogEnabled,
-            { cfg.serviceWatchdogEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(serviceWatchdogEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -70,7 +70,7 @@ fun FeaturesScreen(cfg: ShizukuFixConfig, onConfigChange: (ShizukuFixConfig) -> 
             "自动授权辅助",
             "Hook Shizuku 授权对话框，检测到来自 Scene 的请求时自动点击允许按钮",
             cfg.autoGrantHelperEnabled,
-            { cfg.autoGrantHelperEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(autoGrantHelperEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
         Spacer(Modifier.height(8.dp))
@@ -79,7 +79,7 @@ fun FeaturesScreen(cfg: ShizukuFixConfig, onConfigChange: (ShizukuFixConfig) -> 
             "隐藏模块自身",
             "Hook Scene PackageManager 查询，过滤掉本模块和 LSPosed/Magisk 等敏感包名",
             cfg.hideFromSceneEnabled,
-            { cfg.hideFromSceneEnabled = it; ConfigManager.saveGlobalConfig(cfg); onConfigChange(cfg) },
+            { val nc = cfg.copy(hideFromSceneEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
 
