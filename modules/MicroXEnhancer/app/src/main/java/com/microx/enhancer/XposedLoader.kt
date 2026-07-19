@@ -2,6 +2,7 @@ package com.microx.enhancer
 
 import android.app.Application
 import com.microx.enhancer.hooks.*
+import com.microx.enhancer.models.MicroXConfig
 import com.microx.enhancer.utils.ConfigManager
 import com.microx.enhancer.utils.HookConfigReader
 import com.microx.enhancer.utils.HookHelper
@@ -81,9 +82,24 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
             "语音消息导出" to { VoiceMessageExportHook.hook(lpparam) },
             "消息搜索增强" to { MessageSearchEnhanceHook.hook(lpparam) },
             "自定义主题" to { CustomThemeHook.hook(lpparam) },
-            // v1.0.6 新增
-            "自动红包转账" to { AutoRedPacketHook.apply(lpparam, cfg) },
-            "步数修改/禁热更新/伪集赞/转发解除/自动原图" to { MicroXPlusHook.apply(lpparam, cfg) }
+            // v1.0.6 新增（从 ConfigManager 读取开关）
+            "自动红包转账" to {
+                if (ConfigManager.isEnabled("auto_red_packet") || ConfigManager.isEnabled("auto_transfer")) {
+                    AutoRedPacketHook.apply(lpparam, MicroXConfig().also {
+                        it.autoRedPacketEnabled = ConfigManager.isEnabled("auto_red_packet")
+                        it.autoTransferEnabled = ConfigManager.isEnabled("auto_transfer")
+                    })
+                }
+            },
+            "步数修改/禁热更新/伪集赞/转发解除/自动原图" to {
+                MicroXPlusHook.apply(lpparam, MicroXConfig().also {
+                    it.stepModifierEnabled = ConfigManager.isEnabled("step_modifier")
+                    it.disableHotUpdateEnabled = ConfigManager.isEnabled("disable_hot_update")
+                    it.momentFakeLikeEnabled = ConfigManager.isEnabled("moment_fake_like")
+                    it.unlimitedForwardEnabled = ConfigManager.isEnabled("unlimited_forward")
+                    it.autoOriginalImageEnabled = ConfigManager.isEnabled("auto_original_image")
+                })
+            }
         )
 
         for ((name, hookAction) in modules) {

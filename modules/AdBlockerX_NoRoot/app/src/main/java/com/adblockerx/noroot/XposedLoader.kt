@@ -2,6 +2,7 @@ package com.adblockerx.noroot
 
 import android.app.Application
 import com.adblockerx.noroot.hooks.AdViewHideHook
+import com.adblockerx.noroot.hooks.AdClosePlusHook
 import com.adblockerx.noroot.hooks.CookieCleanHook
 import com.adblockerx.noroot.hooks.HostsFilterHook
 import com.adblockerx.noroot.hooks.IntentInterceptorHook
