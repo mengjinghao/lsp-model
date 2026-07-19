@@ -2,6 +2,7 @@ package com.adblockerx.pro
 
 import android.app.Application
 import com.adblockerx.pro.hooks.AdViewHideHook
+import com.adblockerx.pro.hooks.AdClosePlusHook
 import com.adblockerx.pro.hooks.CookieCleanHook
 import com.adblockerx.pro.hooks.DnsResolverHook
 import com.adblockerx.pro.hooks.HostsFilterHook
