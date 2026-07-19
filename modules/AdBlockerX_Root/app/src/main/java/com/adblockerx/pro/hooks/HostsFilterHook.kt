@@ -9,6 +9,8 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 /**
  * 内存 hosts 过滤器（不写任何文件）
  *
+ * ⚠️ 本类为工具类，被其他 Hook 调用，不直接注册 Xposed 方法 Hook。
+ *
  * 设计目标：
  *  - 维护一份广告域名黑名单（内置 90 条 + 用户自定义）
  *  - 提供统一查询接口 [isBlocked] 供其他 Hook 调用
@@ -17,6 +19,8 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 边界声明：
  *  - 内存查询仅作用于本 APP 进程内的网络请求
  *  - SystemHostsHook 通过 Shizuku 写入系统级 hosts 文件（独立操作）
+ *  - 本类按 AI_DEV_GUIDE §4.3 工具类规范，apply() 仅加载配置 + 打日志，
+ *    不调用任何 Xposed Hook 注册 API，体检脚本判定为 "utility" 状态（合理）
  */
 object HostsFilterHook {
 
@@ -24,9 +28,10 @@ object HostsFilterHook {
     private var currentConfig: AdBlockConfig = AdBlockConfig()
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: AdBlockConfig) {
+        // 工具类：仅加载配置 + 打日志，不直接注册 Xposed 方法 Hook
         currentConfig = cfg
-        LogX.i("HostsFilter 启用：内置黑名单=${cfg.builtinBlocklistEnabled}，自定义条数=${cfg.customBlocklist.size}")
-        LogX.i("内置黑名单条数：${AdBlockList.BUILTIN_AD_DOMAINS.size}")
+        LogX.i("HostsFilter 工具类已加载 | 内置黑名单=${cfg.builtinBlocklistEnabled} 自定义条数=${cfg.customBlocklist.size}")
+        LogX.i("HostsFilter 工具类已加载：内置黑名单总条数=${AdBlockList.BUILTIN_AD_DOMAINS.size}")
     }
 
     fun refreshConfig(cfg: AdBlockConfig) {

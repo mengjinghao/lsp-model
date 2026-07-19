@@ -1,6 +1,5 @@
 package com.batteryopt.pro.hooks
 
-import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -8,6 +7,7 @@ import android.content.IntentFilter
 import com.batteryopt.pro.models.BatteryConfig
 import com.batteryopt.pro.utils.LogX
 import com.batteryopt.pro.utils.ShizukuHelper
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
@@ -18,6 +18,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - 通过 Shizuku 读写 /sys/devices/system/cpu/cpuN/cpufreq/scaling_governor
  *  - 屏幕关闭时切换为 powersave governor，降低 CPU 频率省电
  *  - 屏幕亮起恢复 interactive / schedutil，恢复性能
+ *
+ * §4.2 命令执行型 Hook：通过 Hook Application.onCreate 触发广播注册，
+ * 由屏幕开关广播驱动 `echo $governor > scaling_governor` 命令执行。
  */
 object CpuGovernorHook {
 
@@ -33,18 +36,24 @@ object CpuGovernorHook {
 
         LogX.i("CPU 调度策略启动 | active=${cfg.cpuGovernorActive} idle=${cfg.cpuGovernorIdle}")
 
-        registerScreenReceiver(lpparam, cfg)
+        // §4.2 命令执行型 Hook：Hook Application.onCreate 触发屏幕广播注册
+        XposedHelpers.findAndHookMethod(
+            "android.app.Application", lpparam.classLoader, "onCreate",
+            object : XC_MethodHook() {
+                override fun afterHookedMethod(p: MethodHookParam) {
+                    val ctx = p.thisObject as? Context ?: return
+                    if (!ShizukuHelper.isShizukuAvailable()) {
+                        LogX.w("Shizuku 不可用，跳过 CPU governor 广播注册")
+                        return
+                    }
+                    registerScreenReceiver(ctx, cfg)
+                }
+            })
+        LogX.hookSuccess("Application", "onCreate->CpuGovernor")
     }
 
-    private fun registerScreenReceiver(
-        lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
-    ) {
+    private fun registerScreenReceiver(ctx: Context, cfg: BatteryConfig) {
         try {
-            val app = retrieveApplication(lpparam) ?: run {
-                LogX.w("无法获取 Application，CPU 监听延迟")
-                return
-            }
-            val ctx = app.applicationContext
             screenReceiver = object : BroadcastReceiver() {
                 override fun onReceive(c: Context?, intent: Intent?) {
                     when (intent?.action) {
@@ -83,13 +92,5 @@ object CpuGovernorHook {
             }
         }
         LogX.i("Governor=$governor | 成功=$successCount 失败=$failCount")
-    }
-
-    private fun retrieveApplication(lpparam: XC_LoadPackage.LoadPackageParam): Application? {
-        return try {
-            val at = XposedHelpers.findClass("android.app.ActivityThread", lpparam.classLoader)
-            val cat = XposedHelpers.callStaticMethod(at, "currentActivityThread")
-            XposedHelpers.callMethod(cat, "getApplication") as? Application
-        } catch (_: Exception) { null }
     }
 }

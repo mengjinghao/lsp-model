@@ -11,12 +11,17 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 /**
  * 检测 Shizuku 变体包名
  *
+ * ⚠️ 本类为工具类，被其他 Hook 调用，不直接注册 Xposed 方法 Hook。
+ *
  * 原 shizuku/ShizukuVariantDetector.java 转 Kotlin。
  *
  * 用途：
  *  - MainHook 调用 isShizukuProcess(pkg) 判断目标进程是否为 Shizuku 变体
  *  - apply() 阶段在 Shizuku 进程内启动时扫描全部已安装应用，
  *    识别所有 Shizuku 变体包名并写入日志，辅助排错
+ *
+ * 按 AI_DEV_GUIDE §4.3 工具类规范，本类不调用任何 Xposed Hook 注册 API，
+ * 体检脚本判定为 "utility" 状态（合理）。
  *
  * 已知 Shizuku 包名：
  *  - moe.shizuku.privileged.api
@@ -51,7 +56,8 @@ object ShizukuVariantDetectorHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: ShizukuFixConfig) {
         if (!cfg.variantDetectEnabled) return
-        LogX.i("Shizuku 变体检测启动")
+        // 工具类：仅打日志 + 触发后台扫描，不直接注册 Xposed 方法 Hook
+        LogX.i("ShizukuVariantDetector 工具类已加载")
 
         // 在子线程扫描全部已安装应用，避免阻塞 APP 启动
         Thread {

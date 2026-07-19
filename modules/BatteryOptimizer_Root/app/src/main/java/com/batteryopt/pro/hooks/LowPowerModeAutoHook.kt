@@ -1,6 +1,5 @@
 package com.batteryopt.pro.hooks
 
-import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,6 +9,7 @@ import android.os.Looper
 import com.batteryopt.pro.models.BatteryConfig
 import com.batteryopt.pro.utils.LogX
 import com.batteryopt.pro.utils.ShizukuHelper
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
@@ -26,6 +26,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - 不同 OEM 对 low_power 设置响应不同（部分需 root + setprop）
  *  - 强制开启低电量模式可能限制后台同步、性能等
  *  - 实验性功能，默认关闭
+ *
+ * §4.2 命令执行型 Hook：通过 Hook Application.onCreate 触发电量广播注册，
+ * 由电量广播驱动 `settings put global low_power` 命令执行。
  */
 object LowPowerModeAutoHook {
 
@@ -46,16 +49,24 @@ object LowPowerModeAutoHook {
 
         LogX.i("【实验性】低电量自动切换启动 | 阈值: 低=$LOW_THRESHOLD% 安=$SAFE_THRESHOLD%")
 
-        registerBatteryReceiver(lpparam)
+        // §4.2 命令执行型 Hook：Hook Application.onCreate 触发电量广播注册
+        XposedHelpers.findAndHookMethod(
+            "android.app.Application", lpparam.classLoader, "onCreate",
+            object : XC_MethodHook() {
+                override fun afterHookedMethod(p: MethodHookParam) {
+                    val ctx = p.thisObject as? Context ?: return
+                    if (!ShizukuHelper.isShizukuAvailable()) {
+                        LogX.w("Shizuku 不可用，跳过低电量广播注册")
+                        return
+                    }
+                    registerBatteryReceiver(ctx)
+                }
+            })
+        LogX.hookSuccess("Application", "onCreate->LowPowerMode")
     }
 
-    private fun registerBatteryReceiver(lpparam: XC_LoadPackage.LoadPackageParam) {
+    private fun registerBatteryReceiver(ctx: Context) {
         try {
-            val app = retrieveApplication(lpparam) ?: run {
-                LogX.w("无法获取 Application，低电量监听延迟")
-                return
-            }
-            val ctx = app.applicationContext
             batteryReceiver = object : BroadcastReceiver() {
                 override fun onReceive(c: Context?, intent: Intent?) {
                     if (intent?.action == Intent.ACTION_BATTERY_CHANGED) {
@@ -90,13 +101,5 @@ object LowPowerModeAutoHook {
         val value = if (shouldEnableLowPower) 1 else 0
         val out = ShizukuHelper.execShell("settings put global low_power $value")
         LogX.i("电量=$percent%, 切换低电量模式 -> $value (out=$out)")
-    }
-
-    private fun retrieveApplication(lpparam: XC_LoadPackage.LoadPackageParam): Application? {
-        return try {
-            val at = XposedHelpers.findClass("android.app.ActivityThread", lpparam.classLoader)
-            val cat = XposedHelpers.callStaticMethod(at, "currentActivityThread")
-            XposedHelpers.callMethod(cat, "getApplication") as? Application
-        } catch (_: Exception) { null }
     }
 }

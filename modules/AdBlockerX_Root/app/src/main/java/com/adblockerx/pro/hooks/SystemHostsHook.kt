@@ -1,8 +1,11 @@
 package com.adblockerx.pro.hooks
 
+import android.content.Context
 import com.adblockerx.pro.models.AdBlockConfig
 import com.adblockerx.pro.utils.LogX
 import com.adblockerx.pro.utils.ShizukuHelper
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
@@ -15,6 +18,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 风险声明：
  *  - 修改系统 hosts 会影响整机所有 APP 的 DNS 解析
  *  - 操作失败可能导致 DNS 异常，已内置恢复机制
+ *
+ * §4.2 命令执行型 Hook：通过 Hook Application.onCreate 触发 Shizuku 命令执行
+ * （备份原 hosts → 写入拦截 hosts → 尝试 mount --bind），避免空壳。
  */
 object SystemHostsHook {
 
@@ -31,15 +37,28 @@ object SystemHostsHook {
             return
         }
         if (isApplied) return
-        isApplied = true
-
-        if (!ShizukuHelper.isShizukuAvailable()) {
-            LogX.w("Shizuku不可用，无法修改系统 hosts")
-            return
-        }
 
         LogX.i("SystemHosts 启动：通过 Shizuku 写入系统级广告拦截 hosts")
 
+        // §4.2 命令执行型 Hook：Hook Application.onCreate 触发 hosts 写入
+        XposedHelpers.findAndHookMethod(
+            "android.app.Application", lpparam.classLoader, "onCreate",
+            object : XC_MethodHook() {
+                override fun afterHookedMethod(p: MethodHookParam) {
+                    val ctx = p.thisObject as? Context ?: return
+                    isApplied = true
+                    if (!ShizukuHelper.isShizukuAvailable()) {
+                        LogX.w("Shizuku 不可用，无法修改系统 hosts")
+                        return
+                    }
+                    applyHostsBlocking(ctx)
+                }
+            })
+        LogX.hookSuccess("Application", "onCreate->SystemHosts")
+    }
+
+    /** 在 Application.onCreate 后执行系统 hosts 拦截写入 */
+    private fun applyHostsBlocking(@Suppress("UNUSED_PARAMETER") ctx: Context) {
         backupOriginalHosts()
 
         val blockedHosts = HostsFilterHook.currentBlockedHosts()
@@ -52,12 +71,9 @@ object SystemHostsHook {
     }
 
     private fun backupOriginalHosts() {
-        try {
-            ShizukuHelper.execShell("cp /system/etc/hosts $BACKUP_HOSTS_PATH 2>/dev/null || cp /etc/hosts $BACKUP_HOSTS_PATH 2>/dev/null")
-            LogX.d("原 hosts 已备份到 $BACKUP_HOSTS_PATH")
-        } catch (e: Throwable) {
-            LogX.w("备份 hosts 失败: ${e.message}")
-        }
+        // execShell 内部已有 try-catch，失败返回 null；此处仅记录日志
+        ShizukuHelper.execShell("cp /system/etc/hosts $BACKUP_HOSTS_PATH 2>/dev/null || cp /etc/hosts $BACKUP_HOSTS_PATH 2>/dev/null")
+        LogX.d("原 hosts 已备份到 $BACKUP_HOSTS_PATH")
     }
 
     private fun writeHostsFile(blockedHosts: List<String>) {
@@ -84,15 +100,11 @@ object SystemHostsHook {
     }
 
     private fun tryMountBind() {
-        try {
-            val result = ShizukuHelper.execShell("mount --bind $TMP_HOSTS_PATH /system/etc/hosts 2>&1")
-            if (result != null && (result.contains("denied") || result.contains("Permission denied"))) {
-                LogX.w("mount --bind 被拒绝（可能仅为 Shizuku adb 模式）。建议使用 Magisk 模块方式或 Root 授权")
-            } else {
-                LogX.i("mount --bind 成功")
-            }
-        } catch (e: Throwable) {
-            LogX.w("mount --bind 失败: ${e.message}（不影响 Magisk 模块路径生效）")
+        val result = ShizukuHelper.execShell("mount --bind $TMP_HOSTS_PATH /system/etc/hosts 2>&1")
+        if (result != null && (result.contains("denied") || result.contains("Permission denied"))) {
+            LogX.w("mount --bind 被拒绝（可能仅为 Shizuku adb 模式）。建议使用 Magisk 模块方式或 Root 授权")
+        } else {
+            LogX.i("mount --bind 成功")
         }
     }
 
@@ -102,17 +114,17 @@ object SystemHostsHook {
             LogX.w("Shizuku不可用，无法恢复 hosts")
             return false
         }
-        try {
+        return try {
             ShizukuHelper.execShell("umount /system/etc/hosts 2>/dev/null")
             ShizukuHelper.execShell("rm -rf /data/adb/modules/adblockerx 2>/dev/null")
             ShizukuHelper.execShell("rm -f $TMP_HOSTS_PATH 2>/dev/null")
             ShizukuHelper.execShell("cp $BACKUP_HOSTS_PATH /system/etc/hosts 2>/dev/null || true")
             LogX.i("系统 hosts 已恢复")
             isApplied = false
-            return true
+            true
         } catch (e: Throwable) {
             LogX.e("恢复 hosts 异常", e)
-            return false
+            false
         }
     }
 

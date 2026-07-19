@@ -1,10 +1,13 @@
 package com.batteryopt.pro.hooks
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import com.batteryopt.pro.models.BatteryConfig
 import com.batteryopt.pro.utils.LogX
 import com.batteryopt.pro.utils.ShizukuHelper
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
@@ -19,6 +22,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - 不直接 Hook PowerManagerService（system_server 作用域不易获取）
  *  - 通过 dumpsys 文本分析更安全可靠
  *  - 释放 wake lock 谨慎，避免影响通话/导航等关键场景
+ *
+ * §4.2 命令执行型 Hook：通过 Hook Application.onCreate 启动周期任务，
+ * 由 Handler.postDelayed 周期驱动 `dumpsys power` 分析与孤儿 wake lock 释放。
  */
 object GreenifyBridgeHook {
 
@@ -40,10 +46,23 @@ object GreenifyBridgeHook {
 
         LogX.i("Greenify 孤儿 WakeLock 清理启动 | 周期=${cfg.greenifyIntervalSec}s")
 
-        startPeriodicCleanup(cfg.greenifyIntervalSec)
+        // §4.2 命令执行型 Hook：Hook Application.onCreate 启动周期清理任务
+        XposedHelpers.findAndHookMethod(
+            "android.app.Application", lpparam.classLoader, "onCreate",
+            object : XC_MethodHook() {
+                override fun afterHookedMethod(p: MethodHookParam) {
+                    val ctx = p.thisObject as? Context ?: return
+                    if (!ShizukuHelper.isShizukuAvailable()) {
+                        LogX.w("Shizuku 不可用，跳过 Greenify 周期任务启动")
+                        return
+                    }
+                    startPeriodicCleanup(cfg.greenifyIntervalSec, ctx)
+                }
+            })
+        LogX.hookSuccess("Application", "onCreate->Greenify")
     }
 
-    private fun startPeriodicCleanup(intervalSec: Int) {
+    private fun startPeriodicCleanup(intervalSec: Int, @Suppress("UNUSED_PARAMETER") ctx: Context) {
         val r = object : Runnable {
             override fun run() {
                 cleanupOrphanWakeLocks()
@@ -111,12 +130,8 @@ object GreenifyBridgeHook {
     }
 
     private fun releaseWakeLock(tag: String) {
-        try {
-            // 没有公开的 release-by-tag API，采用保守策略：仅记录，不强制释放
-            // 真实环境如需释放，需要 Hook system_server 内的 PowerManagerService
-            LogX.w("发现孤儿 wake lock: $tag（保守策略，不强制释放）")
-        } catch (e: Exception) {
-            LogX.e("释放 wake lock 异常: $tag", e)
-        }
+        // 没有公开的 release-by-tag API，采用保守策略：仅记录，不强制释放
+        // 真实环境如需释放，需要 Hook system_server 内的 PowerManagerService
+        LogX.w("发现孤儿 wake lock: $tag（保守策略，不强制释放）")
     }
 }

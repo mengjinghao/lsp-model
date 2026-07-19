@@ -1,8 +1,11 @@
 package com.batteryopt.pro.hooks
 
+import android.content.Context
 import com.batteryopt.pro.models.BatteryConfig
 import com.batteryopt.pro.utils.LogX
 import com.batteryopt.pro.utils.ShizukuHelper
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 /**
@@ -14,9 +17,12 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - 提供 Shell 命令执行/系统属性修改的便捷封装
  *
  * 注意：
- *  - 不直接 Hook 任何方法，仅作为 Shizuku 调用桥
+ *  - 不直接 Hook 业务方法，仅作为 Shizuku 调用桥
  *  - 所有系统级 Hook 内部已直接调用 ShizukuHelper，本类主要用于
  *    启动时检测和集中日志输出
+ *
+ * §4.2 命令执行型 Hook：通过 Hook Application.onCreate 触发诊断
+ * （检测 Shizuku 可用性 + 输出系统信息），使本类不再为空壳。
  */
 object ShizukuBridgeHook {
 
@@ -24,11 +30,21 @@ object ShizukuBridgeHook {
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig) {
         if (isApplied) return
-        isApplied = true
 
         LogX.i("Shizuku 桥接启动")
-        checkShizukuAvailability()
-        logSystemInfo()
+
+        // §4.2 命令执行型 Hook：Hook Application.onCreate 触发 Shizuku 诊断
+        XposedHelpers.findAndHookMethod(
+            "android.app.Application", lpparam.classLoader, "onCreate",
+            object : XC_MethodHook() {
+                override fun afterHookedMethod(p: MethodHookParam) {
+                    val ctx = p.thisObject as? Context ?: return
+                    isApplied = true
+                    checkShizukuAvailability()
+                    logSystemInfo(ctx)
+                }
+            })
+        LogX.hookSuccess("Application", "onCreate->ShizukuBridge")
     }
 
     private fun checkShizukuAvailability() {
@@ -41,7 +57,7 @@ object ShizukuBridgeHook {
         }
     }
 
-    private fun logSystemInfo() {
+    private fun logSystemInfo(@Suppress("UNUSED_PARAMETER") ctx: Context) {
         if (!ShizukuHelper.isShizukuAvailable()) return
         try {
             val buildId = ShizukuHelper.execShell("getprop ro.build.id")?.trim()

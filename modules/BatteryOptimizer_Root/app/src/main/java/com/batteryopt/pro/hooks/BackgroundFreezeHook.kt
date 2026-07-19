@@ -1,6 +1,5 @@
 package com.batteryopt.pro.hooks
 
-import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,6 +9,7 @@ import android.os.Looper
 import com.batteryopt.pro.models.BatteryConfig
 import com.batteryopt.pro.utils.LogX
 import com.batteryopt.pro.utils.ShizukuHelper
+import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 
@@ -21,6 +21,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - 通过 Shizuku 执行 `am kill <pkg>` 优雅 kill
  *  - 屏幕关闭后 N 分钟自动冻结黑名单 APP
  *  - 屏幕亮起时取消未执行的冻结任务
+ *
+ * §4.2 命令执行型 Hook：通过 Hook Application.onCreate 触发广播注册，
+ * 由广播回调驱动 `am force-stop` 命令执行，避免空壳。
  */
 object BackgroundFreezeHook {
 
@@ -40,18 +43,24 @@ object BackgroundFreezeHook {
 
         LogX.i("后台冻结启动 | 延迟=${cfg.freezeDelayMin}min 黑名单=${cfg.freezeBlacklist.size}个")
 
-        registerScreenReceiver(lpparam, cfg)
+        // §4.2 命令执行型 Hook：Hook Application.onCreate 触发屏幕广播注册
+        XposedHelpers.findAndHookMethod(
+            "android.app.Application", lpparam.classLoader, "onCreate",
+            object : XC_MethodHook() {
+                override fun afterHookedMethod(p: MethodHookParam) {
+                    val ctx = p.thisObject as? Context ?: return
+                    if (!ShizukuHelper.isShizukuAvailable()) {
+                        LogX.w("Shizuku 不可用，跳过冻结广播注册")
+                        return
+                    }
+                    registerScreenReceiver(ctx, cfg)
+                }
+            })
+        LogX.hookSuccess("Application", "onCreate->Freeze")
     }
 
-    private fun registerScreenReceiver(
-        lpparam: XC_LoadPackage.LoadPackageParam, cfg: BatteryConfig
-    ) {
+    private fun registerScreenReceiver(ctx: Context, cfg: BatteryConfig) {
         try {
-            val app = retrieveApplication(lpparam) ?: run {
-                LogX.w("无法获取 Application，冻结屏幕监听延迟")
-                return
-            }
-            val ctx = app.applicationContext
             screenReceiver = object : BroadcastReceiver() {
                 override fun onReceive(c: Context?, intent: Intent?) {
                     when (intent?.action) {
@@ -91,24 +100,15 @@ object BackgroundFreezeHook {
             return
         }
         for (pkg in blacklist) {
-            try {
-                val out = ShizukuHelper.execShell("am force-stop $pkg")
+            // execShell 内部已有 try-catch，失败返回 null；此处据此走 am kill 兜底
+            val out = ShizukuHelper.execShell("am force-stop $pkg")
+            if (out == null) {
+                LogX.w("force-stop $pkg 失败，尝试 am kill 兜底")
+                ShizukuHelper.execShell("am kill $pkg")
+            } else {
                 LogX.i("已冻结: $pkg | out=$out")
-            } catch (e: Exception) {
-                LogX.e("冻结 $pkg 异常，尝试 am kill", e)
-                try {
-                    ShizukuHelper.execShell("am kill $pkg")
-                } catch (_: Exception) {}
             }
         }
         LogX.i("冻结批次完成，共 ${blacklist.size} 个 APP")
-    }
-
-    private fun retrieveApplication(lpparam: XC_LoadPackage.LoadPackageParam): Application? {
-        return try {
-            val at = XposedHelpers.findClass("android.app.ActivityThread", lpparam.classLoader)
-            val cat = XposedHelpers.callStaticMethod(at, "currentActivityThread")
-            XposedHelpers.callMethod(cat, "getApplication") as? Application
-        } catch (_: Exception) { null }
     }
 }
