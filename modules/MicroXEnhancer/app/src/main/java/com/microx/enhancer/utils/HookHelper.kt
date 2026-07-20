@@ -24,18 +24,18 @@ object HookHelper {
     fun logD(msg: String) {
         if (isDebug) {
             Log.d(TAG, msg)
-            try { XposedBridge.log("[$TAG-D] $msg") } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+            try { XposedBridge.log("[$TAG-D] $msg") } catch (_: Throwable) { }
         }
     }
 
     fun log(msg: String) {
         Log.i(TAG, msg)
-        try { XposedBridge.log("[$TAG] $msg") } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+        try { XposedBridge.log("[$TAG] $msg") } catch (_: Throwable) { }
     }
 
     fun logE(msg: String, t: Throwable? = null) {
         Log.e(TAG, msg, t)
-        try { XposedBridge.log("[$TAG-E] $msg: ${t?.message ?: ""}") } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+        try { XposedBridge.log("[$TAG-E] $msg: ${t?.message ?: ""}") } catch (_: Throwable) { }
     }
 
     /**

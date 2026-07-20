@@ -6,24 +6,18 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
-/**
- * WakeLock 持有优化 Hook（应用层，仅优化当前 APP 自身）
- *
- * 功能：
- *  1. Hook PowerManager.WakeLock.acquire(timeout)/acquire()，记录持有时长
- *  2. 对超长持有(>配置阈值, 默认60s)的 wake lock 自动 release
- *  3. 对明显冗余的 wake lock（如 SDK 统计类）在 acquire 后立即 release
- *
- * 硬性限制：
- *  - 仅作用于当前 APP 进程内的 WakeLock，跨进程孤儿 wake lock 清理由 GreenifyBridgeHook 负责
- */
 object WakeLockHook {
 
     private val holdRecords = ConcurrentHashMap<String, Long>()
     private val immediateReleaseFlags = java.util.Collections.newSetFromMap(
         java.util.concurrent.ConcurrentHashMap<String, Boolean>()
     )
+    private val releaseExecutor = Executors.newSingleThreadScheduledExecutor { r ->
+        Thread(r, "WLockAutoRelease").apply { isDaemon = true }
+    }
 
     private val redundantKeywords = arrayOf(
         "umeng", "jpush", "baidu", "tencent_mta", "mta",
@@ -192,10 +186,9 @@ object WakeLockHook {
     private fun scheduleAutoRelease(
         wakeLock: Any?, id: String, tag: String, delayMs: Long
     ) {
-        Thread {
+        releaseExecutor.schedule({
             try {
-                Thread.sleep(delayMs)
-                if (!holdRecords.containsKey(id)) return@Thread
+                if (!holdRecords.containsKey(id)) return@schedule
                 val held = try {
                     XposedHelpers.callMethod(wakeLock, "isHeld") as? Boolean ?: false
                 } catch (_: Exception) { false }
@@ -208,10 +201,9 @@ object WakeLockHook {
                     }
                 }
                 holdRecords.remove(id)
-            } catch (_: InterruptedException) {
             } catch (e: Exception) {
                 LogX.e("自动释放线程异常", e)
             }
-        }.apply { isDaemon = true; name = "WLockAutoRelease-$tag" }.start()
+        }, delayMs, TimeUnit.MILLISECONDS)
     }
 }

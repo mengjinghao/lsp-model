@@ -7,14 +7,14 @@
 
 ## 0. 元规则（最高优先级）
 
-1. **每次大幅优化只推进一个小版本**：v1.0.1 → v1.0.2 → v1.0.3。禁止跨大版本（不要直接跳 v2.0）。
+1. **每次大幅优化只推进一个小版本**：v1.0.6 → v1.0.7 → v1.0.8。禁止跨大版本（不要直接跳 v2.0）。
 2. **改任何代码前，先跑体检**：`python3 scripts/healthcheck.py`（见 §6）。体检报告决定优先级。
 3. **禁止空壳**：每个 `hooks/*.kt` 文件必须有真实 `findAndHookMethod`/`XposedBridge.hook*` 调用，或明确标注为"工具类"（见 §4.3）。
 4. **NoRoot 版与 Root 版边界不可混淆**（见 §3）。
 5. **不要新建 Markdown 文档**，除非用户明确要求。本文件 + Web 体检工具已足够。
 6. **提交信息用中文**，描述"做了什么 + 为什么"。
-7. **改完必须本地编译验证**：`./gradlew :app:compileReleaseKotlin`（每个改动模块都要过）。
-8. **推送前更新 worklog**：`/home/z/my-project/worklog.md` 追加（不覆盖）。
+7. **改完必须本地编译验证**：使用模块内的 `gradlew :app:compileReleaseKotlin`（每个改动模块都要过）。
+8. **推送前更新 worklog**：`./worklog.md` 追加（不覆盖）。
 
 ---
 
@@ -24,7 +24,7 @@
 ```
 lsp-model/
 ├── modules/                          # 10 个独立 Gradle 工程
-│   ├── keystore/mjh-release.jks      # 统一签名 (alias=mjh, pass=meng411722)
+│   ├── keystore/mjh-release.jks      # 统一签名（密钥通过环境变量注入）
 │   ├── ShizukuSceneFix/              # 通用 (Kotlin)
 │   ├── GameUnlockerPro_NoRoot/       # LSPatch 免Root
 │   ├── GameUnlockerPro_Root/         # LSPosed Root
@@ -97,14 +97,15 @@ android {
         minSdk = 26
         targetSdk = 34
         versionCode = 1              // 永远为 1，用 versionName 表达版本
-        versionName = "1.0.1"        // 小版本递增
+        versionName = "1.0.6"        // 小版本递增
     }
     signingConfigs {
         create("release") {
-            storeFile = file("../../keystore/mjh-release.jks")
-            storePassword = "meng411722"
-            keyAlias = "mjh"
-            keyPassword = "meng411722"
+            val storeFilePath = System.getenv("MJH_STORE_FILE") ?: rootProject.file("../keystore/mjh-release.jks").path
+            storeFile = file(storeFilePath)
+            storePassword = System.getenv("MJH_STORE_PASSWORD")?.takeIf { it.isNotEmpty() } ?: ""
+            keyAlias = System.getenv("MJH_KEY_ALIAS")?.takeIf { it.isNotEmpty() } ?: ""
+            keyPassword = System.getenv("MJH_KEY_PASSWORD")?.takeIf { it.isNotEmpty() } ?: ""
         }
     }
     buildTypes {
@@ -150,7 +151,7 @@ dependencies {
 - ❌ 不要用 Compose BOM（`platform("androidx.compose.bom:...")`），沙箱内解析失败
 - ❌ 不要在 `defaultConfig` 里写 `metaData {}` DSL 块，AGP 无此 DSL
 - ❌ 不要 `implementation` Xposed API，必须 `compileOnly`（运行时由框架提供）
-- ❌ 不要生成 `gradlew`（GitHub Actions 会自动生成）
+- ❌ 不要提交 `gradlew` 到仓库（CI 通过 `gradle wrapper` 自动生成；本地需手动 `gradle wrapper --gradle-version 8.2` 生成后使用）
 - ❌ 不要改 `compileSdk`/`minSdk`/`jvmTarget`/AGP/Kotlin 版本
 
 ---
@@ -297,12 +298,12 @@ Slider(
 ### 6.2 输出
 ```json
 {
-  "version": "1.0.1",
+      "version": "1.0.6",
   "timestamp": "2026-07-19T...",
   "modules": [
     {
       "name": "PrivacyGuard_NoRoot",
-      "version": "1.0.1",
+  "version": "1.0.6",
       "hooks": [
         {"file": "DeviceIdSpoofHook.kt", "hookCalls": 12, "status": "ok"},
         {"file": "NetworkInfoSpoofHook.kt", "hookCalls": 0, "status": "hollow"}
@@ -385,12 +386,12 @@ Next.js 应用，功能：
 当被要求"优化""修复""体检"本项目时，按以下顺序：
 
 1. **读本文件**（你正在做）
-2. **读 worklog**：`/home/z/my-project/worklog.md` 了解历史
+2. **读 worklog**：`./worklog.md` 了解历史
 3. **跑体检**：`python3 scripts/healthcheck.py`
 4. **定位最高优先级问题**：空壳 > UI bug > 弱实现 > 文档
 5. **修复**：遵循 §4（Hook 规范）+ §5（UI 规范）
 6. **本地编译验证**：每个改动模块 `compileReleaseKotlin`
-7. **更新 worklog**：追加 Task ID + 变更摘要
+7. **更新 worklog**：`./worklog.md` 追加 Task ID + 变更摘要
 8. **推进版本**（§7）：改 versionName + workflow tag
 9. **推送**：触发 Actions 自动出 APK
 10. **验证 Actions 成功**：用 GitHub API 查 run 状态
@@ -401,8 +402,8 @@ Next.js 应用，功能：
 
 - 仓库：`github.com/mengjinghao/lsp-model`
 - 开发者：MJH
-- 签名：`mjh-release.jks` (alias=mjh, pass=meng411722)
+- 签名：`mjh-release.jks`（密钥通过 CI 环境变量注入，不可硬编码）
 
 ---
 
-*本文件由 MJH 维护，AI Agent 每次介入前必读。最后更新：v1.0.1*
+*本文件由 MJH 维护，AI Agent 每次介入前必读。最后更新：v1.0.6*

@@ -27,7 +27,7 @@ def scan_module(mod_dir, mod_name):
     result["stats"]["hookFiles"] = len(hook_files)
 
     for f in sorted(hook_files):
-        with open(f, errors='replace') as fh:
+        with open(f, encoding='utf-8', errors='replace') as fh:
             c = fh.read()
         name = os.path.basename(f)
         hook_calls = len(re.findall(r'findAndHookMethod|findAndHookConstructor|hookAllMethods|XposedBridge\.hook(?:Method|AllMethods)?\(', c))
@@ -39,7 +39,7 @@ def scan_module(mod_dir, mod_name):
         # 判定状态
         is_utility = bool(re.search(r'工具类|工具|提供.*查询|供.*调用', c[:500]))
         if hook_calls == 0 and is_utility:
-            status = "utility"  # 工具类，合理
+            status = "utility"  # 工具类，合理；不计入 ok/weak/hollow 但也不计分母
         elif hook_calls == 0:
             status = "hollow"
             result["stats"]["hollow"] += 1
@@ -50,7 +50,8 @@ def scan_module(mod_dir, mod_name):
             status = "ok"
             result["stats"]["ok"] += 1
 
-        result["stats"]["totalHookCalls"] += hook_calls
+        if status != "utility":
+            result["stats"]["totalHookCalls"] += hook_calls
         result["hooks"].append({
             "file": name,
             "hookCalls": hook_calls,
@@ -65,23 +66,21 @@ def scan_module(mod_dir, mod_name):
     ui_files = glob.glob(f"{mod_dir}/app/src/main/java/**/ui/**/*.kt", recursive=True)
     ui_bugs = 0
     for f in ui_files:
-        with open(f, errors='replace') as fh:
+        with open(f, encoding='utf-8', errors='replace') as fh:
             c = fh.read()
-        # 匹配 cfg.X = it 但不是 cfg.copy(
-        bugs = re.findall(r'cfg\.\w+\s*=\s*it(?!\.\w)', c)
-        bugs = [b for b in bugs if 'copy(' not in c[max(0,c.find(b)-20):c.find(b)+len(b)+20]]
-        ui_bugs += len(bugs)
+        bugs = re.finditer(r'cfg\.\w+\s*=\s*it(?!\.\w)', c)
+        ui_bugs += sum(1 for m in bugs if 'copy(' not in c[max(0, m.start()-20):m.end()+20])
     result["uiBugs"] = ui_bugs
 
     # 3. 配置一致性
     gradle = f"{mod_dir}/app/build.gradle.kts"
     if os.path.isfile(gradle):
-        with open(gradle) as fh:
+        with open(gradle, encoding='utf-8') as fh:
             gc = fh.read()
         checks = {
             "versionName匹配VERSION": f'versionName = "{VERSION}"' in gc,
             "versionCode=1": 'versionCode = 1' in gc,
-            "signingConfig": 'meng411722' in gc,
+            "signingConfig": 'signingConfig' in gc,
             "compose=true": 'compose = true' in gc,
             "jvmTarget=17": 'jvmTarget = "17"' in gc,
             "noBOM": 'compose-bom' not in gc,
@@ -94,7 +93,7 @@ def scan_module(mod_dir, mod_name):
     # 4. Manifest 检查
     manifest = f"{mod_dir}/app/src/main/AndroidManifest.xml"
     if os.path.isfile(manifest):
-        with open(manifest) as fh:
+        with open(manifest, encoding='utf-8') as fh:
             mc = fh.read()
         for meta in ['xposedmodule', 'xposedminversion', 'xposeddescription', 'xposedscope']:
             if f'android:name="{meta}"' not in mc:
@@ -103,7 +102,7 @@ def scan_module(mod_dir, mod_name):
     # 5. xposed_init 检查
     xposed_init = f"{mod_dir}/app/src/main/assets/xposed_init"
     if os.path.isfile(xposed_init):
-        with open(xposed_init) as fh:
+        with open(xposed_init, encoding='utf-8') as fh:
             init = fh.read().strip()
         if not init.endswith("XposedLoader"):
             result["configIssues"].append(f"xposed_init非XposedLoader: {init}")
@@ -122,18 +121,21 @@ def main():
             continue
         report["modules"].append(scan_module(mod_dir, mod))
 
-    # 汇总
+    # 汇总（工具类不计入分母）
     total = sum(m["stats"]["hookFiles"] for m in report["modules"])
+    utility = sum(1 for m in report["modules"] for h in m["hooks"] if h.get("status") == "utility")
     ok = sum(m["stats"]["ok"] for m in report["modules"])
     weak = sum(m["stats"]["weak"] for m in report["modules"])
     hollow = sum(m["stats"]["hollow"] for m in report["modules"])
     ui_bugs = sum(m["uiBugs"] for m in report["modules"])
+    effective_total = total - utility
     report["summary"] = {
         "totalModules": len(report["modules"]),
         "totalHookFiles": total,
+        "utility": utility,
         "ok": ok, "weak": weak, "hollow": hollow,
         "uiBugs": ui_bugs,
-        "healthScore": round(ok * 100 / total, 1) if total else 0
+        "healthScore": round(ok * 100 / effective_total, 1) if effective_total else 0
     }
 
     print(json.dumps(report, ensure_ascii=False, indent=2))

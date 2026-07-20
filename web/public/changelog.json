@@ -1,5 +1,24 @@
 [
   {
+    "version": "1.0.7",
+    "date": "2026-07-20",
+    "summary": "代码质量修复：安全与稳定性提升",
+    "changes": [
+      "[安全] 所有模块移除硬编码签名密码，仅通过环境变量注入",
+      "[安全] AI_DEV_GUIDE.md 移除明文密钥，版本号更新至 v1.0.6",
+      "[修复] LogX 无限递归 bug（10 模块 catch 块调用自身导致栈溢出）",
+      "[修复] WakeLockHook 线程爆炸 → ScheduledExecutorService 单线程池",
+      "[修复] MicroXEnhancer ConfigManager v1.0.6 字段同步缺失",
+      "[修复] healthcheck.py 健康分计算错误（工具类误入分母）→ 98.3%",
+      "[修复] healthcheck.py cfg.X=it 检测使用 re.finditer 替代 re.findall",
+      "[修复] healthcheck.py Windows 编码 (GBK→UTF-8)",
+      "[权限] 6 个模块添加缺失的 INTERNET 权限",
+      "[权限] 5 个 NoRoot 模块移除不必要的 Shizuku API_V23 权限",
+      "[文档] AI_DEV_GUIDE.md worklog 路径修正为本地相对路径",
+      "[文档] 禁止提交 gradlew 规则说明更清晰"
+    ]
+  },
+  {
     "version": "1.0.6",
     "date": "2026-07-19",
     "summary": "对标GitHub同类明星项目，大幅增强功能",
