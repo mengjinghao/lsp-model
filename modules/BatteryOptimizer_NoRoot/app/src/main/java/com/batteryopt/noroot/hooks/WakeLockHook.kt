@@ -209,30 +209,29 @@ object WakeLockHook {
         return redundantKeywords.any { lower.contains(it) }
     }
 
-    /** 安排超时自动 release（守护线程 sleep 后调用 release()） */
+    /** 安排超时自动 release（单线程池调度，避免每wakelock创建Thread） */
     private fun scheduleAutoRelease(
         wakeLock: Any?, id: String, tag: String, delayMs: Long
     ) {
         releaseExecutor.schedule({
             try {
-                if (!holdRecords.containsKey(id)) return@schedule
-                val held = try {
-                    XposedHelpers.callMethod(wakeLock, "isHeld") as? Boolean ?: false
-                } catch (_: Exception) { false }
-                if (held) {
-                    try {
-                        XposedHelpers.callMethod(wakeLock, "release")
-                        LogX.w("自动释放超时 wake lock: $tag | 已持有 $delayMs ms")
-                    } catch (e: Exception) {
-                        LogX.e("自动释放 wake lock 异常: $tag", e)
+                if (holdRecords.containsKey(id)) {
+                    val held = try {
+                        XposedHelpers.callMethod(wakeLock, "isHeld") as? Boolean ?: false
+                    } catch (_: Exception) { false }
+                    if (held) {
+                        try {
+                            XposedHelpers.callMethod(wakeLock, "release")
+                            LogX.w("自动释放超时 wake lock: $tag | 已持有 $delayMs ms")
+                        } catch (e: Exception) {
+                            LogX.e("自动释放 wake lock 异常: $tag", e)
+                        }
                     }
+                    holdRecords.remove(id)
                 }
-                holdRecords.remove(id)
-            } catch (_: InterruptedException) {
-                // 进程退出时线程被中断，正常
             } catch (e: Exception) {
-                LogX.e("自动释放线程异常", e)
+                LogX.e("自动释放异常", e)
             }
-        }.apply { isDaemon = true; name = "WLockAutoRelease-$tag" }, delayMs, java.util.concurrent.TimeUnit.MILLISECONDS)
+        }, delayMs, java.util.concurrent.TimeUnit.MILLISECONDS)
     }
 }
