@@ -157,6 +157,26 @@ dependencies {
 
 ## 3. NoRoot vs Root 权限边界（铁律）
 
+### 3.1 LSPatch 合规规范（NoRoot 版强制，v1.0.8+）
+
+NoRoot 版模块面向 LSPatch 免 Root 环境，必须遵循以下 LSPatch 专属规范：
+
+1. **xposedminversion = 93**（非 82）。LSPatch v0.6.1+ 支持 API 93+，设 82 会导致部分版本不识别。
+2. **Manifest 必须声明 FOREGROUND_SERVICE 权限**（避免 Android 9+ 启动崩溃）。
+3. **XposedLoader.handleLoadPackage 开头必须加两行过滤**：
+   ```kotlin
+   if (lpparam.packageName == "android") return       // 跳过系统进程
+   if (!lpparam.isFirstApplication) return             // 仅主进程，避免子进程 ClassLoader 隔离崩溃
+   ```
+4. **不 Hook system_server**：NoRoot 版仅 Hook 目标 APP 自身进程内的类。
+   - 注：Hook `android.app.Application.onCreate`、`android.os.PowerManager` 等 framework 类**是允许的**（目标 APP 进程能访问这些类），规范真正禁止的是 Hook system_server 进程。
+5. **不调用 Root API**：无 `/system/bin/su`、无 `setenforce 0`、无 `/system` 分区写操作。
+6. **SharedPreferences 独立文件名**：每个模块用带前缀的 prefs 名（如 `privacy_guard_prefs`），避免与宿主冲突。
+7. **资源命名空间**：build.gradle.kts 已声明 `namespace`，资源 ID 自动隔离。
+
+### 3.2 NoRoot vs Root 能力对照
+
+
 | 能力 | NoRoot 版 | Root 版 |
 |------|-----------|---------|
 | 应用进程内 Java 层 Hook | ✅ | ✅ |

@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODULES_DIR = os.path.join(ROOT, "modules")
-VERSION = "1.0.7"
+VERSION = "1.0.8"
 
 def scan_module(mod_dir, mod_name):
     """扫描单个模块"""
@@ -107,6 +107,26 @@ def scan_module(mod_dir, mod_name):
             init = fh.read().strip()
         if not init.endswith("XposedLoader"):
             result["configIssues"].append(f"xposed_init非XposedLoader: {init}")
+
+    # 6. LSPatch 合规检查（仅 NoRoot 版 + MicroXEnhancer）
+    is_noroot = mod_name.endswith("_NoRoot") or mod_name == "MicroXEnhancer"
+    if is_noroot:
+        import re as _re
+        # xposedminversion 应为 93
+        mv = _re.search(r'xposedminversion.*?android:value="(\d+)"', mc)
+        if mv and mv.group(1) != "93":
+            result["configIssues"].append(f"LSPatch: xposedminversion={mv.group(1)}(应93)")
+        # FOREGROUND_SERVICE 权限
+        if 'android.permission.FOREGROUND_SERVICE' not in mc:
+            result["configIssues"].append("LSPatch: 缺FOREGROUND_SERVICE权限")
+        # XposedLoader 包名过滤 + 进程过滤
+        xl_files = __import__('glob').glob(f"{mod_dir}/app/src/main/java/**/XposedLoader.kt", recursive=True)
+        for xlf in xl_files:
+            with open(xlf) as fh: xc = fh.read()
+            if 'packageName == "android"' not in xc and '"android" == lpparam.packageName' not in xc:
+                result["configIssues"].append("LSPatch: 缺android包名过滤")
+            if 'isFirstApplication' not in xc:
+                result["configIssues"].append("LSPatch: 缺isFirstApplication进程过滤")
 
     return result
 

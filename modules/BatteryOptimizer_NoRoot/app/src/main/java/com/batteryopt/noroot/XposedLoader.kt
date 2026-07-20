@@ -39,7 +39,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.7"
+        const val VERSION = "1.0.8"
         var currentPkg: String? = null
     }
 
@@ -48,6 +48,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
+        // LSPatch 合规: 跳过系统进程 + 仅主进程加载(避免子进程ClassLoader隔离问题)
+        if (lpparam.packageName == "android") return
+        if (!lpparam.isFirstApplication) return
         val pkg = lpparam.packageName ?: return
         if (!isTargetApp(pkg)) return
 

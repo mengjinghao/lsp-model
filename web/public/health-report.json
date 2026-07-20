@@ -1,10 +1,10 @@
 {
-  "version": "1.0.7",
-  "timestamp": "2026-07-20T01:28:46.134077+00:00",
+  "version": "1.0.8",
+  "timestamp": "2026-07-20T01:46:00.175107+00:00",
   "modules": [
     {
       "name": "AdBlockerX_NoRoot",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AdClosePlusHook.kt",
@@ -109,7 +109,7 @@
     },
     {
       "name": "AdBlockerX_Root",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AdClosePlusHook.kt",
@@ -268,7 +268,7 @@
     },
     {
       "name": "AudioBoost_NoRoot",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AudioQualityEnhanceHook.kt",
@@ -337,7 +337,7 @@
     },
     {
       "name": "AudioBoost_Root",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AudioFlingerHook.kt",
@@ -442,7 +442,7 @@
     },
     {
       "name": "BatteryOptimizer_NoRoot",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -547,7 +547,7 @@
     },
     {
       "name": "BatteryOptimizer_Root",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -715,7 +715,7 @@
     },
     {
       "name": "GameUnlockerPro_NoRoot",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -811,7 +811,7 @@
     },
     {
       "name": "GameUnlockerPro_Root",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -952,7 +952,7 @@
     },
     {
       "name": "MicroXEnhancer",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AdBlockHook.kt",
@@ -1084,7 +1084,7 @@
     },
     {
       "name": "NotifyMaster_NoRoot",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AntiRecallNotifyHook.kt",
@@ -1162,7 +1162,7 @@
     },
     {
       "name": "NotifyMaster_Root",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AntiRecallNotifyHook.kt",
@@ -1276,7 +1276,7 @@
     },
     {
       "name": "PrivacyGuard_NoRoot",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1390,7 +1390,7 @@
     },
     {
       "name": "PrivacyGuard_Root",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1558,7 +1558,7 @@
     },
     {
       "name": "ShizukuSceneFix",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "AutoGrantHelperHook.kt",
@@ -1627,7 +1627,7 @@
     },
     {
       "name": "StepModifier_NoRoot",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "MultiAppSyncHook.kt",
@@ -1696,7 +1696,7 @@
     },
     {
       "name": "StepModifier_Root",
-      "version": "1.0.7",
+      "version": "1.0.8",
       "hooks": [
         {
           "file": "HealthServiceHook.kt",

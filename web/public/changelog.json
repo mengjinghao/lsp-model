@@ -1,30 +1,28 @@
 [
   {
+    "version": "1.0.8",
+    "date": "2026-07-20",
+    "summary": "LSPatch 合规性改造（NoRoot 版强制规范）",
+    "changes": [
+      "[LSPatch合规] xposedminversion 82→93（匹配 LSPatch v0.6.1+ API）",
+      "[LSPatch合规] 全部 NoRoot 版 XposedLoader 加 android 包名过滤（跳过系统进程）",
+      "[LSPatch合规] 全部 NoRoot 版 XposedLoader 加 isFirstApplication 进程过滤（避免子进程 ClassLoader 隔离崩溃）",
+      "[LSPatch合规] 全部 NoRoot 版 Manifest 补 FOREGROUND_SERVICE 权限",
+      "[AI_DEV_GUIDE] 新增 §3.1 LSPatch 合规规范章节",
+      "[体检脚本] 增加 LSPatch 合规检查维度（xposedminversion/FOREGROUND_SERVICE/包名过滤/进程过滤）",
+      "影响: 8 个 NoRoot 版模块（含 MicroXEnhancer）"
+    ]
+  },
+  {
     "version": "1.0.7",
     "date": "2026-07-19",
     "summary": "新增3对6个模块: 步数修改/通知管理/音量增强",
-    "changes": [
-      "[新模块] StepModifier_NoRoot: 步数修改专项(支付宝/微信/QQ/运动健康APP)",
-      "[新模块] StepModifier_Root: 系统级步数注入(Shizuku写/sys/proc节点)",
-      "[新模块] NotifyMaster_NoRoot: 通知管理(过滤/防撤回/历史/美化)",
-      "[新模块] NotifyMaster_Root: 系统级通知(全局监听/跨APP过滤)",
-      "[新模块] AudioBoost_NoRoot: 音量增强(突破上限/低音/均衡器)",
-      "[新模块] AudioBoost_Root: 系统级音频(AudioFlinger/全局音量)",
-      "模块总数: 10 → 16",
-      "Hook文件: 117 → 173",
-      "workflow matrix 增加6个模块"
-    ]
+    "changes": ["StepModifier×2", "NotifyMaster×2", "AudioBoost×2", "模块总数10→16"]
   },
   {
     "version": "1.0.6",
     "date": "2026-07-19",
     "summary": "对标GitHub明星项目大幅增强功能",
-    "changes": ["MicroXEnhancer +7功能(红包/转账/步数等)", "AdBlockerX +3(截图/摇一摇/VPN)", "PrivacyGuard +2(安装伪造/Mock位置)"]
-  },
-  {
-    "version": "1.0.5",
-    "date": "2026-07-19",
-    "summary": "完善应用内热更新",
-    "changes": ["自动检查", "忽略版本", "缓存管理", "下载通知", "SHA256校验"]
+    "changes": ["MicroXEnhancer +7功能", "AdBlockerX +3功能", "PrivacyGuard +2功能"]
   }
 ]

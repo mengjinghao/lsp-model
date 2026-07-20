@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+        
+
         <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
 
         <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
@@ -32,7 +36,7 @@
         </activity>
 
         <meta-data android:name="xposedmodule" android:value="true" />
-        <meta-data android:name="xposedminversion" android:value="82" />
+        <meta-data android:name="xposedminversion" android:value="93" />
         <meta-data android:name="xposeddescription" android:value="MicroX Enhancer - 微信/QQ增强：广告净化/防撤回/朋友圈保护/界面美化/隐私增强/批量管理/自动回复 + 实验性语音导出/搜索增强/自定义主题" />
         <meta-data android:name="xposedscope" android:resource="@array/xposed_scope" />
 
