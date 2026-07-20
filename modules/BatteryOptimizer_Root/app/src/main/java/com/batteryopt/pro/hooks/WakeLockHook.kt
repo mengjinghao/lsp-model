@@ -199,8 +199,8 @@ object WakeLockHook {
     ) {
         releaseExecutor.schedule({
             try {
-                if (!holdRecords.containsKey(id)) return@schedule
-                val held = try {
+                if (holdRecords.containsKey(id)) {
+                    val held = try {
                     XposedHelpers.callMethod(wakeLock, "isHeld") as? Boolean ?: false
                 } catch (_: Exception) { false }
                 if (held) {
@@ -212,10 +212,10 @@ object WakeLockHook {
                     }
                 }
                 holdRecords.remove(id)
-            } catch (_: InterruptedException) {
-            } catch (e: Exception) {
-                LogX.e("自动释放线程异常", e)
-            }
-        }.apply { isDaemon = true; name = "WLockAutoRelease-$tag" }, delayMs, java.util.concurrent.TimeUnit.MILLISECONDS)
+                    }
+                } catch (e: Exception) {
+                    LogX.e("自动释放异常", e)
+                }
+        }, delayMs, java.util.concurrent.TimeUnit.MILLISECONDS)
     }
 }
