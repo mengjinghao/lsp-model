@@ -1,14 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <!-- 皇冠图标，白色描边 -->
-    <path android:fillColor="#FFFFFFFF"
-        android:strokeColor="#FFFFFFFF" android:strokeWidth="2" android:strokeLineJoin="round"
-        android:pathData="M30,72 L24,42 L42,56 L54,34 L66,56 L84,42 L78,72 Z" />
-    <!-- 皇冠底座 -->
-    <path android:fillColor="#FFFFFFFF" android:pathData="M30,76 L78,76 L78,82 L30,82 Z" />
-    <!-- 三颗宝石 -->
-    <path android:fillColor="#FFFFD54F" android:pathData="M42,56 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
-    <path android:fillColor="#FFFFD54F" android:pathData="M54,34 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
-    <path android:fillColor="#FFFFD54F" android:pathData="M66,56 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54">
+
+        <!-- Crown body - elegant shape -->
+        <path
+            android:pathData="M24,68 L24,52 L36,58 L48,38 L54,44 L60,38 L72,58 L84,52 L84,68 Z"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Crown band -->
+        <path
+            android:pathData="M24,72 L84,72 L84,78 L24,78 Z"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Crown band decorative line -->
+        <path
+            android:pathData="M28,75 L80,75"
+            android:strokeWidth="1.5"
+            android:fillColor="#00000000"
+            android:strokeColor="#33000000"
+            android:strokeLineCap="round" />
+
+        <!-- Central gem - diamond shape -->
+        <path
+            android:pathData="M54,40 L60,48 L54,56 L48,48 Z"
+            android:fillColor="#FFFFD54F" />
+
+        <!-- Left gem -->
+        <path
+            android:pathData="M36,58 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0"
+            android:fillColor="#FFFFD54F" />
+
+        <!-- Right gem -->
+        <path
+            android:pathData="M72,58 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0"
+            android:fillColor="#FFFFD54F" />
+
+        <!-- Crown tip sparkles -->
+        <path
+            android:pathData="M48,34 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+            android:fillColor="#CCFFFFFF" />
+        <path
+            android:pathData="M54,30 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+            android:fillColor="#CCFFFFFF" />
+        <path
+            android:pathData="M60,34 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+            android:fillColor="#CCFFFFFF" />
+
+        <!-- Shield outline behind crown -->
+        <path
+            android:pathData="M54,82 Q30,82 30,68 L54,58 L78,68 Q78,82 54,82 Z"
+            android:fillColor="#00000000"
+            android:strokeColor="#44FFFFFF"
+            android:strokeWidth="2" />
+
+        <!-- Root unlock keyhole in crown band -->
+        <path
+            android:pathData="M54,73 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"
+            android:fillColor="#FFE65100" />
+        <path
+            android:pathData="M54,75 L54,80"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFE65100"
+            android:strokeLineCap="round" />
+
+    </group>
 </vector>
