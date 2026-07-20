@@ -1,0 +1,10 @@
+-keep class com.vipunlock.pro.XposedLoader { *; }
+-keep class com.vipunlock.pro.hooks.** { *; }
+-keep class com.vipunlock.pro.utils.** { *; }
+-keep class com.vipunlock.pro.models.** { *; }
+-keep class de.robv.android.xposed.** { *; }
+-dontwarn de.robv.android.xposed.**
+-dontwarn rikka.shizuku.**
+-keep class rikka.shizuku.** { *; }
+-keepclassmembers class com.vipunlock.pro.models.** { *; }
+-keepattributes *Annotation*,Signature,EnclosingMethod

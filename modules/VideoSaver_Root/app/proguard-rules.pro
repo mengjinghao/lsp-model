@@ -1,0 +1,10 @@
+-keep class com.videosaver.pro.XposedLoader { *; }
+-keep class com.videosaver.pro.hooks.** { *; }
+-keep class com.videosaver.pro.utils.** { *; }
+-keep class com.videosaver.pro.models.** { *; }
+-keep class de.robv.android.xposed.** { *; }
+-dontwarn de.robv.android.xposed.**
+-dontwarn rikka.shizuku.**
+-keep class rikka.shizuku.** { *; }
+-keepclassmembers class com.videosaver.pro.models.** { *; }
+-keepattributes *Annotation*,Signature,EnclosingMethod

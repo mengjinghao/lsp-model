@@ -1,10 +1,10 @@
 {
-  "version": "1.0.9",
-  "timestamp": "2026-07-20T02:00:41.722908+00:00",
+  "version": "1.0.10",
+  "timestamp": "2026-07-20T04:25:46.291209+00:00",
   "modules": [
     {
       "name": "AdBlockerX_NoRoot",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AdClosePlusHook.kt",
@@ -109,7 +109,7 @@
     },
     {
       "name": "AdBlockerX_Root",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AdClosePlusHook.kt",
@@ -268,7 +268,7 @@
     },
     {
       "name": "AudioBoost_NoRoot",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AudioQualityEnhanceHook.kt",
@@ -337,7 +337,7 @@
     },
     {
       "name": "AudioBoost_Root",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AudioFlingerHook.kt",
@@ -442,7 +442,7 @@
     },
     {
       "name": "BatteryOptimizer_NoRoot",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -528,10 +528,10 @@
         {
           "file": "WakeLockHook.kt",
           "hookCalls": 4,
-          "tryCatch": 11,
+          "tryCatch": 10,
           "logs": 21,
           "todo": 0,
-          "lines": 239,
+          "lines": 237,
           "status": "ok"
         }
       ],
@@ -547,7 +547,7 @@
     },
     {
       "name": "BatteryOptimizer_Root",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -696,7 +696,7 @@
         {
           "file": "WakeLockHook.kt",
           "hookCalls": 4,
-          "tryCatch": 11,
+          "tryCatch": 10,
           "logs": 21,
           "todo": 0,
           "lines": 222,
@@ -715,7 +715,7 @@
     },
     {
       "name": "GameUnlockerPro_NoRoot",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -811,7 +811,7 @@
     },
     {
       "name": "GameUnlockerPro_Root",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -952,7 +952,7 @@
     },
     {
       "name": "MicroXEnhancer",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AdBlockHook.kt",
@@ -1084,7 +1084,7 @@
     },
     {
       "name": "NotifyMaster_NoRoot",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AntiRecallNotifyHook.kt",
@@ -1162,7 +1162,7 @@
     },
     {
       "name": "NotifyMaster_Root",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AntiRecallNotifyHook.kt",
@@ -1276,7 +1276,7 @@
     },
     {
       "name": "PrivacyGuard_NoRoot",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1390,7 +1390,7 @@
     },
     {
       "name": "PrivacyGuard_Root",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1558,7 +1558,7 @@
     },
     {
       "name": "ShizukuSceneFix",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "AutoGrantHelperHook.kt",
@@ -1627,7 +1627,7 @@
     },
     {
       "name": "StepModifier_NoRoot",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "MultiAppSyncHook.kt",
@@ -1696,7 +1696,7 @@
     },
     {
       "name": "StepModifier_Root",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "hooks": [
         {
           "file": "HealthServiceHook.kt",
@@ -1798,16 +1798,418 @@
         "hollow": 0,
         "totalHookCalls": 27
       }
+    },
+    {
+      "name": "VideoSaver_NoRoot",
+      "version": "1.0.10",
+      "hooks": [
+        {
+          "file": "AutoDownloadHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 8,
+          "logs": 9,
+          "todo": 6,
+          "lines": 194,
+          "status": "ok"
+        },
+        {
+          "file": "BatchDownloadHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 8,
+          "logs": 7,
+          "todo": 0,
+          "lines": 202,
+          "status": "ok"
+        },
+        {
+          "file": "BiliDownloadHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 12,
+          "logs": 18,
+          "todo": 0,
+          "lines": 242,
+          "status": "ok"
+        },
+        {
+          "file": "DouyinNoWatermarkHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 8,
+          "logs": 9,
+          "todo": 0,
+          "lines": 204,
+          "status": "ok"
+        },
+        {
+          "file": "KuaishouNoWatermarkHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 9,
+          "todo": 0,
+          "lines": 180,
+          "status": "ok"
+        },
+        {
+          "file": "RemoveVideoAdsHook.kt",
+          "hookCalls": 5,
+          "tryCatch": 11,
+          "logs": 11,
+          "todo": 0,
+          "lines": 205,
+          "status": "ok"
+        },
+        {
+          "file": "SaveOriginalQualityHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 13,
+          "logs": 13,
+          "todo": 0,
+          "lines": 176,
+          "status": "ok"
+        },
+        {
+          "file": "XhsNoWatermarkHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 9,
+          "todo": 0,
+          "lines": 190,
+          "status": "ok"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 8,
+        "ok": 8,
+        "weak": 0,
+        "hollow": 0,
+        "totalHookCalls": 31
+      }
+    },
+    {
+      "name": "VideoSaver_Root",
+      "version": "1.0.10",
+      "hooks": [
+        {
+          "file": "AutoDownloadHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 8,
+          "logs": 9,
+          "todo": 6,
+          "lines": 169,
+          "status": "ok"
+        },
+        {
+          "file": "BatchDownloadHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 8,
+          "logs": 7,
+          "todo": 0,
+          "lines": 181,
+          "status": "ok"
+        },
+        {
+          "file": "BiliDownloadHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 12,
+          "logs": 18,
+          "todo": 0,
+          "lines": 218,
+          "status": "ok"
+        },
+        {
+          "file": "DouyinNoWatermarkHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 9,
+          "todo": 0,
+          "lines": 182,
+          "status": "ok"
+        },
+        {
+          "file": "GlobalVideoAdBlockHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 8,
+          "logs": 9,
+          "todo": 0,
+          "lines": 131,
+          "status": "ok"
+        },
+        {
+          "file": "KernelVideoEnhanceHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 8,
+          "logs": 8,
+          "todo": 0,
+          "lines": 144,
+          "status": "ok"
+        },
+        {
+          "file": "KuaishouNoWatermarkHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 9,
+          "todo": 0,
+          "lines": 163,
+          "status": "ok"
+        },
+        {
+          "file": "RemoveVideoAdsHook.kt",
+          "hookCalls": 5,
+          "tryCatch": 11,
+          "logs": 11,
+          "todo": 0,
+          "lines": 170,
+          "status": "ok"
+        },
+        {
+          "file": "SaveOriginalQualityHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 13,
+          "logs": 13,
+          "todo": 0,
+          "lines": 147,
+          "status": "ok"
+        },
+        {
+          "file": "ShizukuVideoBridgeHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 9,
+          "logs": 10,
+          "todo": 0,
+          "lines": 127,
+          "status": "ok"
+        },
+        {
+          "file": "SystemDownloadHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 9,
+          "logs": 10,
+          "todo": 0,
+          "lines": 133,
+          "status": "ok"
+        },
+        {
+          "file": "XhsNoWatermarkHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 9,
+          "todo": 0,
+          "lines": 170,
+          "status": "ok"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 12,
+        "ok": 12,
+        "weak": 0,
+        "hollow": 0,
+        "totalHookCalls": 43
+      }
+    },
+    {
+      "name": "VipUnlocker_NoRoot",
+      "version": "1.0.10",
+      "hooks": [
+        {
+          "file": "BilibiliVipHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 7,
+          "todo": 0,
+          "lines": 83,
+          "status": "ok"
+        },
+        {
+          "file": "BypassVerifyHook.kt",
+          "hookCalls": 5,
+          "tryCatch": 15,
+          "logs": 19,
+          "todo": 0,
+          "lines": 196,
+          "status": "ok"
+        },
+        {
+          "file": "IqiyiVipHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 7,
+          "todo": 0,
+          "lines": 83,
+          "status": "ok"
+        },
+        {
+          "file": "NetEaseMusicVipHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 13,
+          "logs": 16,
+          "todo": 0,
+          "lines": 164,
+          "status": "ok"
+        },
+        {
+          "file": "QQMusicVipHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 7,
+          "todo": 0,
+          "lines": 86,
+          "status": "ok"
+        },
+        {
+          "file": "RemoveAdsHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 5,
+          "todo": 0,
+          "lines": 185,
+          "status": "ok"
+        },
+        {
+          "file": "UniversalVipHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 6,
+          "logs": 20,
+          "todo": 0,
+          "lines": 286,
+          "status": "ok"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 7,
+        "ok": 7,
+        "weak": 0,
+        "hollow": 0,
+        "totalHookCalls": 22
+      }
+    },
+    {
+      "name": "VipUnlocker_Root",
+      "version": "1.0.10",
+      "hooks": [
+        {
+          "file": "BilibiliVipHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 7,
+          "todo": 0,
+          "lines": 83,
+          "status": "ok"
+        },
+        {
+          "file": "BypassVerifyHook.kt",
+          "hookCalls": 5,
+          "tryCatch": 15,
+          "logs": 19,
+          "todo": 0,
+          "lines": 196,
+          "status": "ok"
+        },
+        {
+          "file": "GlobalAdBlockHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 5,
+          "logs": 13,
+          "todo": 0,
+          "lines": 154,
+          "status": "ok"
+        },
+        {
+          "file": "IqiyiVipHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 7,
+          "todo": 0,
+          "lines": 83,
+          "status": "ok"
+        },
+        {
+          "file": "LicenseVerifyHook.kt",
+          "hookCalls": 7,
+          "tryCatch": 14,
+          "logs": 19,
+          "todo": 0,
+          "lines": 182,
+          "status": "ok"
+        },
+        {
+          "file": "NetEaseMusicVipHook.kt",
+          "hookCalls": 6,
+          "tryCatch": 13,
+          "logs": 16,
+          "todo": 0,
+          "lines": 164,
+          "status": "ok"
+        },
+        {
+          "file": "QQMusicVipHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 7,
+          "todo": 0,
+          "lines": 86,
+          "status": "ok"
+        },
+        {
+          "file": "RemoveAdsHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 5,
+          "todo": 0,
+          "lines": 185,
+          "status": "ok"
+        },
+        {
+          "file": "ShizukuVipBridgeHook.kt",
+          "hookCalls": 1,
+          "tryCatch": 1,
+          "logs": 9,
+          "todo": 0,
+          "lines": 81,
+          "status": "ok"
+        },
+        {
+          "file": "SystemPropVipHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 7,
+          "logs": 12,
+          "todo": 0,
+          "lines": 135,
+          "status": "ok"
+        },
+        {
+          "file": "UniversalVipHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 6,
+          "logs": 20,
+          "todo": 0,
+          "lines": 286,
+          "status": "ok"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 11,
+        "ok": 11,
+        "weak": 0,
+        "hollow": 0,
+        "totalHookCalls": 35
+      }
     }
   ],
   "summary": {
-    "totalModules": 16,
-    "totalHookFiles": 173,
-    "ok": 162,
+    "totalModules": 20,
+    "totalHookFiles": 211,
+    "ok": 200,
     "weak": 8,
     "hollow": 0,
     "utility": 3,
     "uiBugs": 0,
-    "healthScore": 95.3
+    "healthScore": 96.2
   }
 }

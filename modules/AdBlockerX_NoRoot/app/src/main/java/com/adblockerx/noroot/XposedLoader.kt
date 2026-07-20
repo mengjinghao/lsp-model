@@ -44,7 +44,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.9"
+        const val VERSION = "1.0.10"
         var currentPkg: String? = null
     }
 

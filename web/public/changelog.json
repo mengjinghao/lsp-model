@@ -1,27 +1,29 @@
 [
   {
+    "version": "1.0.10",
+    "date": "2026-07-20",
+    "summary": "新增2对4个模块: VIP解锁/短视频去水印",
+    "changes": [
+      "[新模块] VipUnlocker_NoRoot: VIP功能解锁(网易云/QQ音乐/爱奇艺/B站等16个APP)",
+      "[新模块] VipUnlocker_Root: 系统级VIP解锁(Shizuku伪装机型/Google Play授权)",
+      "[新模块] VideoSaver_NoRoot: 短视频去水印下载(抖音/快手/小红书/B站)",
+      "[新模块] VideoSaver_Root: 系统级下载(Shizuku系统下载服务)",
+      "模块总数: 16 → 20",
+      "Hook文件: 173 → 211",
+      "健康分: 95.3% → 96.2%",
+      "对标: HookVip/NewHookVip/dou-plus/FreedomPlus"
+    ]
+  },
+  {
     "version": "1.0.9",
     "date": "2026-07-20",
-    "summary": "合并 PR#1 代码质量修复 + healthcheck 精度提升",
-    "changes": [
-      "[bugfix] LogX 无限递归修复：catch 块调用 LogX.w 导致栈溢出 → 改为静默 catch（12模块）",
-      "[bugfix] WakeLockHook 线程爆炸修复：每个 wakelock 新建 Thread → ScheduledExecutorService 单线程池（2模块）",
-      "[bugfix] MicroXEnhancer ConfigManager 字段缺失修复：v1.0.6 新增7字段在 getGlobalConfig/applyMicroXConfig 中补全",
-      "[healthcheck] 健康分计算修正：工具类不计入分母（93.6%→95.3%）",
-      "[healthcheck] UI bug 检测修正：findall+find 改为 finditer+match.start（精确定位）",
-      "[healthcheck] 增加 encoding=utf-8 解决跨平台解码"
-    ]
+    "summary": "合并PR#1代码质量修复",
+    "changes": ["LogX递归修复", "WakeLockHook线程修复", "ConfigManager字段补全"]
   },
   {
     "version": "1.0.8",
     "date": "2026-07-20",
-    "summary": "LSPatch 合规性改造",
-    "changes": ["xposedminversion 82→93", "android包名过滤", "isFirstApplication进程过滤", "FOREGROUND_SERVICE权限"]
-  },
-  {
-    "version": "1.0.7",
-    "date": "2026-07-19",
-    "summary": "新增3对6个模块",
-    "changes": ["StepModifier×2", "NotifyMaster×2", "AudioBoost×2", "模块10→16"]
+    "summary": "LSPatch合规性改造",
+    "changes": ["xposedminversion=93", "进程过滤", "FOREGROUND_SERVICE"]
   }
 ]
