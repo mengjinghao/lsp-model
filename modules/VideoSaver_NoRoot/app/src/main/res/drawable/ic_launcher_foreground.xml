@@ -1,11 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <!-- 下载图标：向下的箭头 + 底部托盘 -->
-    <path android:fillColor="#FFFFFFFF"
-        android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round"
-        android:pathData="M54,24 L54,58 M40,46 L54,60 L68,46" />
-    <path android:fillColor="#FFFFFFFF"
-        android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round"
-        android:pathData="M30,68 L30,80 L78,80 L78,68" />
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54">
+
+        <!-- Rounded rectangle frame (film/screen) -->
+        <path
+            android:pathData="M26,30 Q26,24 32,24 L76,24 Q82,24 82,30 L82,62 Q82,68 76,68 L32,68 Q26,68 26,62 Z"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeWidth="3.5"
+            android:strokeLineJoin="round" />
+
+        <!-- Play triangle inside screen -->
+        <path
+            android:pathData="M44,36 L44,56 L62,46 Z"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Download arrow shaft -->
+        <path
+            android:pathData="M54,72 L54,86"
+            android:strokeWidth="3.5"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Download arrow head -->
+        <path
+            android:pathData="M44,80 L54,90 L64,80"
+            android:strokeWidth="3.5"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+
+        <!-- Download base line -->
+        <path
+            android:pathData="M38,94 L70,94"
+            android:strokeWidth="3"
+            android:fillColor="#00000000"
+            android:strokeColor="#80FFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Screen glare -->
+        <path
+            android:pathData="M32,30 L40,30 L32,38 Z"
+            android:fillColor="#22FFFFFF" />
+
+    </group>
 </vector>

@@ -1,16 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <!-- 喇叭主体 -->
-    <path android:fillColor="#FFFFFFFF"
-        android:strokeColor="#FFFFFFFF" android:strokeWidth="2" android:strokeLineJoin="round"
-        android:pathData="M40,44 L52,44 L66,32 L66,76 L52,64 L40,64 Z" />
-    <!-- 声波 1 -->
-    <path android:fillColor="@android:color/transparent"
-        android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineCap="round"
-        android:pathData="M72,42 Q80,54 72,66" />
-    <!-- 声波 2 -->
-    <path android:fillColor="@android:color/transparent"
-        android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineCap="round"
-        android:pathData="M80,36 Q92,54 80,72" />
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:translateX="0"
+        android:translateY="0">
+
+        <!-- Headphone band arc -->
+        <path
+            android:pathData="M34,56 Q34,28 54,28 Q74,28 74,56"
+            android:strokeWidth="4.5"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Left earcup -->
+        <path
+            android:pathData="M28,52 L28,68 Q28,74 34,74 L38,74 Q42,74 42,68 L42,52 Q42,46 38,46 L34,46 Q28,46 28,52 Z"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Right earcup -->
+        <path
+            android:pathData="M66,52 L66,68 Q66,74 72,74 L76,74 Q80,74 80,68 L80,52 Q80,46 76,46 L72,46 Q66,46 66,52 Z"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Left earcup inner detail -->
+        <path
+            android:pathData="M32,54 Q32,50 36,50 L38,50 Q40,50 40,54 L40,66 Q40,70 38,70 L36,70 Q32,70 32,66 Z"
+            android:fillColor="#33FFFFFF" />
+
+        <!-- Right earcup inner detail -->
+        <path
+            android:pathData="M70,54 Q70,50 74,50 L76,50 Q78,50 78,54 L78,66 Q78,70 76,70 L74,70 Q70,70 70,66 Z"
+            android:fillColor="#33FFFFFF" />
+
+        <!-- Sound wave 1 -->
+        <path
+            android:pathData="M46,42 Q46,54 46,66"
+            android:strokeWidth="2.5"
+            android:fillColor="#00000000"
+            android:strokeColor="#80FFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Sound wave 2 -->
+        <path
+            android:pathData="M84,42 Q84,54 84,66"
+            android:strokeWidth="2.5"
+            android:fillColor="#00000000"
+            android:strokeColor="#80FFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Musical note accent - left -->
+        <path
+            android:pathData="M20,38 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"
+            android:fillColor="#99FFFFFF" />
+        <path
+            android:pathData="M22.5,38 L22.5,28"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"
+            android:strokeColor="#99FFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Musical note accent - right -->
+        <path
+            android:pathData="M86,34 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"
+            android:fillColor="#99FFFFFF" />
+        <path
+            android:pathData="M88,34 L88,26"
+            android:strokeWidth="1.8"
+            android:fillColor="#00000000"
+            android:strokeColor="#99FFFFFF"
+            android:strokeLineCap="round" />
+
+    </group>
 </vector>

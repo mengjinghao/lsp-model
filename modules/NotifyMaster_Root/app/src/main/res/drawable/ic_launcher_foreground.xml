@@ -1,16 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <!-- 铃铛主体 -->
-    <path android:fillColor="#FFFFFFFF"
-        android:strokeColor="#FFFFFFFF" android:strokeWidth="2.5" android:strokeLineJoin="round"
-        android:pathData="M54,24 L58,28 L62,32 L62,52 L70,62 L38,62 L46,52 L46,32 L50,28 Z" />
-    <!-- 铃铛顶部圆点 -->
-    <path android:fillColor="#FFFFFFFF" android:pathData="M54,20 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0" />
-    <!-- 铃铛底部摆锤 -->
-    <path android:fillColor="#FFFFFFFF" android:pathData="M54,68 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
-    <!-- 中央青色对勾表示主控（Pro 版加圆形描边） -->
-    <path android:fillColor="#FF00695C" android:pathData="M48,46 L52,52 L60,40 L57,37 L52,46 L50,44 Z" />
-    <!-- Pro 标记：右下小圆点 -->
-    <path android:fillColor="#FFFF8F00" android:pathData="M78,78 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54">
+
+        <!-- Bell body -->
+        <path
+            android:pathData="M36,64 L36,50 Q36,30 54,30 Q72,30 72,50 L72,64 Z"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Bell flared bottom -->
+        <path
+            android:pathData="M32,64 L32,68 Q32,72 36,72 L72,72 Q76,72 76,68 L76,64 Z"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Bell top knob -->
+        <path
+            android:pathData="M50,24 Q50,18 54,18 Q58,18 58,24"
+            android:strokeWidth="3.5"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Clapper -->
+        <path
+            android:pathData="M50,78 Q50,74 54,74 Q58,74 58,78 Q58,82 54,82 Q50,82 50,78 Z"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Notification dot 1 -->
+        <path
+            android:pathData="M76,32 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"
+            android:fillColor="#FFD32F2F" />
+
+        <!-- Notification dot 2 -->
+        <path
+            android:pathData="M82,44 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0"
+            android:fillColor="#FFFF9800" />
+
+        <!-- Bell shine detail -->
+        <path
+            android:pathData="M44,44 Q44,38 50,36"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"
+            android:strokeColor="#33FFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Root shield badge -->
+        <path
+            android:pathData="M18,70 L18,60 L24,56 L30,60 L30,70 L24,74 Z"
+            android:fillColor="#FFFFD54F" />
+
+        <!-- Root shield checkmark -->
+        <path
+            android:pathData="M21,66 L24,70 L28,62"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFE65100"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+
+    </group>
 </vector>

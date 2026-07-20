@@ -1,20 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 跑步人形图标 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
-    <!-- 头部 -->
-    <path android:fillColor="#FFFFFFFF"
-        android:pathData="M62,30 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
-    <!-- 躯干+手臂 -->
-    <path android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round"
-        android:pathData="M58,40 L52,55 L46,62 L50,66 L58,58 L64,52 Z" />
-    <!-- 后腿 -->
-    <path android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round"
-        android:pathData="M52,55 L42,70 L40,82 L46,82 L52,68 Z" />
-    <!-- 前腿 -->
-    <path android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round"
-        android:pathData="M64,52 L74,62 L80,76 L74,78 L68,66 Z" />
-    <!-- 前臂 -->
-    <path android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round"
-        android:pathData="M58,40 L66,46 L72,44 L70,40 L62,38 Z" />
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54">
+
+        <!-- Activity ring outer -->
+        <path
+            android:pathData="M54,18 A36,36 0 1,1 53.99,18"
+            android:strokeWidth="5"
+            android:fillColor="#00000000"
+            android:strokeColor="#33FFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Activity ring progress arc - full circle -->
+        <path
+            android:pathData="M54,18 A36,36 0 1,1 53.99,18"
+            android:strokeWidth="5"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Walking figure - head -->
+        <path
+            android:pathData="M54,38 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"
+            android:fillColor="#FFFFFFFF" />
+
+        <!-- Walking figure - body -->
+        <path
+            android:pathData="M54,44 L54,60"
+            android:strokeWidth="3.5"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Walking figure - left arm -->
+        <path
+            android:pathData="M54,50 L44,56"
+            android:strokeWidth="3"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Walking figure - right arm -->
+        <path
+            android:pathData="M54,50 L64,44"
+            android:strokeWidth="3"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Walking figure - left leg -->
+        <path
+            android:pathData="M54,60 L42,76"
+            android:strokeWidth="3"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Walking figure - right leg -->
+        <path
+            android:pathData="M54,60 L66,72"
+            android:strokeWidth="3"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFFFF"
+            android:strokeLineCap="round" />
+
+        <!-- Root power indicator - crown above head -->
+        <path
+            android:pathData="M46,26 L50,20 L54,24 L58,20 L62,26"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFD54F"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+
+        <!-- Root power dots -->
+        <path
+            android:pathData="M48,22 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+            android:fillColor="#FFFFD54F" />
+        <path
+            android:pathData="M54,19 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+            android:fillColor="#FFFFD54F" />
+        <path
+            android:pathData="M60,22 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+            android:fillColor="#FFFFD54F" />
+
+    </group>
 </vector>
