@@ -19,7 +19,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *      /sys/class/video/contrast
  *      /sys/class/video/saturation
  *      /sys/class/display/brightness
- *      /sys/class/backlight/*/brightness
+ *      /sys/class/backlight/brightness
  *
  * 硬性限制：
  *  - 必须先检查 ShizukuHelper.isShizukuAvailable()
