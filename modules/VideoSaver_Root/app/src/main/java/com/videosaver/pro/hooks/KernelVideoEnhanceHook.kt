@@ -12,7 +12,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * 【实验性】内核视频增强 Hook（Root 专属，部分设备支持）
  *
  * 实现思路：
- *  - Hook Application.onCreate 在 APP 启动时通过 Shizuku 写 /sys/class/video/* 节点
+ *  - Hook Application.onCreate 在 APP 启动时通过 Shizuku 写 sysfs 节点
  *  - 支持亮度/对比度/饱和度增强（部分设备厂商暴露的 sysfs 节点）
  *  - 节点路径示例：
  *      /sys/class/video/brightness
