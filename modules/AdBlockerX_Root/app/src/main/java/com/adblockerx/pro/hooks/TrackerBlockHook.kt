@@ -20,8 +20,6 @@ object TrackerBlockHook {
         "com.umeng.commonsdk.UMConfigure" to listOf("init", "getGid"),
         "com.tendcloud.tenddata.TCAgent" to listOf("onEvent", "onPageStart", "onPageEnd", "setReportUncaughtException"),
         "com.flurry.android.FlurryAgent" to listOf("onEvent", "onPageView", "onError", "logEvent"),
-        "com.tencent.bugly.crashreport.CrashReport" to listOf("postCatchedException", "reportException"),
-        "com.tencent.bugly.beta.Beta" to listOf("checkUpgrade", "uploadPatch"),
         "com.baidu.mobstat.StatService" to listOf("onEvent", "onPageStart", "onPageEnd", "traceEvent"),
         "com.qihoo.mobl.conn.ConnectionService" to listOf("reportEvent"),
         "com.tendcloud.appcpa.TalkingDataSDK" to listOf("onEvent", "onPageBegin", "onPageEnd"),
@@ -50,7 +48,18 @@ object TrackerBlockHook {
         "com.onesignal.OneSignal" to listOf("sendTag", "sendOutcome", "setExternalUserId"),
 
         // Branch
-        "io.branch.referral.Branch" to listOf("userCompletedAction", "sendCommerceEvent")
+        "io.branch.referral.Branch" to listOf("userCompletedAction", "sendCommerceEvent"),
+
+        // Tencent MTA
+        "com.tencent.mta.MTA" to listOf("trackEvent", "trackCustomEvent"),
+        // Facebook App Events
+        "com.facebook.appevents.AppEventsLogger" to listOf("logEvent", "logPurchase"),
+        // ByteDance AppLog
+        "com.bytedance.applog.AppLog" to listOf("onEvent", "onEventV3"),
+        // Xiaomi Analytics
+        "com.xiaomi.analytics.Analytics" to listOf("track", "trackEvent"),
+        // CleverTap
+        "com.clevertap.android.sdk.CleverTapAPI" to listOf("pushEvent", "profilePush")
     )
 
     fun apply(lpparam: XC_LoadPackage.LoadPackageParam, cfg: AdBlockConfig) {

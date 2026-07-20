@@ -82,6 +82,33 @@ fun FeaturesScreen(cfg: ShizukuFixConfig, onConfigChange: (ShizukuFixConfig) -> 
             { val nc = cfg.copy(hideFromSceneEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "深度系统扫描",
+            "扫描全部已安装应用，检测 Shizuku 变体、权限申请及可见性问题，输出诊断报告",
+            cfg.deepSystemScanEnabled,
+            { val nc = cfg.copy(deepSystemScanEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "权限自动修复",
+            "监听包变更，自动为目标应用恢复 Shizuku 权限，防止组件禁用导致授权丢失",
+            cfg.permissionHealerEnabled,
+            { val nc = cfg.copy(permissionHealerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "后台服务注入",
+            "Hook AMS.bindService 加固 Shizuku 绑定，服务死亡时自动注入重启请求（比保活更激进）",
+            cfg.backgroundInjectorEnabled,
+            { val nc = cfg.copy(backgroundInjectorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
 
         Spacer(Modifier.height(40.dp))
     }

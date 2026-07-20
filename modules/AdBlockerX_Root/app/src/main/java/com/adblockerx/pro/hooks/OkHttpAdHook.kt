@@ -14,8 +14,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 object OkHttpAdHook {
 
     private val REAL_CALL_CANDIDATES = listOf(
-        "okhttp3.RealCall",
-        "okhttp3.internal.connection.RealCall",
+        "okhttp3.internal.connection.RealCall", // OkHttp 3.x
+        "okhttp3.RealCall", // OkHttp 4.x single artifact
+        "okhttp3.OkHttpClient", // OkHttp 4.x
         "okhttp3.OkHttpClient\$RealCall"
     )
 
@@ -37,32 +38,40 @@ object OkHttpAdHook {
             val clazz = XposedHelpers.findClassIfExists(className, lpparam.classLoader) ?: continue
 
             try {
-                XposedHelpers.findAndHookMethod(clazz, "execute",
-                    object : XC_MethodHook() {
-                        override fun beforeHookedMethod(p: MethodHookParam) {
-                            val url = try { extractRequestUrl(p.thisObject) } catch (_: Throwable) { null }
-                            if (url != null && HostsFilterHook.isUrlBlocked(url)) {
-                                LogX.i("[OkHttp] 拦截 execute: $url")
-                                p.result = buildEmptyResponse(lpparam, url)
+                try {
+                    XposedHelpers.findAndHookMethod(clazz, "execute",
+                        object : XC_MethodHook() {
+                            override fun beforeHookedMethod(p: MethodHookParam) {
+                                val url = try { extractRequestUrl(p.thisObject) } catch (_: Throwable) { null }
+                                if (url != null && HostsFilterHook.isUrlBlocked(url)) {
+                                    LogX.i("[OkHttp] 拦截 execute: $url")
+                                    p.result = buildEmptyResponse(lpparam, url)
+                                }
                             }
-                        }
-                    })
-                LogX.d("[OkHttp] 已 Hook $className.execute")
-            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+                        })
+                    LogX.d("[OkHttp] 已 Hook $className.execute")
+                } catch (e: NoSuchMethodError) {
+                    LogX.w("[OkHttp] OkHttp 4.x execute 方法签名不匹配: $className")
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
 
-            try {
-                XposedHelpers.findAndHookMethod(clazz, "enqueue",
-                    "okhttp3.Callback",
-                    object : XC_MethodHook() {
-                        override fun beforeHookedMethod(p: MethodHookParam) {
-                            val url = try { extractRequestUrl(p.thisObject) } catch (_: Throwable) { null }
-                            if (url != null && HostsFilterHook.isUrlBlocked(url)) {
-                                LogX.i("[OkHttp] 拦截 enqueue: $url")
-                                p.result = null
-                            }
-                        }
-                    })
-                LogX.d("[OkHttp] 已 Hook $className.enqueue")
+                try {
+                    try {
+                        XposedHelpers.findAndHookMethod(clazz, "enqueue",
+                            "okhttp3.Callback",
+                            object : XC_MethodHook() {
+                                override fun beforeHookedMethod(p: MethodHookParam) {
+                                    val url = try { extractRequestUrl(p.thisObject) } catch (_: Throwable) { null }
+                                    if (url != null && HostsFilterHook.isUrlBlocked(url)) {
+                                        LogX.i("[OkHttp] 拦截 enqueue: $url")
+                                        p.result = null
+                                    }
+                                }
+                            })
+                        LogX.d("[OkHttp] 已 Hook $className.enqueue")
+                    } catch (e: NoSuchMethodError) {
+                        LogX.w("[OkHttp] OkHttp 4.x enqueue 方法签名不匹配: $className")
+                    } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+                } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
             } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
     }

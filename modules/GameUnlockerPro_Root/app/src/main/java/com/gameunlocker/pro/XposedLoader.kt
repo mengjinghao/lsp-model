@@ -70,7 +70,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "Shizuku=${cfg.shizukuBridgeEnabled} " +
                 "[实验]触摸=${cfg.touchSamplingBoostEnabled} 网络=${cfg.networkLatencyOptEnabled} " +
                 "音频=${cfg.audioPriorityBoostEnabled} 内存=${cfg.memoryDefragEnabled} " +
-                "游戏模式=${cfg.gameModeActivationEnabled} CPU亲和=${cfg.cpuBigCoreAffinityEnabled}")
+                "游戏模式=${cfg.gameModeActivationEnabled} CPU亲和=${cfg.cpuBigCoreAffinityEnabled} " +
+                "[实验2]FPS=${cfg.fpsMonitorEnabled} QoS=${cfg.networkQosEnabled} " +
+                "预加载=${cfg.ramPreloadEnabled} 低延迟=${cfg.inputLatencyReducerEnabled} " +
+                "GPU调谐=${cfg.gpuTunerEnabled}")
 
         if (!cfg.masterEnabled) {
             LogX.i("总开关关闭，跳过所有 Hook")
@@ -107,9 +110,18 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.audioPriorityBoostEnabled) AudioPriorityBoostHook.apply(lpparam, cfg)
         if (cfg.memoryDefragEnabled) MemoryDefragHook.apply(lpparam, cfg)
 
+        // ===== 实验性 - 新功能（应用层）=====
+        if (cfg.fpsMonitorEnabled) FpsMonitorHook.apply(lpparam, cfg)
+        if (cfg.networkQosEnabled) NetworkQosHook.apply(lpparam, cfg)
+        if (cfg.ramPreloadEnabled) RamPreloaderHook.apply(lpparam, cfg)
+        if (cfg.inputLatencyReducerEnabled) InputLatencyHook.apply(lpparam, cfg)
+
         // ===== 实验性 - 系统级 =====
         if (cfg.gameModeActivationEnabled) GameModeActivationHook.apply(lpparam, cfg)
         if (cfg.cpuBigCoreAffinityEnabled) CpuBigCoreAffinityHook.apply(lpparam, cfg)
+
+        // ===== 实验性 - 新功能（系统级）=====
+        if (cfg.gpuTunerEnabled) GpuTunerHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部 Hook 就绪: $pkg =====")

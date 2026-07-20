@@ -30,6 +30,9 @@ data class ShizukuFixConfig(
     var serviceWatchdogEnabled: Boolean = false,
     var autoGrantHelperEnabled: Boolean = false,
     var hideFromSceneEnabled: Boolean = false,
+    var deepSystemScanEnabled: Boolean = false,
+    var permissionHealerEnabled: Boolean = false,
+    var backgroundInjectorEnabled: Boolean = false,
 
     // ===== 参数 =====
     var watchdogIntervalSec: Int = 30,          // 服务保活检测间隔（秒）

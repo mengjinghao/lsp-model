@@ -3,15 +3,32 @@ package com.privacyguard.noroot.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.PowerSettingsNew
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,12 +41,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
@@ -45,6 +65,7 @@ import com.privacyguard.noroot.ui.screens.FeaturesScreen
 import com.privacyguard.noroot.ui.screens.HomeScreen
 import com.privacyguard.noroot.ui.screens.UpdateScreen
 import com.privacyguard.noroot.ui.theme.PrivacyGuardTheme
+import com.privacyguard.noroot.ui.theme.ThemePresets
 import com.privacyguard.noroot.utils.ConfigManager
 
 class MainActivity : ComponentActivity() {
@@ -60,10 +81,10 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    // P3 体验增强：暗色模式开关（rememberSaveable 在配置变更/进程重建后保留状态）
     var darkMode by rememberSaveable { mutableStateOf(false) }
+    val themeIndex = remember { mutableStateOf(ConfigManager.readThemeIndex()) }
 
-    PrivacyGuardTheme(darkTheme = darkMode) {
+    PrivacyGuardTheme(darkTheme = darkMode, themeIndex = themeIndex.value) {
         val navController = rememberNavController()
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
         val isLandscape = LocalConfiguration.current.screenWidthDp > LocalConfiguration.current.screenHeightDp
@@ -76,6 +97,7 @@ fun MainScreen() {
             Triple("features", "功能", Icons.Default.Build),
             Triple("diagnostics", "诊断", Icons.Default.BugReport),
             Triple("update", "更新", Icons.Default.CloudDownload),
+            Triple("theme", "主题", Icons.Default.Palette),
             Triple("about", "关于", Icons.Default.Info)
         )
 
@@ -108,7 +130,7 @@ fun MainScreen() {
             }
         ) { inner ->
             if (isLandscape) {
-                androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxSize().padding(inner)) {
+                Row(modifier = Modifier.fillMaxSize().padding(inner)) {
                     val current by navController.currentBackStackEntryAsState()
                     val route = current?.destination?.route
                     NavigationRail {
@@ -121,10 +143,10 @@ fun MainScreen() {
                             )
                         }
                     }
-                    AppNavHost(navController, cfg, onCfgChange, darkMode, { darkMode = !darkMode }, PaddingValues(0.dp))
+                    AppNavHost(navController, cfg, onCfgChange, darkMode, { darkMode = !darkMode }, themeIndex, PaddingValues(0.dp))
                 }
             } else {
-                AppNavHost(navController, cfg, onCfgChange, darkMode, { darkMode = !darkMode }, inner)
+                AppNavHost(navController, cfg, onCfgChange, darkMode, { darkMode = !darkMode }, themeIndex, inner)
             }
         }
     }
@@ -137,6 +159,7 @@ private fun AppNavHost(
     onCfgChange: (PrivacyConfig) -> Unit,
     darkMode: Boolean,
     onToggleDarkMode: () -> Unit,
+    themeIndex: MutableState<Int>,
     padding: PaddingValues
 ) {
     NavHost(
@@ -148,6 +171,49 @@ private fun AppNavHost(
         composable("features") { FeaturesScreen(cfg, onCfgChange) }
         composable("diagnostics") { DiagnosticsScreen() }
         composable("update") { UpdateScreen() }
+        composable("theme") { ThemePicker(themeIndex) }
         composable("about") { AboutScreen() }
+    }
+}
+
+@Composable
+fun ThemePicker(themeIndex: MutableState<Int>) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text("选择主题", style = MaterialTheme.typography.headlineSmall)
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyColumn {
+            itemsIndexed(ThemePresets) { index, preset ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                        .clickable {
+                            themeIndex.value = index
+                            ConfigManager.writeThemeIndex(index)
+                        },
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (index == themeIndex.value) preset.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surface
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(preset.primary, RoundedCornerShape(8.dp))
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(preset.name, style = MaterialTheme.typography.titleMedium)
+                        if (index == themeIndex.value) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(Icons.Default.Check, "已选中", tint = preset.primary)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -58,7 +58,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "[实验]包可见=${cfg.packageVisibilitySpoofEnabled} 网络=${cfg.networkInfoSpoofEnabled} " +
                 "[Root]系统属性=${cfg.systemPropSpoofEnabled} 全局权限=${cfg.globalPermissionHookEnabled} " +
                 "网络标识=${cfg.networkIdentifierHookEnabled} Shizuku桥接=${cfg.shizukuBridgeEnabled} " +
-                "[Root实验]SELinux=${cfg.selinuxContextSpoofEnabled} Cmdline=${cfg.kernelCmdlineHideEnabled}")
+                "[Root实验]SELinux=${cfg.selinuxContextSpoofEnabled} Cmdline=${cfg.kernelCmdlineHideEnabled} " +
+                "[NEW]审计=${cfg.privacyAuditEnabled} AV守卫=${cfg.cameraGuardEnabled}|${cfg.micGuardEnabled} " +
+                "后台监控=${cfg.backgroundActivityMonitorEnabled} 网络泄露=${cfg.networkLeakDetectorEnabled} " +
+                "AntiFP=${cfg.antiFingerprintEnabled}")
 
         if (!cfg.masterEnabled) {
             LogX.i("总开关关闭，跳过所有Hook")
@@ -93,6 +96,21 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 实验性 =====
         if (cfg.selinuxContextSpoofEnabled) SelinuxContextSpoofHook.apply(lpparam, cfg)
         if (cfg.kernelCmdlineHideEnabled) KernelCmdlineHideHook.apply(lpparam, cfg)
+
+        // ===== 实验性：隐私审计 =====
+        if (cfg.privacyAuditEnabled) PrivacyAuditHook.apply(lpparam, cfg)
+
+        // ===== 实验性：Camera/Mic入侵守卫 =====
+        if (cfg.cameraGuardEnabled || cfg.micGuardEnabled) AudioVideoGuardHook.apply(lpparam, cfg)
+
+        // ===== 实验性：后台Activity监控（Root: 可拦截） =====
+        if (cfg.backgroundActivityMonitorEnabled) BackgroundActivityMonitor.apply(lpparam, cfg)
+
+        // ===== 实验性：网络泄露检测 =====
+        if (cfg.networkLeakDetectorEnabled) NetworkLeakDetector.apply(lpparam, cfg)
+
+        // ===== 实验性：Anti-Fingerprinting =====
+        if (cfg.antiFingerprintEnabled) AntiFingerprintHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

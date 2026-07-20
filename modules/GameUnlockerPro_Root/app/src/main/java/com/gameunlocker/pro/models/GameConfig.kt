@@ -52,9 +52,15 @@ data class GameConfig(
     var networkLatencyOptEnabled: Boolean = false,
     var audioPriorityBoostEnabled: Boolean = false,
     var memoryDefragEnabled: Boolean = false,
+    var fpsMonitorEnabled: Boolean = false,
+    var networkQosEnabled: Boolean = false,
+    var ramPreloadEnabled: Boolean = false,
+    var inputLatencyReducerEnabled: Boolean = false,
     // 系统级实验性
     var gameModeActivationEnabled: Boolean = false,
     var cpuBigCoreAffinityEnabled: Boolean = false,
+    var gpuTunerEnabled: Boolean = false,
+    var gpuGovernor: String = "performance",
 
     var lastModified: Long = 0L
 )

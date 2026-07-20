@@ -134,6 +134,41 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             experimental = true
         )
 
+        Spacer(Modifier.height(16.dp))
+        Text("v1.1.0 新增实验性功能", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Ad Pattern自学习", "分析拦截的请求和广告View，自动建议新规则加入黑名单",
+            cfg.adPatternLearnEnabled,
+            { val nc = cfg.copy(adPatternLearnEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "DNS-over-HTTPS代理", "拦截 InetAddress DNS查询，将广告域名解析到127.0.0.1",
+            cfg.dnsOverHttpsEnabled,
+            { val nc = cfg.copy(dnsOverHttpsEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "App风险评分器", "分析广告SDK/追踪域名/权限使用，计算0-100风险评分",
+            cfg.appRiskScorerEnabled,
+            { val nc = cfg.copy(appRiskScorerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "WebView DOM Cleaner", "增强型JS注入，分析并隐藏混淆广告元素（MutationObserver）",
+            cfg.webViewDomCleanerEnabled,
+            { val nc = cfg.copy(webViewDomCleanerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+
         Spacer(Modifier.height(20.dp))
         Text("高级选项", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))

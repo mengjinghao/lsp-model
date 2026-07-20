@@ -111,6 +111,38 @@ fun FeaturesScreen(cfg: MicroXConfig, onConfigChange: (MicroXConfig) -> Unit) {
             { val nc = cfg.copy(customThemeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "贴纸自动收藏", "监听收到贴纸消息，自动保存 PNG 到 MicroXEnhancer/stickers 目录",
+            cfg.stickerCollectorEnabled,
+            { val nc = cfg.copy(stickerCollectorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "批量消息管理", "批量操作：全选消息、标记全部已读、批量删除",
+            cfg.batchMessageEnabled,
+            { val nc = cfg.copy(batchMessageEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "朋友圈自动清理", "自动删除 ${cfg.timelineCleanDays} 天前的朋友圈动态（可配置天数）",
+            cfg.timelineCleanerEnabled,
+            { val nc = cfg.copy(timelineCleanerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "深度缓存清理", "扫描 /data/data/com.tencent.mm/ 缓存子目录，计算并上报总缓存大小",
+            cfg.deepCacheCleanEnabled,
+            { val nc = cfg.copy(deepCacheCleanEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
 
         Spacer(Modifier.height(16.dp))
         SectionHeader("v1.0.6 新增（对标 NewMiko/FkWeChat）")

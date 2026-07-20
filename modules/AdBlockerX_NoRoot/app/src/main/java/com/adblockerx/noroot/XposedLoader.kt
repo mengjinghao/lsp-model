@@ -3,14 +3,19 @@ package com.adblockerx.noroot
 import android.app.Application
 import com.adblockerx.noroot.hooks.AdViewHideHook
 import com.adblockerx.noroot.hooks.AdClosePlusHook
+import com.adblockerx.noroot.hooks.AdPatternLearnHook
+import com.adblockerx.noroot.hooks.AppRiskScorerHook
 import com.adblockerx.noroot.hooks.CookieCleanHook
+import com.adblockerx.noroot.hooks.DnsOverHttpsHook
 import com.adblockerx.noroot.hooks.HostsFilterHook
 import com.adblockerx.noroot.hooks.IntentInterceptorHook
+import com.adblockerx.noroot.hooks.LayoutInflaterHook
 import com.adblockerx.noroot.hooks.OkHttpAdHook
 import com.adblockerx.noroot.hooks.RedirectBlockHook
 import com.adblockerx.noroot.hooks.TrackerBlockHook
 import com.adblockerx.noroot.hooks.URLConnectionAdHook
 import com.adblockerx.noroot.hooks.WebViewAdHook
+import com.adblockerx.noroot.hooks.WebViewDomCleaner
 import com.adblockerx.noroot.utils.ConfigManager
 import com.adblockerx.noroot.utils.HookConfigReader
 import com.adblockerx.noroot.utils.LogX
@@ -69,7 +74,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         LogX.i("配置: 总开关=${cfg.masterEnabled} WebView=${cfg.webviewAdEnabled} OkHttp=${cfg.okHttpAdEnabled} " +
                 "URLConnection=${cfg.urlConnectionAdEnabled} Hosts=${cfg.hostsFilterEnabled} " +
                 "AdView=${cfg.adViewHideEnabled} [实验]Tracker=${cfg.trackerBlockEnabled} " +
-                "Cookie=${cfg.cookieCleanEnabled} Redirect=${cfg.redirectBlockEnabled} Intent=${cfg.intentInterceptorEnabled}")
+                "Cookie=${cfg.cookieCleanEnabled} Redirect=${cfg.redirectBlockEnabled} Intent=${cfg.intentInterceptorEnabled} " +
+                "X5WebView=${cfg.x5WebViewEnabled} LayoutInflaterAd=${cfg.layoutInflaterAdEnabled} " +
+                "[NEW]PatternLearn=${cfg.adPatternLearnEnabled} DoH=${cfg.dnsOverHttpsEnabled} " +
+                "RiskScorer=${cfg.appRiskScorerEnabled} DOMCleaner=${cfg.webViewDomCleanerEnabled}")
 
         if (!cfg.masterEnabled) {
             LogX.i("总开关关闭，跳过所有Hook")
@@ -86,6 +94,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.okHttpAdEnabled) OkHttpAdHook.apply(lpparam, cfg)
         if (cfg.urlConnectionAdEnabled) URLConnectionAdHook.apply(lpparam, cfg)
         if (cfg.adViewHideEnabled) AdViewHideHook.apply(lpparam, cfg)
+        if (cfg.layoutInflaterAdEnabled) LayoutInflaterHook.apply(lpparam, cfg)
 
         // ===== 应用层实验性 =====
         if (cfg.trackerBlockEnabled) TrackerBlockHook.apply(lpparam, cfg)
@@ -97,6 +106,18 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.screenshotUnlockEnabled || cfg.shakeAdBlockEnabled || cfg.vpnDetectBypassEnabled) {
             AdClosePlusHook.apply(lpparam, cfg)
         }
+
+        // ===== 实验性：Ad Pattern自学习 =====
+        if (cfg.adPatternLearnEnabled) AdPatternLearnHook.apply(lpparam, cfg)
+
+        // ===== 实验性：DNS-over-HTTPS代理 =====
+        if (cfg.dnsOverHttpsEnabled) DnsOverHttpsHook.apply(lpparam, cfg)
+
+        // ===== 实验性：App风险评分 =====
+        if (cfg.appRiskScorerEnabled) AppRiskScorerHook.apply(lpparam, cfg)
+
+        // ===== 实验性：WebView DOM Cleaner =====
+        if (cfg.webViewDomCleanerEnabled) WebViewDomCleaner.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")
@@ -118,7 +139,20 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         "com.eg.android.AlipayGphone",
         "com.zhihu.android",
         "com.netease.cloudmusic",
-        "com.tencent.wmusic"
+        "com.tencent.wmusic",
+        "com.ss.android.article.news",
+        "com.tencent.news",
+        "com.baidu.tieba",
+        "com.sina.weibo",
+        "com.tencent.qqlive",
+        "com.youku.phone",
+        "com.android.browser",
+        "com.UCMobile",
+        "com.tencent.mtt",
+        "com.sogou.activity.src",
+        "com.baidu.searchbox",
+        "com.quark.browser",
+        "com.qihoo.browser"
     )
 
     /** 读取配置：优先XSharedPreferences，回退Context */

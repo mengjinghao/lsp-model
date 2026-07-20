@@ -133,6 +133,34 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
             { val nc = cfg.copy(memoryDefragEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
         )
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "FPS 监控浮窗", "Hook Choreographer.doFrame 实时 FPS + Jank 计数 + 帧时间",
+            cfg.fpsMonitorEnabled,
+            { val nc = cfg.copy(fpsMonitorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "网络 QoS 加速", "Hook Socket.connect 设置 TCP_NODELAY + SO_PRIORITY 高优先级",
+            cfg.networkQosEnabled,
+            { val nc = cfg.copy(networkQosEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "RAM 预加载", "Hook Application.attach 提前加载 OpenGL/Surface 类到内存",
+            cfg.ramPreloadEnabled,
+            { val nc = cfg.copy(ramPreloadEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "输入延迟降低", "Hook InputEventReceiver + View.dispatchTouchEvent 优先输入",
+            cfg.inputLatencyReducerEnabled,
+            { val nc = cfg.copy(inputLatencyReducerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
 
         Spacer(Modifier.height(20.dp))
 
@@ -152,6 +180,13 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
             "CPU 大核亲和性", "通过 Shizuku 写 /sys/devices/system/cpu/cpuN/cpufreq 节点",
             cfg.cpuBigCoreAffinityEnabled,
             { val nc = cfg.copy(cpuBigCoreAffinityEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true, systemLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "GPU 调谐器", "Shizuku 写 /sys/class/kgsl/kgsl-3d0/ 切换 performance/powersave",
+            cfg.gpuTunerEnabled,
+            { val nc = cfg.copy(gpuTunerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, systemLevel = true
         )
 

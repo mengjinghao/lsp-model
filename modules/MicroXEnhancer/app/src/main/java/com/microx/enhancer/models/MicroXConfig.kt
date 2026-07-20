@@ -55,5 +55,12 @@ data class MicroXConfig(
     /** 绕过微信/QQ安全检测（保留兼容旧 KEY_BYPASS_DETECTION） */
     var bypassDetectionEnabled: Boolean = true,
 
+    // ===== 实验性（v1.0.11 新增） =====
+    var stickerCollectorEnabled: Boolean = false,
+    var batchMessageEnabled: Boolean = false,
+    var timelineCleanerEnabled: Boolean = false,
+    var timelineCleanDays: Int = 30,
+    var deepCacheCleanEnabled: Boolean = false,
+
     var lastModified: Long = 0L
 )

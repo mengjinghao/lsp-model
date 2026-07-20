@@ -116,7 +116,6 @@ object AdBlockList {
         "adtech.com",
 
         // ===== 追踪 SDK 域名 =====
-        "tracking.miui.com",
         "data.adsrvr.org",
         "pixel.facebook.com",
         "analytics.twitter.com",
@@ -134,7 +133,63 @@ object AdBlockList {
         "bidswitch.net",
         "contextweb.com",
         "quantserve.com",
-        "scorecardresearch.com"
+        "scorecardresearch.com",
+
+        // ===== 腾讯 GDT 视频 CDN =====
+        "xs.gdt.qq.com", "v.gdt.qq.com", "ttc.gdt.qq.com",
+
+        // ===== UC 广告 =====
+        "union.ucweb.com", "u.ucweb.com",
+
+        // ===== Google RTB =====
+        "ad.turn.com", "rta.turn.com",
+
+        // ===== 网易广告交换 =====
+        "adx.163.com", "hubblead.163.com",
+
+        // ===== 百度 APP 广告 =====
+        "wen.bda.m.jaeapp.cn",
+
+        // ===== 追踪补充 =====
+        "h.trace.qq.com", "btrace.yahoo.com",
+
+        // ===== CNZZ 追踪 =====
+        "c.cnzz.com", "s11.cnzz.com",
+
+        // ===== 百度推送 =====
+        "push.zhanzhang.baidu.com",
+
+        // ===== Umeng 追踪 =====
+        "alog.umeng.com", "oc.umeng.com",
+
+        // ===== UC APP 日志 =====
+        "applog.uc.cn",
+
+        // ===== 华为广告 =====
+        "hotupgrade.hicloud.com",
+
+        // ===== 联想 ZUI =====
+        "m2.zhuli.zui.com",
+
+        // ===== 小米广告 / MIUI =====
+        "api.browser.miui.com", "api.ad.xiaomi.com",
+        "adv.sec.miui.com", "tracking.miui.com",
+
+        // ===== Hpplay =====
+        "ad.hpplay.cn", "conf.hpplay.cn",
+
+        // ===== 字节跳动 Pangle =====
+        "pangolin.snssdk.com",
+
+        // ===== 头条 =====
+        "dm.toutiao.com", "log.toutiao.com", "is.toutiao.com",
+
+        // ===== 国际广告网络 =====
+        "amazon-adsystem.com", "aax-eu.amazon-adsystem.com",
+        "adnxs.com", "casalemedia.com", "rlcdn.com", "exelator.com",
+        "demdex.net", "bluekai.com", "adsrvr.org", "outbrain.com",
+        "taboola.com", "revcontent.com", "mgid.com", "popads.net",
+        "propellerads.com", "exoclick.com", "ad-maven.com"
     )
 
     fun isBlocked(
@@ -148,7 +203,7 @@ object AdBlockList {
         if (builtinEnabled) {
             for (domain in BUILTIN_AD_DOMAINS) {
                 val d = domain.lowercase()
-                if (h == d || h.endsWith(".$d") || h.contains(d)) {
+                if (h == d || h.endsWith(".$d")) {
                     return true
                 }
             }

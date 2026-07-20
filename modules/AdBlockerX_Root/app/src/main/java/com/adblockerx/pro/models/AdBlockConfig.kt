@@ -37,6 +37,19 @@ data class AdBlockConfig(
     /** VPN/代理检测绕过（Hook NetworkInfo/ConnectivityManager 返回非VPN） */
     var vpnDetectBypassEnabled: Boolean = false,
 
+    // ===== 实验性：Ad Pattern自学习 =====
+    var adPatternLearnEnabled: Boolean = false,
+
+    // ===== 实验性：DNS-over-HTTPS代理 =====
+    var dnsOverHttpsEnabled: Boolean = false,
+    var dohEndpoint: String = "dns.adguard.com",
+
+    // ===== 实验性：App风险评分 =====
+    var appRiskScorerEnabled: Boolean = false,
+
+    // ===== 实验性：WebView DOM Cleaner =====
+    var webViewDomCleanerEnabled: Boolean = false,
+
     // ===== 参数 =====
     var injectJsEnabled: Boolean = false,
     var builtinBlocklistEnabled: Boolean = true,
@@ -61,6 +74,10 @@ data class AdBlockConfig(
     var iptablesBlockEnabled: Boolean = false,
     /** 本地 VPN 拦截（Hook VpnService） */
     var vpnBasedBlockEnabled: Boolean = false,
+
+    var x5WebViewEnabled: Boolean = true,
+    var layoutInflaterAdEnabled: Boolean = true,
+    var whitelistDomains: List<String> = emptyList(),
 
     var lastModified: Long = System.currentTimeMillis()
 )

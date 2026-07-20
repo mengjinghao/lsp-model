@@ -30,6 +30,13 @@ data class BatteryConfig(
     var cameraBackgroundBlockEnabled: Boolean = false,
     /** 振动器限频（Hook Vibrator.vibrate） */
     var vibratorThrottleEnabled: Boolean = false,
+    var hibernationEnabled: Boolean = false,
+    var hibernationDelayMin: Int = 10,
+    var networkPowerSaveEnabled: Boolean = false,
+    var screenDimmerEnabled: Boolean = false,
+    var screenDimLevel: Float = 0.3f,
+    var taskKillerEnabled: Boolean = false,
+    var taskKillerCpuThreshold: Int = 30,
 
     // ===== 参数 =====
     /** WakeLock 最大持有时长（秒），超过自动 release。默认 60s */

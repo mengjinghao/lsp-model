@@ -32,6 +32,23 @@ data class PrivacyConfig(
     var mockLocationSystemLevelEnabled: Boolean = false, // 系统级Mock位置(仅Root)
     var profileSwitchEnabled: Boolean = false,          // 配置文件化(按场景切换)
 
+    // ===== 实验性：隐私审计 =====
+    var privacyAuditEnabled: Boolean = false,
+
+    // ===== 实验性：Camera/Mic入侵守卫 =====
+    var cameraGuardEnabled: Boolean = false,
+    var micGuardEnabled: Boolean = false,
+    var blockUnauthorizedAv: Boolean = false,
+
+    // ===== 实验性：后台Activity监控（NoRoot: 仅日志） =====
+    var backgroundActivityMonitorEnabled: Boolean = false,
+
+    // ===== 实验性：网络泄露检测 =====
+    var networkLeakDetectorEnabled: Boolean = false,
+
+    // ===== 实验性：Anti-Fingerprinting =====
+    var antiFingerprintEnabled: Boolean = false,
+
     // ===== 参数 =====
     var spoofLatitude: Double = 31.2304,
     var spoofLongitude: Double = 121.4737,

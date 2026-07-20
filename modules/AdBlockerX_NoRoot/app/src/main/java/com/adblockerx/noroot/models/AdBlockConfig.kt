@@ -46,6 +46,23 @@ data class AdBlockConfig(
     /** VPN/代理检测绕过（Hook NetworkInfo/ConnectivityManager 返回非VPN） */
     var vpnDetectBypassEnabled: Boolean = false,
 
+    // ===== 实验性：Ad Pattern自学习 =====
+    var adPatternLearnEnabled: Boolean = false,
+
+    // ===== 实验性：DNS-over-HTTPS代理 =====
+    var dnsOverHttpsEnabled: Boolean = false,
+    var dohEndpoint: String = "dns.adguard.com",
+
+    // ===== 实验性：App风险评分 =====
+    var appRiskScorerEnabled: Boolean = false,
+
+    // ===== 实验性：WebView DOM Cleaner =====
+    var webViewDomCleanerEnabled: Boolean = false,
+
+    var x5WebViewEnabled: Boolean = true,
+    var layoutInflaterAdEnabled: Boolean = true,
+    var whitelistDomains: List<String> = emptyList(),
+
     // ===== 参数 =====
     /** WebView 注入 JS 隐藏广告元素（实验性，可能影响页面正常显示） */
     var injectJsEnabled: Boolean = false,

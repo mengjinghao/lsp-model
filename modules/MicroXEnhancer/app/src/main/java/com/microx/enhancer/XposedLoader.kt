@@ -73,7 +73,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         }
 
         // 2. 加载所有功能模块
-        val modules = listOf(
+        val modules = listOfNotNull(
             "广告净化" to { AdBlockHook.hook(lpparam) },
             "消息防撤回" to { AntiRecallHook.hook(lpparam) },
             "防删朋友圈" to { MomentHook.hook(lpparam) },
@@ -85,6 +85,11 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
             "语音消息导出" to { VoiceMessageExportHook.hook(lpparam) },
             "消息搜索增强" to { MessageSearchEnhanceHook.hook(lpparam) },
             "自定义主题" to { CustomThemeHook.hook(lpparam) },
+            // v1.0.11 新增实验性
+            if (ConfigManager.isEnabled(ConfigManager.KEY_STICKER_COLLECTOR)) "贴纸自动收藏" to { StickerCollectorHook.hook(lpparam) } else null,
+            if (ConfigManager.isEnabled(ConfigManager.KEY_BATCH_MESSAGE)) "批量消息管理" to { BatchMessageHook.hook(lpparam) } else null,
+            if (ConfigManager.isEnabled(ConfigManager.KEY_TIMELINE_CLEANER)) "朋友圈自动清理" to { TimelineCleanerHook.hook(lpparam) } else null,
+            if (ConfigManager.isEnabled(ConfigManager.KEY_DEEP_CACHE_CLEAN)) "深度缓存清理" to { DeepCacheCleanerHook.hook(lpparam) } else null,
             // v1.0.6 新增（从 ConfigManager 读取开关）
             "自动红包转账" to {
                 if (ConfigManager.isEnabled("auto_red_packet") || ConfigManager.isEnabled("auto_transfer")) {
