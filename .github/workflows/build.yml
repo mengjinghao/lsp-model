@@ -26,6 +26,12 @@ jobs:
           - AdBlockerX_Root
           - BatteryOptimizer_NoRoot
           - BatteryOptimizer_Root
+          - StepModifier_NoRoot
+          - StepModifier_Root
+          - NotifyMaster_NoRoot
+          - NotifyMaster_Root
+          - AudioBoost_NoRoot
+          - AudioBoost_Root
 
     steps:
       - name: Checkout
@@ -98,10 +104,10 @@ jobs:
       - name: Create Release and Upload APKs
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.6
-          name: LSP-Model 模块合集 v1.0.6
+          tag_name: v1.0.7
+          name: LSP-Model 模块合集 v1.0.7
           body: |
-            # LSP-Model Xposed 模块合集 v1.0.6
+            # LSP-Model Xposed 模块合集 v1.0.7
 
             10 个模块 APK（Root 版与 NoRoot 版分离），Material3 + Compose 架构。
 

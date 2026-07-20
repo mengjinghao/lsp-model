@@ -1,0 +1,10 @@
+-keep class com.notifymaster.pro.XposedLoader { *; }
+-keep class com.notifymaster.pro.hooks.** { *; }
+-keep class com.notifymaster.pro.utils.** { *; }
+-keep class com.notifymaster.pro.models.** { *; }
+-keep class de.robv.android.xposed.** { *; }
+-dontwarn de.robv.android.xposed.**
+-dontwarn rikka.shizuku.**
+-keep class rikka.shizuku.** { *; }
+-keepclassmembers class com.notifymaster.pro.models.** { *; }
+-keepattributes *Annotation*,Signature,EnclosingMethod

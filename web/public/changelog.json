@@ -1,34 +1,30 @@
 [
   {
+    "version": "1.0.7",
+    "date": "2026-07-19",
+    "summary": "新增3对6个模块: 步数修改/通知管理/音量增强",
+    "changes": [
+      "[新模块] StepModifier_NoRoot: 步数修改专项(支付宝/微信/QQ/运动健康APP)",
+      "[新模块] StepModifier_Root: 系统级步数注入(Shizuku写/sys/proc节点)",
+      "[新模块] NotifyMaster_NoRoot: 通知管理(过滤/防撤回/历史/美化)",
+      "[新模块] NotifyMaster_Root: 系统级通知(全局监听/跨APP过滤)",
+      "[新模块] AudioBoost_NoRoot: 音量增强(突破上限/低音/均衡器)",
+      "[新模块] AudioBoost_Root: 系统级音频(AudioFlinger/全局音量)",
+      "模块总数: 10 → 16",
+      "Hook文件: 117 → 173",
+      "workflow matrix 增加6个模块"
+    ]
+  },
+  {
     "version": "1.0.6",
     "date": "2026-07-19",
-    "summary": "对标GitHub同类明星项目，大幅增强功能",
-    "changes": [
-      "[MicroXEnhancer] 自动抢红包（监听红包消息延迟1秒自动领取）",
-      "[MicroXEnhancer] 自动收取转账（延迟1.5秒自动收取）",
-      "[MicroXEnhancer] 微信运动步数修改（固定1万步）",
-      "[MicroXEnhancer] 禁用微信热更新（阻止Tinker加载补丁）",
-      "[MicroXEnhancer] 朋友圈伪集赞（点赞数+88）",
-      "[MicroXEnhancer] 去除9人转发限制（放大到999人）",
-      "[MicroXEnhancer] 自动发送原图（强制勾选原图）",
-      "[AdBlockerX] 截图录屏限制移除（Hook FLAG_SECURE）",
-      "[AdBlockerX] 摇一摇广告禁用（拦截加速度计注册）",
-      "[AdBlockerX] VPN/代理检测绕过（Hook NetworkInfo返回非VPN）",
-      "[PrivacyGuard] 应用安装状态伪造（隐藏LSPosed/Shizuku/Magisk）",
-      "[PrivacyGuard] Mock位置系统级（Hook LocationManager全局）",
-      "健康分: 95.7% → 95.9%（弱实现2不变，正常+6）"
-    ]
+    "summary": "对标GitHub明星项目大幅增强功能",
+    "changes": ["MicroXEnhancer +7功能(红包/转账/步数等)", "AdBlockerX +3(截图/摇一摇/VPN)", "PrivacyGuard +2(安装伪造/Mock位置)"]
   },
   {
     "version": "1.0.5",
     "date": "2026-07-19",
     "summary": "完善应用内热更新",
     "changes": ["自动检查", "忽略版本", "缓存管理", "下载通知", "SHA256校验"]
-  },
-  {
-    "version": "1.0.4",
-    "date": "2026-07-19",
-    "summary": "热更新功能 + Hook增强",
-    "changes": ["GitHub Release 热更新", "追踪SDK 8→18个"]
   }
 ]

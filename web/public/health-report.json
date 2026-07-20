@@ -1,10 +1,10 @@
 {
-  "version": "1.0.6",
-  "timestamp": "2026-07-19T12:34:56.852712+00:00",
+  "version": "1.0.7",
+  "timestamp": "2026-07-20T01:28:46.134077+00:00",
   "modules": [
     {
       "name": "AdBlockerX_NoRoot",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AdClosePlusHook.kt",
@@ -109,7 +109,7 @@
     },
     {
       "name": "AdBlockerX_Root",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AdClosePlusHook.kt",
@@ -267,8 +267,182 @@
       }
     },
     {
+      "name": "AudioBoost_NoRoot",
+      "version": "1.0.7",
+      "hooks": [
+        {
+          "file": "AudioQualityEnhanceHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 10,
+          "todo": 0,
+          "lines": 103,
+          "status": "ok"
+        },
+        {
+          "file": "BassBoostHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 6,
+          "logs": 11,
+          "todo": 0,
+          "lines": 95,
+          "status": "ok"
+        },
+        {
+          "file": "EqualizerHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 8,
+          "logs": 14,
+          "todo": 0,
+          "lines": 129,
+          "status": "ok"
+        },
+        {
+          "file": "MicBoostHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 5,
+          "logs": 9,
+          "todo": 0,
+          "lines": 119,
+          "status": "ok"
+        },
+        {
+          "file": "SpeakerBoostHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 5,
+          "logs": 9,
+          "todo": 0,
+          "lines": 100,
+          "status": "ok"
+        },
+        {
+          "file": "VolumeBoostHook.kt",
+          "hookCalls": 5,
+          "tryCatch": 9,
+          "logs": 16,
+          "todo": 0,
+          "lines": 143,
+          "status": "ok"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 6,
+        "ok": 6,
+        "weak": 0,
+        "hollow": 0,
+        "totalHookCalls": 20
+      }
+    },
+    {
+      "name": "AudioBoost_Root",
+      "version": "1.0.7",
+      "hooks": [
+        {
+          "file": "AudioFlingerHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 6,
+          "logs": 14,
+          "todo": 0,
+          "lines": 111,
+          "status": "ok"
+        },
+        {
+          "file": "AudioQualityEnhanceHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 10,
+          "todo": 0,
+          "lines": 87,
+          "status": "ok"
+        },
+        {
+          "file": "BassBoostHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 6,
+          "logs": 11,
+          "todo": 0,
+          "lines": 83,
+          "status": "ok"
+        },
+        {
+          "file": "EqualizerHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 8,
+          "logs": 14,
+          "todo": 0,
+          "lines": 119,
+          "status": "ok"
+        },
+        {
+          "file": "GlobalAudioPolicyHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 5,
+          "logs": 12,
+          "todo": 0,
+          "lines": 105,
+          "status": "ok"
+        },
+        {
+          "file": "MicBoostHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 5,
+          "logs": 9,
+          "todo": 0,
+          "lines": 110,
+          "status": "ok"
+        },
+        {
+          "file": "ShizukuAudioBridgeHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 5,
+          "logs": 14,
+          "todo": 0,
+          "lines": 99,
+          "status": "ok"
+        },
+        {
+          "file": "SpeakerBoostHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 5,
+          "logs": 9,
+          "todo": 0,
+          "lines": 87,
+          "status": "ok"
+        },
+        {
+          "file": "SystemVolumeHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 7,
+          "logs": 14,
+          "todo": 0,
+          "lines": 128,
+          "status": "ok"
+        },
+        {
+          "file": "VolumeBoostHook.kt",
+          "hookCalls": 5,
+          "tryCatch": 9,
+          "logs": 16,
+          "todo": 0,
+          "lines": 129,
+          "status": "ok"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 10,
+        "ok": 10,
+        "weak": 0,
+        "hollow": 0,
+        "totalHookCalls": 28
+      }
+    },
+    {
       "name": "BatteryOptimizer_NoRoot",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -373,7 +547,7 @@
     },
     {
       "name": "BatteryOptimizer_Root",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AlarmOptimizerHook.kt",
@@ -541,7 +715,7 @@
     },
     {
       "name": "GameUnlockerPro_NoRoot",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -637,7 +811,7 @@
     },
     {
       "name": "GameUnlockerPro_Root",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AudioPriorityBoostHook.kt",
@@ -778,7 +952,7 @@
     },
     {
       "name": "MicroXEnhancer",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AdBlockHook.kt",
@@ -909,8 +1083,200 @@
       }
     },
     {
+      "name": "NotifyMaster_NoRoot",
+      "version": "1.0.7",
+      "hooks": [
+        {
+          "file": "AntiRecallNotifyHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 4,
+          "logs": 13,
+          "todo": 0,
+          "lines": 108,
+          "status": "ok"
+        },
+        {
+          "file": "BatchNotifyHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 9,
+          "todo": 0,
+          "lines": 104,
+          "status": "ok"
+        },
+        {
+          "file": "NotifyBeautifyHook.kt",
+          "hookCalls": 1,
+          "tryCatch": 7,
+          "logs": 7,
+          "todo": 0,
+          "lines": 101,
+          "status": "weak"
+        },
+        {
+          "file": "NotifyFilterHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 6,
+          "logs": 10,
+          "todo": 0,
+          "lines": 130,
+          "status": "ok"
+        },
+        {
+          "file": "NotifyHistoryHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 5,
+          "logs": 7,
+          "todo": 0,
+          "lines": 159,
+          "status": "ok"
+        },
+        {
+          "file": "PriorityOverrideHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 8,
+          "logs": 13,
+          "todo": 0,
+          "lines": 116,
+          "status": "ok"
+        },
+        {
+          "file": "SilentNotifyHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 11,
+          "logs": 17,
+          "todo": 0,
+          "lines": 135,
+          "status": "ok"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 7,
+        "ok": 6,
+        "weak": 1,
+        "hollow": 0,
+        "totalHookCalls": 19
+      }
+    },
+    {
+      "name": "NotifyMaster_Root",
+      "version": "1.0.7",
+      "hooks": [
+        {
+          "file": "AntiRecallNotifyHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 4,
+          "logs": 13,
+          "todo": 0,
+          "lines": 103,
+          "status": "ok"
+        },
+        {
+          "file": "BatchNotifyHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 4,
+          "logs": 9,
+          "todo": 0,
+          "lines": 82,
+          "status": "ok"
+        },
+        {
+          "file": "GlobalNotifyFilterHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 9,
+          "logs": 13,
+          "todo": 0,
+          "lines": 147,
+          "status": "ok"
+        },
+        {
+          "file": "NotifyBeautifyHook.kt",
+          "hookCalls": 1,
+          "tryCatch": 7,
+          "logs": 7,
+          "todo": 0,
+          "lines": 86,
+          "status": "weak"
+        },
+        {
+          "file": "NotifyFilterHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 6,
+          "logs": 10,
+          "todo": 0,
+          "lines": 124,
+          "status": "ok"
+        },
+        {
+          "file": "NotifyHistoryHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 5,
+          "logs": 7,
+          "todo": 0,
+          "lines": 143,
+          "status": "ok"
+        },
+        {
+          "file": "NotifyListenerServiceHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 7,
+          "logs": 17,
+          "todo": 0,
+          "lines": 118,
+          "status": "ok"
+        },
+        {
+          "file": "PriorityOverrideHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 8,
+          "logs": 13,
+          "todo": 0,
+          "lines": 101,
+          "status": "ok"
+        },
+        {
+          "file": "ShizukuNotifyBridgeHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 6,
+          "logs": 11,
+          "todo": 0,
+          "lines": 106,
+          "status": "ok"
+        },
+        {
+          "file": "SilentNotifyHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 11,
+          "logs": 17,
+          "todo": 0,
+          "lines": 116,
+          "status": "ok"
+        },
+        {
+          "file": "SystemNotifyHook.kt",
+          "hookCalls": 1,
+          "tryCatch": 6,
+          "logs": 11,
+          "todo": 0,
+          "lines": 111,
+          "status": "weak"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 11,
+        "ok": 9,
+        "weak": 2,
+        "hollow": 0,
+        "totalHookCalls": 29
+      }
+    },
+    {
       "name": "PrivacyGuard_NoRoot",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1024,7 +1390,7 @@
     },
     {
       "name": "PrivacyGuard_Root",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AdvertisingIdHook.kt",
@@ -1192,7 +1558,7 @@
     },
     {
       "name": "ShizukuSceneFix",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "hooks": [
         {
           "file": "AutoGrantHelperHook.kt",
@@ -1258,15 +1624,189 @@
         "hollow": 0,
         "totalHookCalls": 20
       }
+    },
+    {
+      "name": "StepModifier_NoRoot",
+      "version": "1.0.7",
+      "hooks": [
+        {
+          "file": "MultiAppSyncHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 14,
+          "todo": 0,
+          "lines": 112,
+          "status": "ok"
+        },
+        {
+          "file": "SensorBlockHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 8,
+          "logs": 14,
+          "todo": 0,
+          "lines": 114,
+          "status": "ok"
+        },
+        {
+          "file": "StepCounterHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 9,
+          "logs": 19,
+          "todo": 0,
+          "lines": 137,
+          "status": "ok"
+        },
+        {
+          "file": "StepHistoryFakeHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 10,
+          "logs": 19,
+          "todo": 0,
+          "lines": 143,
+          "status": "ok"
+        },
+        {
+          "file": "StepReportHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 6,
+          "logs": 14,
+          "todo": 0,
+          "lines": 188,
+          "status": "ok"
+        },
+        {
+          "file": "StepSensorHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 9,
+          "logs": 18,
+          "todo": 0,
+          "lines": 175,
+          "status": "ok"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 6,
+        "ok": 6,
+        "weak": 0,
+        "hollow": 0,
+        "totalHookCalls": 20
+      }
+    },
+    {
+      "name": "StepModifier_Root",
+      "version": "1.0.7",
+      "hooks": [
+        {
+          "file": "HealthServiceHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 13,
+          "logs": 25,
+          "todo": 0,
+          "lines": 172,
+          "status": "ok"
+        },
+        {
+          "file": "KernelStepInjectHook.kt",
+          "hookCalls": 1,
+          "tryCatch": 3,
+          "logs": 11,
+          "todo": 0,
+          "lines": 92,
+          "status": "weak"
+        },
+        {
+          "file": "MultiAppSyncHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 7,
+          "logs": 14,
+          "todo": 0,
+          "lines": 99,
+          "status": "ok"
+        },
+        {
+          "file": "SensorBlockHook.kt",
+          "hookCalls": 3,
+          "tryCatch": 8,
+          "logs": 14,
+          "todo": 0,
+          "lines": 107,
+          "status": "ok"
+        },
+        {
+          "file": "ShizukuStepBridgeHook.kt",
+          "hookCalls": 1,
+          "tryCatch": 3,
+          "logs": 9,
+          "todo": 0,
+          "lines": 90,
+          "status": "weak"
+        },
+        {
+          "file": "StepCounterHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 9,
+          "logs": 19,
+          "todo": 0,
+          "lines": 125,
+          "status": "ok"
+        },
+        {
+          "file": "StepHistoryFakeHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 10,
+          "logs": 19,
+          "todo": 0,
+          "lines": 133,
+          "status": "ok"
+        },
+        {
+          "file": "StepReportHook.kt",
+          "hookCalls": 2,
+          "tryCatch": 6,
+          "logs": 14,
+          "todo": 0,
+          "lines": 167,
+          "status": "ok"
+        },
+        {
+          "file": "StepSensorHook.kt",
+          "hookCalls": 4,
+          "tryCatch": 9,
+          "logs": 18,
+          "todo": 0,
+          "lines": 162,
+          "status": "ok"
+        },
+        {
+          "file": "SystemSensorHook.kt",
+          "hookCalls": 1,
+          "tryCatch": 3,
+          "logs": 10,
+          "todo": 0,
+          "lines": 88,
+          "status": "weak"
+        }
+      ],
+      "uiBugs": 0,
+      "configIssues": [],
+      "stats": {
+        "hookFiles": 10,
+        "ok": 7,
+        "weak": 3,
+        "hollow": 0,
+        "totalHookCalls": 27
+      }
     }
   ],
   "summary": {
-    "totalModules": 10,
-    "totalHookFiles": 123,
-    "ok": 118,
-    "weak": 2,
+    "totalModules": 16,
+    "totalHookFiles": 173,
+    "ok": 162,
+    "weak": 8,
     "hollow": 0,
     "uiBugs": 0,
-    "healthScore": 95.9
+    "healthScore": 93.6
   }
 }
