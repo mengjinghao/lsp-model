@@ -69,6 +69,14 @@ object ConfigManager {
     const val KEY_MESSAGE_SEARCH_ENHANCE = "message_search_enhance"
     const val KEY_CUSTOM_THEME = "custom_theme"
 
+    // ===== v1.0.6 新增 =====
+    const val KEY_AUTO_RED_PACKET = "auto_red_packet"
+    const val KEY_AUTO_TRANSFER = "auto_transfer"
+    const val KEY_STEP_MODIFIER = "step_modifier"
+    const val KEY_DISABLE_HOT_UPDATE = "disable_hot_update"
+    const val KEY_MOMENT_FAKE_LIKE = "moment_fake_like"
+    const val KEY_AUTO_ORIGINAL_IMAGE = "auto_original_image"
+
     private var prefs: SharedPreferences? = null
     private val gson = com.google.gson.Gson()
 
@@ -144,6 +152,13 @@ object ConfigManager {
             voiceMessageExportEnabled = isEnabled(KEY_VOICE_MESSAGE_EXPORT),
             messageSearchEnhanceEnabled = isEnabled(KEY_MESSAGE_SEARCH_ENHANCE),
             customThemeEnabled = isEnabled(KEY_CUSTOM_THEME),
+            autoRedPacketEnabled = isEnabled(KEY_AUTO_RED_PACKET),
+            autoTransferEnabled = isEnabled(KEY_AUTO_TRANSFER),
+            stepModifierEnabled = isEnabled(KEY_STEP_MODIFIER),
+            disableHotUpdateEnabled = isEnabled(KEY_DISABLE_HOT_UPDATE),
+            momentFakeLikeEnabled = isEnabled(KEY_MOMENT_FAKE_LIKE),
+            unlimitedForwardEnabled = isEnabled(KEY_UNLIMITED_FORWARD),
+            autoOriginalImageEnabled = isEnabled(KEY_AUTO_ORIGINAL_IMAGE),
             bypassDetectionEnabled = isEnabled(KEY_BYPASS_DETECTION)
         )
     }
@@ -187,7 +202,7 @@ object ConfigManager {
             // 隐私增强
             putBoolean(KEY_HIDE_TYPING, cfg.privacyEnabled)
             putBoolean(KEY_HIDE_READ_STATUS, cfg.privacyEnabled)
-            putBoolean(KEY_UNLIMITED_FORWARD, false)
+            putBoolean(KEY_UNLIMITED_FORWARD, cfg.unlimitedForwardEnabled)
             putBoolean(KEY_FORCE_ORIGINAL, false)
             putBoolean(KEY_NO_WATERMARK_SAVE, false)
 
@@ -201,6 +216,14 @@ object ConfigManager {
             putBoolean(KEY_VOICE_MESSAGE_EXPORT, cfg.voiceMessageExportEnabled)
             putBoolean(KEY_MESSAGE_SEARCH_ENHANCE, cfg.messageSearchEnhanceEnabled)
             putBoolean(KEY_CUSTOM_THEME, cfg.customThemeEnabled)
+
+            // v1.0.6 新增
+            putBoolean(KEY_AUTO_RED_PACKET, cfg.autoRedPacketEnabled)
+            putBoolean(KEY_AUTO_TRANSFER, cfg.autoTransferEnabled)
+            putBoolean(KEY_STEP_MODIFIER, cfg.stepModifierEnabled)
+            putBoolean(KEY_DISABLE_HOT_UPDATE, cfg.disableHotUpdateEnabled)
+            putBoolean(KEY_MOMENT_FAKE_LIKE, cfg.momentFakeLikeEnabled)
+            putBoolean(KEY_AUTO_ORIGINAL_IMAGE, cfg.autoOriginalImageEnabled)
         }?.apply()
     }
 

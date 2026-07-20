@@ -5,6 +5,7 @@ import com.batteryopt.pro.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import java.util.concurrent.Executors
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -19,6 +20,10 @@ import java.util.concurrent.ConcurrentHashMap
  *  - 仅作用于当前 APP 进程内的 WakeLock，跨进程孤儿 wake lock 清理由 GreenifyBridgeHook 负责
  */
 object WakeLockHook {
+
+    private val releaseExecutor = Executors.newSingleThreadScheduledExecutor { r ->
+        Thread(r, "WLockAutoRelease").apply { isDaemon = true }
+    }
 
     private val holdRecords = ConcurrentHashMap<String, Long>()
     private val immediateReleaseFlags = java.util.Collections.newSetFromMap(
@@ -192,10 +197,9 @@ object WakeLockHook {
     private fun scheduleAutoRelease(
         wakeLock: Any?, id: String, tag: String, delayMs: Long
     ) {
-        Thread {
+        releaseExecutor.schedule({
             try {
-                Thread.sleep(delayMs)
-                if (!holdRecords.containsKey(id)) return@Thread
+                if (!holdRecords.containsKey(id)) return@schedule
                 val held = try {
                     XposedHelpers.callMethod(wakeLock, "isHeld") as? Boolean ?: false
                 } catch (_: Exception) { false }
@@ -212,6 +216,6 @@ object WakeLockHook {
             } catch (e: Exception) {
                 LogX.e("自动释放线程异常", e)
             }
-        }.apply { isDaemon = true; name = "WLockAutoRelease-$tag" }.start()
+        }.apply { isDaemon = true; name = "WLockAutoRelease-$tag" }, delayMs, java.util.concurrent.TimeUnit.MILLISECONDS)
     }
 }

@@ -5,6 +5,7 @@ import com.batteryopt.noroot.utils.LogX
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+import java.util.concurrent.Executors
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -27,6 +28,10 @@ import java.util.concurrent.ConcurrentHashMap
  *  - 不能修改系统 PowerManagerService，无法清理其他进程持有的孤儿 wake lock
  */
 object WakeLockHook {
+
+    private val releaseExecutor = Executors.newSingleThreadScheduledExecutor { r ->
+        Thread(r, "WLockAutoRelease").apply { isDaemon = true }
+    }
 
     /** 记录每个 WakeLock 实例的 acquire 时间 */
     private val holdRecords = ConcurrentHashMap<String, Long>()
@@ -208,10 +213,9 @@ object WakeLockHook {
     private fun scheduleAutoRelease(
         wakeLock: Any?, id: String, tag: String, delayMs: Long
     ) {
-        Thread {
+        releaseExecutor.schedule({
             try {
-                Thread.sleep(delayMs)
-                if (!holdRecords.containsKey(id)) return@Thread
+                if (!holdRecords.containsKey(id)) return@schedule
                 val held = try {
                     XposedHelpers.callMethod(wakeLock, "isHeld") as? Boolean ?: false
                 } catch (_: Exception) { false }
@@ -229,6 +233,6 @@ object WakeLockHook {
             } catch (e: Exception) {
                 LogX.e("自动释放线程异常", e)
             }
-        }.apply { isDaemon = true; name = "WLockAutoRelease-$tag" }.start()
+        }.apply { isDaemon = true; name = "WLockAutoRelease-$tag" }, delayMs, java.util.concurrent.TimeUnit.MILLISECONDS)
     }
 }

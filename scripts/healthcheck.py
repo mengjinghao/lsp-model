@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODULES_DIR = os.path.join(ROOT, "modules")
-VERSION = "1.0.8"
+VERSION = "1.0.9"
 
 def scan_module(mod_dir, mod_name):
     """扫描单个模块"""
@@ -61,16 +61,18 @@ def scan_module(mod_dir, mod_name):
             "status": status
         })
 
-    # 2. UI bug 体检（cfg.X = it 直接改字段）
+    # 2. UI bug 体检（cfg.X = it 直接改字段，未用 cfg.copy）
     ui_files = glob.glob(f"{mod_dir}/app/src/main/java/**/ui/**/*.kt", recursive=True)
     ui_bugs = 0
     for f in ui_files:
-        with open(f, errors='replace') as fh:
+        with open(f, encoding='utf-8', errors='replace') as fh:
             c = fh.read()
-        # 匹配 cfg.X = it 但不是 cfg.copy(
-        bugs = re.findall(r'cfg\.\w+\s*=\s*it(?!\.\w)', c)
-        bugs = [b for b in bugs if 'copy(' not in c[max(0,c.find(b)-20):c.find(b)+len(b)+20]]
-        ui_bugs += len(bugs)
+        # 用 finditer 精确匹配 cfg.X = it 且附近无 copy(
+        for m in re.finditer(r'cfg\.\w+\s*=\s*it(?!\.\w)', c):
+            start = max(0, m.start() - 20)
+            end = min(len(c), m.end() + 20)
+            if 'copy(' not in c[start:end]:
+                ui_bugs += 1
     result["uiBugs"] = ui_bugs
 
     # 3. 配置一致性
@@ -142,18 +144,20 @@ def main():
             continue
         report["modules"].append(scan_module(mod_dir, mod))
 
-    # 汇总
+    # 汇总（工具类不计入健康分分母）
     total = sum(m["stats"]["hookFiles"] for m in report["modules"])
     ok = sum(m["stats"]["ok"] for m in report["modules"])
     weak = sum(m["stats"]["weak"] for m in report["modules"])
     hollow = sum(m["stats"]["hollow"] for m in report["modules"])
+    utility = sum(1 for m in report["modules"] for h in m["hooks"] if h["status"] == "utility")
     ui_bugs = sum(m["uiBugs"] for m in report["modules"])
+    scored = ok + weak + hollow  # 参与评分的文件数（排除工具类）
     report["summary"] = {
         "totalModules": len(report["modules"]),
         "totalHookFiles": total,
-        "ok": ok, "weak": weak, "hollow": hollow,
+        "ok": ok, "weak": weak, "hollow": hollow, "utility": utility,
         "uiBugs": ui_bugs,
-        "healthScore": round(ok * 100 / total, 1) if total else 0
+        "healthScore": round(ok * 100 / scored, 1) if scored else 0
     }
 
     print(json.dumps(report, ensure_ascii=False, indent=2))

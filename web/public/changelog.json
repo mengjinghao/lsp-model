@@ -1,28 +1,27 @@
 [
   {
+    "version": "1.0.9",
+    "date": "2026-07-20",
+    "summary": "合并 PR#1 代码质量修复 + healthcheck 精度提升",
+    "changes": [
+      "[bugfix] LogX 无限递归修复：catch 块调用 LogX.w 导致栈溢出 → 改为静默 catch（12模块）",
+      "[bugfix] WakeLockHook 线程爆炸修复：每个 wakelock 新建 Thread → ScheduledExecutorService 单线程池（2模块）",
+      "[bugfix] MicroXEnhancer ConfigManager 字段缺失修复：v1.0.6 新增7字段在 getGlobalConfig/applyMicroXConfig 中补全",
+      "[healthcheck] 健康分计算修正：工具类不计入分母（93.6%→95.3%）",
+      "[healthcheck] UI bug 检测修正：findall+find 改为 finditer+match.start（精确定位）",
+      "[healthcheck] 增加 encoding=utf-8 解决跨平台解码"
+    ]
+  },
+  {
     "version": "1.0.8",
     "date": "2026-07-20",
-    "summary": "LSPatch 合规性改造（NoRoot 版强制规范）",
-    "changes": [
-      "[LSPatch合规] xposedminversion 82→93（匹配 LSPatch v0.6.1+ API）",
-      "[LSPatch合规] 全部 NoRoot 版 XposedLoader 加 android 包名过滤（跳过系统进程）",
-      "[LSPatch合规] 全部 NoRoot 版 XposedLoader 加 isFirstApplication 进程过滤（避免子进程 ClassLoader 隔离崩溃）",
-      "[LSPatch合规] 全部 NoRoot 版 Manifest 补 FOREGROUND_SERVICE 权限",
-      "[AI_DEV_GUIDE] 新增 §3.1 LSPatch 合规规范章节",
-      "[体检脚本] 增加 LSPatch 合规检查维度（xposedminversion/FOREGROUND_SERVICE/包名过滤/进程过滤）",
-      "影响: 8 个 NoRoot 版模块（含 MicroXEnhancer）"
-    ]
+    "summary": "LSPatch 合规性改造",
+    "changes": ["xposedminversion 82→93", "android包名过滤", "isFirstApplication进程过滤", "FOREGROUND_SERVICE权限"]
   },
   {
     "version": "1.0.7",
     "date": "2026-07-19",
-    "summary": "新增3对6个模块: 步数修改/通知管理/音量增强",
-    "changes": ["StepModifier×2", "NotifyMaster×2", "AudioBoost×2", "模块总数10→16"]
-  },
-  {
-    "version": "1.0.6",
-    "date": "2026-07-19",
-    "summary": "对标GitHub明星项目大幅增强功能",
-    "changes": ["MicroXEnhancer +7功能", "AdBlockerX +3功能", "PrivacyGuard +2功能"]
+    "summary": "新增3对6个模块",
+    "changes": ["StepModifier×2", "NotifyMaster×2", "AudioBoost×2", "模块10→16"]
   }
 ]
