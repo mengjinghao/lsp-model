@@ -42,6 +42,24 @@ data class PrivacyConfig(
     var mockLocationSystemLevelEnabled: Boolean = false, // 系统级Mock位置(仅Root)
     var profileSwitchEnabled: Boolean = false,
 
+    // ===== 实验性：隐私审计 =====
+    var privacyAuditEnabled: Boolean = false,
+
+    // ===== 实验性：Camera/Mic入侵守卫 =====
+    var cameraGuardEnabled: Boolean = false,
+    var micGuardEnabled: Boolean = false,
+    var blockUnauthorizedAv: Boolean = false,
+
+    // ===== 实验性：后台Activity监控 =====
+    var backgroundActivityMonitorEnabled: Boolean = false,
+    var blockBackgroundActivities: Boolean = false,
+
+    // ===== 实验性：网络泄露检测 =====
+    var networkLeakDetectorEnabled: Boolean = false,
+
+    // ===== 实验性：Anti-Fingerprinting =====
+    var antiFingerprintEnabled: Boolean = false,
+
     // ===== Root 专属：系统属性伪造（Shizuku setprop） =====
     var systemPropSpoofEnabled: Boolean = false,
     var spoofSerial: String = "PG2024XYZ001",

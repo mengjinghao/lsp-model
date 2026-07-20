@@ -108,6 +108,35 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
             experimental = true
         )
 
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "App 休眠管理", "Hook ActivityManagerService 阻止自动重启",
+            cfg.hibernationEnabled,
+            { val nc = cfg.copy(hibernationEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "网络省电", "Hook ConnectivityManager 限制后台网络连接",
+            cfg.networkPowerSaveEnabled,
+            { val nc = cfg.copy(networkPowerSaveEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "屏幕调暗", "Hook WindowManager 亮度降至系统最低以下",
+            cfg.screenDimmerEnabled,
+            { val nc = cfg.copy(screenDimmerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+        FeatureCard(
+            "自动任务杀死", "Hook Process.killProcess + 空闲检测 CPU 监控",
+            cfg.taskKillerEnabled,
+            { val nc = cfg.copy(taskKillerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+
         Spacer(Modifier.height(20.dp))
         Text("参数调整", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))

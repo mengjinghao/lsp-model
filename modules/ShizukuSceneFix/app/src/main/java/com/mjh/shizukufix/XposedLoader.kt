@@ -2,7 +2,10 @@ package com.mjh.shizukufix
 
 import android.app.Application
 import com.mjh.shizukufix.hooks.AutoGrantHelperHook
+import com.mjh.shizukufix.hooks.BackgroundInjectorHook
+import com.mjh.shizukufix.hooks.DeepSystemScanHook
 import com.mjh.shizukufix.hooks.HideFromSceneHook
+import com.mjh.shizukufix.hooks.PermissionHealerHook
 import com.mjh.shizukufix.hooks.ScenePermissionRequesterHook
 import com.mjh.shizukufix.hooks.ServiceWatchdogHook
 import com.mjh.shizukufix.hooks.ShizukuListInjectorHook
@@ -78,7 +81,8 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
             LogX.i("配置: 总开关=${cfg.masterEnabled} Scene修复=${cfg.sceneFixEnabled} " +
                     "列表注入=${cfg.listInjectorEnabled} 变体检测=${cfg.variantDetectEnabled} " +
                     "[实验]保活=${cfg.serviceWatchdogEnabled} 自动授权=${cfg.autoGrantHelperEnabled} " +
-                    "隐藏自身=${cfg.hideFromSceneEnabled}")
+                    "隐藏自身=${cfg.hideFromSceneEnabled} 深度扫描=${cfg.deepSystemScanEnabled} " +
+                    "权限修复=${cfg.permissionHealerEnabled} 后台注入=${cfg.backgroundInjectorEnabled}")
 
             // ===== Path A: Scene 进程 =====
             if (pkg == SCENE_PACKAGE) {
@@ -96,6 +100,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 if (cfg.listInjectorEnabled) ShizukuListInjectorHook.apply(lpparam, cfg)
                 if (cfg.serviceWatchdogEnabled) ServiceWatchdogHook.apply(lpparam, cfg)
                 if (cfg.autoGrantHelperEnabled) AutoGrantHelperHook.apply(lpparam, cfg)
+                try { if (cfg.deepSystemScanEnabled) DeepSystemScanHook.apply(lpparam, cfg) } catch (t: Throwable) { LogX.w("DeepSystemScan 加载异常: ${t.message}") }
+                try { if (cfg.permissionHealerEnabled) PermissionHealerHook.apply(lpparam, cfg) } catch (t: Throwable) { LogX.w("PermissionHealer 加载异常: ${t.message}") }
+                try { if (cfg.backgroundInjectorEnabled) BackgroundInjectorHook.apply(lpparam, cfg) } catch (t: Throwable) { LogX.w("BackgroundInjector 加载异常: ${t.message}") }
                 hookAppLifecycle(lpparam)
                 return
             }
@@ -164,6 +171,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                                 if (cfg.listInjectorEnabled) ShizukuListInjectorHook.apply(lpparam, cfg)
                                 if (cfg.serviceWatchdogEnabled) ServiceWatchdogHook.apply(lpparam, cfg)
                                 if (cfg.autoGrantHelperEnabled) AutoGrantHelperHook.apply(lpparam, cfg)
+                                try { if (cfg.deepSystemScanEnabled) DeepSystemScanHook.apply(lpparam, cfg) } catch (t: Throwable) { LogX.w("异常: ${t.message}") }
+                                try { if (cfg.permissionHealerEnabled) PermissionHealerHook.apply(lpparam, cfg) } catch (t: Throwable) { LogX.w("异常: ${t.message}") }
+                                try { if (cfg.backgroundInjectorEnabled) BackgroundInjectorHook.apply(lpparam, cfg) } catch (t: Throwable) { LogX.w("异常: ${t.message}") }
                             }
                             ConfigManager.init(ctx)
                         } catch (e: Throwable) { LogX.w("异常: ${e.message}") }

@@ -138,6 +138,64 @@ fun FeaturesScreen(cfg: PrivacyConfig, onConfigChange: (PrivacyConfig) -> Unit) 
             experimental = true
         )
 
+        Spacer(Modifier.height(16.dp))
+        Text("v1.1.0 新增实验性功能", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "隐私审计报告", "Hook AppOpsManager 追踪权限使用，生成审计报告JSON",
+            cfg.privacyAuditEnabled,
+            { val nc = cfg.copy(privacyAuditEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Camera/Mic入侵守卫", "Hook Camera.open/MediaRecorder.start 检测并可选阻断未授权音视频采集",
+            cfg.cameraGuardEnabled || cfg.micGuardEnabled,
+            {
+                val nc = if (cfg.cameraGuardEnabled || cfg.micGuardEnabled) {
+                    cfg.copy(cameraGuardEnabled = false, micGuardEnabled = false, blockUnauthorizedAv = false)
+                } else {
+                    cfg.copy(cameraGuardEnabled = true, micGuardEnabled = true)
+                }
+                ConfigManager.saveGlobalConfig(nc); onConfigChange(nc)
+            },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "阻断未授权音视频", "开启后 Camera/Mic 在非用户主动触发时返回 null",
+            cfg.blockUnauthorizedAv,
+            { val nc = cfg.copy(blockUnauthorizedAv = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "后台Activity监控", "Hook Activity.startActivity 记录后台Activity启动（仅日志不拦截）",
+            cfg.backgroundActivityMonitorEnabled,
+            { val nc = cfg.copy(backgroundActivityMonitorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "网络泄露检测器", "Hook Socket.connect/URL.openConnection 监控并标记可疑域名连接",
+            cfg.networkLeakDetectorEnabled,
+            { val nc = cfg.copy(networkLeakDetectorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Anti-Fingerprinting盾", "随机化 UA/屏幕参数/Build标识/Locale 防浏览器指纹追踪",
+            cfg.antiFingerprintEnabled,
+            { val nc = cfg.copy(antiFingerprintEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+
         Spacer(Modifier.height(20.dp))
         if (cfg.locationSpoofEnabled) {
             Text("位置参数", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)

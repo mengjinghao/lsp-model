@@ -3,7 +3,10 @@ package com.adblockerx.pro
 import android.app.Application
 import com.adblockerx.pro.hooks.AdViewHideHook
 import com.adblockerx.pro.hooks.AdClosePlusHook
+import com.adblockerx.pro.hooks.AdPatternLearnHook
+import com.adblockerx.pro.hooks.AppRiskScorerHook
 import com.adblockerx.pro.hooks.CookieCleanHook
+import com.adblockerx.pro.hooks.DnsOverHttpsHook
 import com.adblockerx.pro.hooks.DnsResolverHook
 import com.adblockerx.pro.hooks.HostsFilterHook
 import com.adblockerx.pro.hooks.IntentInterceptorHook
@@ -18,6 +21,7 @@ import com.adblockerx.pro.hooks.TrackerBlockHook
 import com.adblockerx.pro.hooks.URLConnectionAdHook
 import com.adblockerx.pro.hooks.VpnBasedBlockHook
 import com.adblockerx.pro.hooks.WebViewAdHook
+import com.adblockerx.pro.hooks.WebViewDomCleaner
 import com.adblockerx.pro.models.AdBlockConfig
 import com.adblockerx.pro.utils.ConfigManager
 import com.adblockerx.pro.utils.HookConfigReader
@@ -78,7 +82,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "X5WebView=${cfg.x5WebViewEnabled} LayoutInflaterAd=${cfg.layoutInflaterAdEnabled} " +
                 "[Root]SystemHosts=${cfg.systemHostsEnabled} PrivateDns=${cfg.privateDnsEnabled} " +
                 "DnsResolver=${cfg.dnsResolverHookEnabled} ShizukuBridge=${cfg.shizukuBridgeEnabled} " +
-                "[Root实验]Iptables=${cfg.iptablesBlockEnabled} VPN=${cfg.vpnBasedBlockEnabled}")
+                "[Root实验]Iptables=${cfg.iptablesBlockEnabled} VPN=${cfg.vpnBasedBlockEnabled} " +
+                "[NEW]PatternLearn=${cfg.adPatternLearnEnabled} DoH=${cfg.dnsOverHttpsEnabled} " +
+                "RiskScorer=${cfg.appRiskScorerEnabled} DOMCleaner=${cfg.webViewDomCleanerEnabled}")
 
         if (!cfg.masterEnabled) {
             LogX.i("总开关关闭，跳过所有Hook")
@@ -117,6 +123,18 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 实验性 =====
         if (cfg.iptablesBlockEnabled) IptablesBlockHook.apply(lpparam, cfg)
         if (cfg.vpnBasedBlockEnabled) VpnBasedBlockHook.apply(lpparam, cfg)
+
+        // ===== 实验性：Ad Pattern自学习 =====
+        if (cfg.adPatternLearnEnabled) AdPatternLearnHook.apply(lpparam, cfg)
+
+        // ===== 实验性：DNS-over-HTTPS代理 =====
+        if (cfg.dnsOverHttpsEnabled) DnsOverHttpsHook.apply(lpparam, cfg)
+
+        // ===== 实验性：App风险评分 =====
+        if (cfg.appRiskScorerEnabled) AppRiskScorerHook.apply(lpparam, cfg)
+
+        // ===== 实验性：WebView DOM Cleaner =====
+        if (cfg.webViewDomCleanerEnabled) WebViewDomCleaner.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

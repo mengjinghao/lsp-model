@@ -59,6 +59,8 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "sensor=${cfg.sensorEnabled} " +
                 "[实验]bt=${cfg.bluetoothScanThrottleEnabled} cam=${cfg.cameraBackgroundBlockEnabled} " +
                 "vib=${cfg.vibratorThrottleEnabled} " +
+                "[实验2]hibernate=${cfg.hibernationEnabled} netpw=${cfg.networkPowerSaveEnabled} " +
+                "dimmer=${cfg.screenDimmerEnabled} taskkill=${cfg.taskKillerEnabled} " +
                 "[系统]doze=${cfg.dozeEnabled} freeze=${cfg.freezeEnabled} " +
                 "cpu=${cfg.cpuGovernorEnabled} greenify=${cfg.greenifyEnabled} " +
                 "[实验-系统]lowpower=${cfg.lowPowerModeAutoEnabled} batreset=${cfg.batteryStatsResetEnabled}")
@@ -81,6 +83,12 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.bluetoothScanThrottleEnabled) BluetoothScanThrottleHook.apply(lpparam, cfg)
         if (cfg.cameraBackgroundBlockEnabled) CameraBackgroundBlockHook.apply(lpparam, cfg)
         if (cfg.vibratorThrottleEnabled) VibratorThrottleHook.apply(lpparam, cfg)
+
+        // ===== [A-实验2] 新实验性功能 =====
+        if (cfg.hibernationEnabled) HibernationManagerHook.apply(lpparam, cfg)
+        if (cfg.networkPowerSaveEnabled) NetworkPowerHook.apply(lpparam, cfg)
+        if (cfg.screenDimmerEnabled) ScreenDimmerHook.apply(lpparam, cfg)
+        if (cfg.taskKillerEnabled) TaskKillerHook.apply(lpparam, cfg)
 
         // ===== [B] 系统级 Hook（需 Shizuku）=====
         ShizukuBridgeHook.apply(lpparam, cfg)

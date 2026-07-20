@@ -68,6 +68,11 @@ object ConfigManager {
     const val KEY_VOICE_MESSAGE_EXPORT = "voice_message_export"
     const val KEY_MESSAGE_SEARCH_ENHANCE = "message_search_enhance"
     const val KEY_CUSTOM_THEME = "custom_theme"
+    const val KEY_STICKER_COLLECTOR = "sticker_collector"
+    const val KEY_BATCH_MESSAGE = "batch_message"
+    const val KEY_TIMELINE_CLEANER = "timeline_cleaner"
+    const val KEY_TIMELINE_CLEAN_DAYS = "timeline_clean_days"
+    const val KEY_DEEP_CACHE_CLEAN = "deep_cache_clean"
 
     // ===== v1.0.6 新增 =====
     const val KEY_AUTO_RED_PACKET = "auto_red_packet"
@@ -159,7 +164,12 @@ object ConfigManager {
             momentFakeLikeEnabled = isEnabled(KEY_MOMENT_FAKE_LIKE),
             unlimitedForwardEnabled = isEnabled(KEY_UNLIMITED_FORWARD),
             autoOriginalImageEnabled = isEnabled(KEY_AUTO_ORIGINAL_IMAGE),
-            bypassDetectionEnabled = isEnabled(KEY_BYPASS_DETECTION)
+            bypassDetectionEnabled = isEnabled(KEY_BYPASS_DETECTION),
+            stickerCollectorEnabled = isEnabled(KEY_STICKER_COLLECTOR),
+            batchMessageEnabled = isEnabled(KEY_BATCH_MESSAGE),
+            timelineCleanerEnabled = isEnabled(KEY_TIMELINE_CLEANER),
+            timelineCleanDays = getString(KEY_TIMELINE_CLEAN_DAYS, "30").toIntOrNull() ?: 30,
+            deepCacheCleanEnabled = isEnabled(KEY_DEEP_CACHE_CLEAN)
         )
     }
 
@@ -224,6 +234,13 @@ object ConfigManager {
             putBoolean(KEY_DISABLE_HOT_UPDATE, cfg.disableHotUpdateEnabled)
             putBoolean(KEY_MOMENT_FAKE_LIKE, cfg.momentFakeLikeEnabled)
             putBoolean(KEY_AUTO_ORIGINAL_IMAGE, cfg.autoOriginalImageEnabled)
+
+            // v1.0.11 新增实验性
+            putBoolean(KEY_STICKER_COLLECTOR, cfg.stickerCollectorEnabled)
+            putBoolean(KEY_BATCH_MESSAGE, cfg.batchMessageEnabled)
+            putBoolean(KEY_TIMELINE_CLEANER, cfg.timelineCleanerEnabled)
+            putString(KEY_TIMELINE_CLEAN_DAYS, cfg.timelineCleanDays.toString())
+            putBoolean(KEY_DEEP_CACHE_CLEAN, cfg.deepCacheCleanEnabled)
         }?.apply()
     }
 
@@ -261,5 +278,13 @@ object ConfigManager {
     fun resetAll() {
         prefs?.edit()?.clear()?.apply()
         setDefaults()
+    }
+
+    private const val KEY_THEME_INDEX = "theme_index"
+
+    fun readThemeIndex(): Int = prefs?.getInt(KEY_THEME_INDEX, 0) ?: 0
+
+    fun writeThemeIndex(index: Int) {
+        prefs?.edit()?.putInt(KEY_THEME_INDEX, index)?.apply()
     }
 }

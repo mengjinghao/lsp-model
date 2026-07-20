@@ -48,6 +48,10 @@ data class GameConfig(
     var networkLatencyOptEnabled: Boolean = false,
     var audioPriorityBoostEnabled: Boolean = false,
     var memoryDefragEnabled: Boolean = false,
+    var fpsMonitorEnabled: Boolean = false,
+    var networkQosEnabled: Boolean = false,
+    var ramPreloadEnabled: Boolean = false,
+    var inputLatencyReducerEnabled: Boolean = false,
 
     var lastModified: Long = 0L
 )

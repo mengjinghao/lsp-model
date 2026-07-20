@@ -116,6 +116,72 @@ fun FeaturesScreen(cfg: PrivacyConfig, onConfigChange: (PrivacyConfig) -> Unit) 
         )
 
         Spacer(Modifier.height(20.dp))
+        Text("v1.1.0 新增实验性功能", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "隐私审计报告", "Hook AppOpsManager 追踪权限使用，生成审计报告JSON",
+            cfg.privacyAuditEnabled,
+            { val nc = cfg.copy(privacyAuditEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Camera/Mic入侵守卫", "Hook Camera.open/MediaRecorder.start 检测并可选阻断未授权音视频采集",
+            cfg.cameraGuardEnabled || cfg.micGuardEnabled,
+            {
+                val nc = if (cfg.cameraGuardEnabled || cfg.micGuardEnabled) {
+                    cfg.copy(cameraGuardEnabled = false, micGuardEnabled = false, blockUnauthorizedAv = false)
+                } else {
+                    cfg.copy(cameraGuardEnabled = true, micGuardEnabled = true)
+                }
+                ConfigManager.saveGlobalConfig(nc); onConfigChange(nc)
+            },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "阻断未授权音视频", "开启后 Camera/Mic 在非用户主动触发时返回 null",
+            cfg.blockUnauthorizedAv,
+            { val nc = cfg.copy(blockUnauthorizedAv = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "后台Activity监控", "Hook ActivityManagerService.startActivity 检测并可选拦截后台启动",
+            cfg.backgroundActivityMonitorEnabled,
+            { val nc = cfg.copy(backgroundActivityMonitorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true, rootLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "拦截后台Activity", "Root: 返回 false 阻止后台Activity启动",
+            cfg.blockBackgroundActivities,
+            { val nc = cfg.copy(blockBackgroundActivities = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true, rootLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "网络泄露检测器", "Hook Socket.connect/URL.openConnection 监控并标记可疑域名连接",
+            cfg.networkLeakDetectorEnabled,
+            { val nc = cfg.copy(networkLeakDetectorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Anti-Fingerprinting盾", "随机化 UA/屏幕参数/Build标识/Locale 防浏览器指纹追踪",
+            cfg.antiFingerprintEnabled,
+            { val nc = cfg.copy(antiFingerprintEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true
+        )
+
+        Spacer(Modifier.height(20.dp))
         Text("Root 系统级功能（需 Shizuku）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
         Spacer(Modifier.height(8.dp))
 

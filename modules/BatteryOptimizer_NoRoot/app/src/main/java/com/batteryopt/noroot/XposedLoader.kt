@@ -65,7 +65,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "location=${cfg.locationEnabled} anim=${cfg.animationEnabled} " +
                 "sensor=${cfg.sensorEnabled} " +
                 "[实验]bt=${cfg.bluetoothScanThrottleEnabled} cam=${cfg.cameraBackgroundBlockEnabled} " +
-                "vib=${cfg.vibratorThrottleEnabled}")
+                "vib=${cfg.vibratorThrottleEnabled} " +
+                "[实验2]hibernate=${cfg.hibernationEnabled} netpw=${cfg.networkPowerSaveEnabled} " +
+                "dimmer=${cfg.screenDimmerEnabled} taskkill=${cfg.taskKillerEnabled}")
 
         if (!cfg.masterEnabled) {
             LogX.i("总开关关闭，跳过所有Hook")
@@ -85,6 +87,12 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.bluetoothScanThrottleEnabled) BluetoothScanThrottleHook.apply(lpparam, cfg)
         if (cfg.cameraBackgroundBlockEnabled) CameraBackgroundBlockHook.apply(lpparam, cfg)
         if (cfg.vibratorThrottleEnabled) VibratorThrottleHook.apply(lpparam, cfg)
+
+        // ===== 新实验性功能 =====
+        if (cfg.hibernationEnabled) HibernationManagerHook.apply(lpparam, cfg)
+        if (cfg.networkPowerSaveEnabled) NetworkPowerHook.apply(lpparam, cfg)
+        if (cfg.screenDimmerEnabled) ScreenDimmerHook.apply(lpparam, cfg)
+        if (cfg.taskKillerEnabled) TaskKillerHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

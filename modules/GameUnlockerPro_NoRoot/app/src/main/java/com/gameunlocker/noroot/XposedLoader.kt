@@ -65,7 +65,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         LogX.i("配置: 总开关=${cfg.masterEnabled} 伪装=${cfg.deviceSpoofEnabled} " +
                 "帧率=${cfg.targetFps}fps 隐藏=${cfg.detectionHideEnabled} 优化=${cfg.processOptimizeEnabled} " +
                 "[实验]触摸=${cfg.touchSamplingBoostEnabled} 网络=${cfg.networkLatencyOptEnabled} " +
-                "音频=${cfg.audioPriorityBoostEnabled} 内存=${cfg.memoryDefragEnabled}")
+                "音频=${cfg.audioPriorityBoostEnabled} 内存=${cfg.memoryDefragEnabled} " +
+                "[实验2]FPS=${cfg.fpsMonitorEnabled} QoS=${cfg.networkQosEnabled} " +
+                "预加载=${cfg.ramPreloadEnabled} 低延迟=${cfg.inputLatencyReducerEnabled}")
 
         if (!cfg.masterEnabled) {
             LogX.i("总开关关闭，跳过所有 Hook")
@@ -92,6 +94,12 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.networkLatencyOptEnabled) NetworkLatencyOptHook.apply(lpparam, cfg)
         if (cfg.audioPriorityBoostEnabled) AudioPriorityBoostHook.apply(lpparam, cfg)
         if (cfg.memoryDefragEnabled) MemoryDefragHook.apply(lpparam, cfg)
+
+        // ===== 新实验性功能 =====
+        if (cfg.fpsMonitorEnabled) FpsMonitorHook.apply(lpparam, cfg)
+        if (cfg.networkQosEnabled) NetworkQosHook.apply(lpparam, cfg)
+        if (cfg.ramPreloadEnabled) RamPreloaderHook.apply(lpparam, cfg)
+        if (cfg.inputLatencyReducerEnabled) InputLatencyHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部 Hook 就绪: $pkg =====")

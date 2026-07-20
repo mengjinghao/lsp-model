@@ -60,7 +60,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         val cfg = loadConfig()
         LogX.i("配置: 总开关=${cfg.masterEnabled} 设备ID=${cfg.deviceIdSpoofEnabled} " +
                 "剪贴板=${cfg.clipboardGuardEnabled} 位置=${cfg.locationSpoofEnabled} " +
-                "[实验]包可见=${cfg.packageVisibilitySpoofEnabled} 网络=${cfg.networkInfoSpoofEnabled}")
+                "[实验]包可见=${cfg.packageVisibilitySpoofEnabled} 网络=${cfg.networkInfoSpoofEnabled} " +
+                "[NEW]审计=${cfg.privacyAuditEnabled} AV守卫=${cfg.cameraGuardEnabled}|${cfg.micGuardEnabled} " +
+                "后台监控=${cfg.backgroundActivityMonitorEnabled} 网络泄露=${cfg.networkLeakDetectorEnabled} " +
+                "AntiFP=${cfg.antiFingerprintEnabled}")
 
         if (!cfg.masterEnabled) {
             LogX.i("总开关关闭，跳过所有Hook")
@@ -85,6 +88,21 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.installStatusSpoofEnabled || cfg.mockLocationSystemLevelEnabled) {
             PrivacyPlusHook.apply(lpparam, cfg)
         }
+
+        // ===== 实验性：隐私审计 =====
+        if (cfg.privacyAuditEnabled) PrivacyAuditHook.apply(lpparam, cfg)
+
+        // ===== 实验性：Camera/Mic入侵守卫 =====
+        if (cfg.cameraGuardEnabled || cfg.micGuardEnabled) AudioVideoGuardHook.apply(lpparam, cfg)
+
+        // ===== 实验性：后台Activity监控（NoRoot: 仅日志） =====
+        if (cfg.backgroundActivityMonitorEnabled) BackgroundActivityMonitor.apply(lpparam, cfg)
+
+        // ===== 实验性：网络泄露检测 =====
+        if (cfg.networkLeakDetectorEnabled) NetworkLeakDetector.apply(lpparam, cfg)
+
+        // ===== 实验性：Anti-Fingerprinting =====
+        if (cfg.antiFingerprintEnabled) AntiFingerprintHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

@@ -112,4 +112,12 @@ object ConfigManager {
             false
         }
     }
+
+    private const val KEY_THEME_INDEX = "theme_index"
+
+    fun readThemeIndex(): Int = prefs?.getInt(KEY_THEME_INDEX, 0) ?: 0
+
+    fun writeThemeIndex(index: Int) {
+        prefs?.edit()?.putInt(KEY_THEME_INDEX, index)?.apply()
+    }
 }

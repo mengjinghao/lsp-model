@@ -26,6 +26,13 @@ data class BatteryConfig(
     var bluetoothScanThrottleEnabled: Boolean = false,
     var cameraBackgroundBlockEnabled: Boolean = false,
     var vibratorThrottleEnabled: Boolean = false,
+    var hibernationEnabled: Boolean = false,
+    var hibernationDelayMin: Int = 10,
+    var networkPowerSaveEnabled: Boolean = false,
+    var screenDimmerEnabled: Boolean = false,
+    var screenDimLevel: Float = 0.3f,
+    var taskKillerEnabled: Boolean = false,
+    var taskKillerCpuThreshold: Int = 30,
 
     // ===== 系统级 Hook 开关（仅 Root 版，需 Shizuku）=====
     /** 系统 Doze 强制（屏幕关闭后进入深度 Doze） */

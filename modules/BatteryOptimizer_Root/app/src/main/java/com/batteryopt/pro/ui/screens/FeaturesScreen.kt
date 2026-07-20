@@ -88,6 +88,27 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
             { val nc = cfg.copy(vibratorThrottleEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true)
 
+        Spacer(Modifier.height(8.dp))
+        FeatureCard("App 休眠管理", "Shizuku am force-stop + pm disable，延迟强制休眠后台APP",
+            cfg.hibernationEnabled,
+            { val nc = cfg.copy(hibernationEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true)
+        Spacer(Modifier.height(8.dp))
+        FeatureCard("网络省电", "Shizuku cmd netpolicy + iptables 限制后台数据连接",
+            cfg.networkPowerSaveEnabled,
+            { val nc = cfg.copy(networkPowerSaveEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true)
+        Spacer(Modifier.height(8.dp))
+        FeatureCard("屏幕调暗", "Hook WindowManager 亮度降至系统最低以下",
+            cfg.screenDimmerEnabled,
+            { val nc = cfg.copy(screenDimmerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true)
+        Spacer(Modifier.height(8.dp))
+        FeatureCard("自动任务杀死", "Shizuku top -n 1 扫描，CPU 超阈值自动 kill -9",
+            cfg.taskKillerEnabled,
+            { val nc = cfg.copy(taskKillerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true)
+
         Spacer(Modifier.height(20.dp))
         Text("系统级功能（需 Shizuku）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.tertiary)
         Spacer(Modifier.height(8.dp))
