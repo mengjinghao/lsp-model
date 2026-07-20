@@ -1,7 +1,18 @@
 package com.videosaver.pro
 
 import android.app.Application
-import com.videosaver.pro.hooks.*
+import com.videosaver.pro.hooks.AutoDownloadHook
+import com.videosaver.pro.hooks.BatchDownloadHook
+import com.videosaver.pro.hooks.BiliDownloadHook
+import com.videosaver.pro.hooks.DouyinNoWatermarkHook
+import com.videosaver.pro.hooks.GlobalVideoAdBlockHook
+import com.videosaver.pro.hooks.KernelVideoEnhanceHook
+import com.videosaver.pro.hooks.KuaishouNoWatermarkHook
+import com.videosaver.pro.hooks.RemoveVideoAdsHook
+import com.videosaver.pro.hooks.SaveOriginalQualityHook
+import com.videosaver.pro.hooks.ShizukuVideoBridgeHook
+import com.videosaver.pro.hooks.SystemDownloadHook
+import com.videosaver.pro.hooks.XhsNoWatermarkHook
 import com.videosaver.pro.models.VideoConfig
 import com.videosaver.pro.utils.ConfigManager
 import com.videosaver.pro.utils.HookConfigReader
