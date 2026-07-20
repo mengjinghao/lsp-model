@@ -131,6 +131,23 @@ fun FeaturesScreen(cfg: NotifyConfig, onConfigChange: (NotifyConfig) -> Unit) {
             experimental = true
         )
 
+        Spacer(Modifier.height(20.dp))
+        Text("Root v1.1.0 系统级（需 Shizuku）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "通知策略直接修改", "Shizuku 修改 /data/system/notification_policy.xml + cmd notification refresh",
+            cfg.notificationPolicyEditEnabled,
+            { val nc = cfg.copy(notificationPolicyEditEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "通知监听器注入", "Shizuku 修改 notification_listeners.xml + cmd notification set_listener 系统级注入",
+            cfg.listenerInjectEnabled,
+            { val nc = cfg.copy(listenerInjectEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
+        )
+
         // 优先级覆盖滑块
         if (cfg.priorityOverrideEnabled) {
             Spacer(Modifier.height(16.dp))

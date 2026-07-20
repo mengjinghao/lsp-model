@@ -99,6 +99,43 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
 
         Spacer(Modifier.height(20.dp))
 
+        // ===== 系统级 Hook (Shizuku) - 直接写 sysfs 内核节点 =====
+        Text("系统级 Hook (Shizuku)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Sysfs 温控写入", "Shizuku 直接写 /sys/class/thermal/ 内核节点禁用温控",
+            cfg.sysfsThermalEnabled,
+            { val nc = cfg.copy(sysfsThermalEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Sysfs GPU 写入", "Shizuku 直接写 /sys/class/kgsl/kgsl-3d0/ 锁定 GPU 最高频率",
+            cfg.sysfsGpuEnabled,
+            { val nc = cfg.copy(sysfsGpuEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "停止温控引擎", "Shizuku stop thermal-engine/mi_thermald 等厂商温控守护进程",
+            cfg.thermalEngineDisableEnabled,
+            { val nc = cfg.copy(thermalEngineDisableEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "游戏模式 Cmd", "Shizuku 执行 cmd game / settings put global game_driver_preferences / msm_performance boost",
+            cfg.gameModeCmdEnabled,
+            { val nc = cfg.copy(gameModeCmdEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true
+        )
+
+        Spacer(Modifier.height(20.dp))
+
         // ===== 实验性 - 应用层 =====
         Text("实验性功能（应用层）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
         Spacer(Modifier.height(8.dp))

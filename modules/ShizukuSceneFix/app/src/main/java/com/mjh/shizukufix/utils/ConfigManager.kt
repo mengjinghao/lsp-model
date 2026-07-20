@@ -21,6 +21,9 @@ object ConfigManager {
     const val PREFS_NAME = "shizuku_scene_fix_prefs"
     private const val KEY_ALL = "all_app_configs"
     private const val KEY_GLOBAL = "global_config"
+    const val KEY_ROOT_BRIDGE_ENABLED = "root_bridge_enabled"
+    const val KEY_ROOT_DIRECT_GRANT_ENABLED = "root_direct_grant_enabled"
+    const val KEY_ROOT_SERVICE_RESTART_ENABLED = "root_service_restart_enabled"
 
     private val gson = Gson()
     private var prefs: SharedPreferences? = null
@@ -110,5 +113,26 @@ object ConfigManager {
 
     fun writeThemeIndex(index: Int) {
         prefs?.edit()?.putInt(KEY_THEME_INDEX, index)?.apply()
+    }
+
+    fun readRootBridgeEnabled(): Boolean = getGlobalConfig().rootBridgeEnabled
+
+    fun writeRootBridgeEnabled(value: Boolean) {
+        val cfg = getGlobalConfig().apply { rootBridgeEnabled = value }
+        saveGlobalConfig(cfg)
+    }
+
+    fun readRootDirectGrantEnabled(): Boolean = getGlobalConfig().rootDirectGrantEnabled
+
+    fun writeRootDirectGrantEnabled(value: Boolean) {
+        val cfg = getGlobalConfig().apply { rootDirectGrantEnabled = value }
+        saveGlobalConfig(cfg)
+    }
+
+    fun readRootServiceRestartEnabled(): Boolean = getGlobalConfig().rootServiceRestartEnabled
+
+    fun writeRootServiceRestartEnabled(value: Boolean) {
+        val cfg = getGlobalConfig().apply { rootServiceRestartEnabled = value }
+        saveGlobalConfig(cfg)
     }
 }

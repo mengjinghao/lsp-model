@@ -2,6 +2,7 @@ package com.gameunlocker.pro.hooks
 
 import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
+import com.gameunlocker.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -14,8 +15,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *  - Hook GLSurfaceView.setRenderMode 强制连续渲染
  *  - Hook HardwareRenderer 帧回调（Android 10+）
  *  - Hook Choreographer.getFrameDelay 减少 VSync 帧延迟
+ *  - Shizuku 内核级 GPU 命令（第二道防线，写 sysfs）
  *
- * 注意：实际 GPU 频率由内核 governor 决定，本 Hook 仅优化应用层渲染调度。
+ * 注意：实际 GPU 频率由内核 governor 决定，本 Hook 优化应用层渲染调度 + Shizuku 写内核节点。
  */
 object GPUSchedulerHook {
 
@@ -27,6 +29,17 @@ object GPUSchedulerHook {
         hookGLSurfaceView(lpparam)
         hookHardwareRenderer(lpparam)
         hookChoreographer(lpparam)
+
+        // Shizuku 内核级 GPU 命令（第二道防线）
+        applyShizukuGpuCommands()
+    }
+
+    /** Shizuku 内核级 GPU 命令 */
+    private fun applyShizukuGpuCommands() {
+        if (!ShizukuHelper.isAvailable()) return
+        ShizukuHelper.execShell("echo performance > /sys/class/kgsl/kgsl-3d0/devfreq/governor")
+        ShizukuHelper.execShell("cat /sys/class/kgsl/kgsl-3d0/max_gpuclk > /sys/class/kgsl/kgsl-3d0/max_gpuclk")
+        LogX.i("Shizuku: GPU 内核命令已执行 (governor=performance)")
     }
 
     private fun hookEGLInit(lpparam: XC_LoadPackage.LoadPackageParam) {

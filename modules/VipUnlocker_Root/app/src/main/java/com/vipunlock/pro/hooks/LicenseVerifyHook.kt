@@ -2,6 +2,7 @@ package com.vipunlock.pro.hooks
 
 import com.vipunlock.pro.models.VipConfig
 import com.vipunlock.pro.utils.LogX
+import com.vipunlock.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -177,5 +178,50 @@ object LicenseVerifyHook {
             true
         } catch (e: NoSuchMethodError) { false }
         catch (e: Exception) { LogX.w("异常: ${e.message}"); false }
+    }
+
+    /**
+     * 【Root】Shizuku 系统级 License 绕过
+     * 直接操作 Play Store 数据库、权限、SharedPreferences 实现真实的购买记录注入
+     */
+    fun applyShizuku(lpparam: XC_LoadPackage.LoadPackageParam, cfg: VipConfig) {
+        if (!cfg.rootLicenseBypassEnabled) return
+        if (!ShizukuHelper.isShizukuAvailable()) {
+            LogX.w("Shizuku不可用，跳过 License 系统级绕过")
+            return
+        }
+        LogX.i("【Root】License 系统级绕过启动")
+
+        val pkg = lpparam.packageName
+
+        try {
+            // 1. 授予 BILLING 权限，绕过支付权限检查
+            ShizukuHelper.execShell("pm grant $pkg android.permission.BILLING 2>/dev/null")
+            LogX.i("已授予 BILLING 权限: $pkg")
+
+            // 2. 读取 Play Store 本地数据库中的购买记录
+            val dbResult = ShizukuHelper.execShell(
+                "sqlite3 /data/data/com.android.vending/databases/localappstate.db " +
+                "\"SELECT package_name,auto_acquire FROM appstate WHERE package_name='$pkg';\" 2>/dev/null"
+            )
+            LogX.i("Play Store DB 查询结果: $dbResult")
+
+            // 3. 写入伪造购买记录 JSON
+            val fakePurchase = """{"packageName":"$pkg","purchaseTime":${System.currentTimeMillis()},"purchaseState":0,"purchaseToken":"inapp.$pkg.fake-token-12345","productId":"premium","autoRenewing":true}"""
+            ShizukuHelper.execShell(
+                "echo '$fakePurchase' > /data/data/com.android.vending/files/fake_purchases.json 2>/dev/null"
+            )
+            LogX.i("已写入伪造购买记录 JSON")
+
+            // 4. 修改 Play Store SharedPreferences（标记为目标APP已授权）
+            val prefFile = "license_check_${pkg.replace('.', '_')}.xml"
+            ShizukuHelper.execShell(
+                "echo '<?xml version=\"1.0\" encoding=\"utf-8\"?><map><boolean name=\"${pkg}.licensed\" value=\"true\" /></map>' " +
+                "> /data/data/com.android.vending/shared_prefs/$prefFile 2>/dev/null"
+            )
+            ShizukuHelper.execShell("chmod 660 /data/data/com.android.vending/shared_prefs/$prefFile 2>/dev/null")
+            LogX.i("已修改 Play Store shared_prefs: $prefFile")
+
+        } catch (e: Throwable) { LogX.w("License Shizuku异常: ${e.message}") }
     }
 }

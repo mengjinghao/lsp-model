@@ -59,6 +59,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "[Root]系统属性=${cfg.systemPropSpoofEnabled} 全局权限=${cfg.globalPermissionHookEnabled} " +
                 "网络标识=${cfg.networkIdentifierHookEnabled} Shizuku桥接=${cfg.shizukuBridgeEnabled} " +
                 "[Root实验]SELinux=${cfg.selinuxContextSpoofEnabled} Cmdline=${cfg.kernelCmdlineHideEnabled} " +
+                "chcon=${cfg.selinuxChconEnabled} mount=${cfg.kernelCmdlineMountEnabled} " +
                 "[NEW]审计=${cfg.privacyAuditEnabled} AV守卫=${cfg.cameraGuardEnabled}|${cfg.micGuardEnabled} " +
                 "后台监控=${cfg.backgroundActivityMonitorEnabled} 网络泄露=${cfg.networkLeakDetectorEnabled} " +
                 "AntiFP=${cfg.antiFingerprintEnabled}")
@@ -96,6 +97,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 实验性 =====
         if (cfg.selinuxContextSpoofEnabled) SelinuxContextSpoofHook.apply(lpparam, cfg)
         if (cfg.kernelCmdlineHideEnabled) KernelCmdlineHideHook.apply(lpparam, cfg)
+
+        // ===== Root 实验性：Shizuku 系统级操作 =====
+        if (cfg.selinuxChconEnabled) SelinuxContextSpoofHook.applyShizuku(lpparam, cfg)
+        if (cfg.kernelCmdlineMountEnabled) KernelCmdlineHideHook.applyShizuku(lpparam, cfg)
 
         // ===== 实验性：隐私审计 =====
         if (cfg.privacyAuditEnabled) PrivacyAuditHook.apply(lpparam, cfg)

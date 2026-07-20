@@ -2,6 +2,7 @@ package com.gameunlocker.pro.hooks
 
 import com.gameunlocker.pro.models.GameConfig
 import com.gameunlocker.pro.utils.LogX
+import com.gameunlocker.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XC_MethodReplacement
 import de.robv.android.xposed.XposedBridge
@@ -35,6 +36,29 @@ object ThermalBypassHook {
         hookGPUFreqGovernor(lpparam)
         hookPowerManager(lpparam)
         hookSystemThermalNodes(lpparam)
+
+        // Shizuku 内核级温控写入（第二道防线，直接写 sysfs 节点）
+        applyShizukuThermalBypass(cfg)
+    }
+
+    /** Shizuku 内核级温控写入（直接写 sysfs 节点，第二道防线）*/
+    private fun applyShizukuThermalBypass(cfg: GameConfig) {
+        if (!ShizukuHelper.isAvailable()) {
+            LogX.d("Shizuku 不可用，跳过内核级温控写入")
+            return
+        }
+        if (cfg.thermalEngineDisableEnabled) {
+            val engines = listOf("thermal-engine", "mi_thermald", "vendor.thermal-engine", "thermald")
+            for (e in engines) {
+                ShizukuHelper.execShell("stop $e")
+            }
+            LogX.i("Shizuku: 温控引擎已停止")
+        }
+        ShizukuHelper.execShell("find /sys/class/thermal/ -name \"policy\" -exec echo user_space > {} \\;")
+        ShizukuHelper.execShell("find /sys/class/thermal/ -name \"cur_state\" -type f -exec echo 0 > {} \\;")
+        ShizukuHelper.execShell("echo N > /sys/module/msm_thermal/parameters/enabled")
+        ShizukuHelper.execShell("echo N > /sys/module/msm_thermal_v2/parameters/enabled")
+        LogX.i("Shizuku: 内核温控节点已写入")
     }
 
     /** Hook HardwarePropertiesManager + IThermalService 温度读取 */

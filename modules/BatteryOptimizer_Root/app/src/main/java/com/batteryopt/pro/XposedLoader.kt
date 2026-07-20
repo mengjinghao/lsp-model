@@ -102,6 +102,11 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.lowPowerModeAutoEnabled) LowPowerModeAutoHook.apply(lpparam, cfg)
         if (cfg.batteryStatsResetEnabled) BatteryStatsResetHook.apply(lpparam, cfg)
 
+        // ===== [C] v1.1.0 新增：GPU Governor + AppOps + I/O 调度器 =====
+        if (cfg.gpuGovBatteryEnabled) GpuGovHook.apply(lpparam, cfg)
+        if (cfg.appOpsManagerEnabled) AppOpsManagerHook.apply(lpparam, cfg)
+        if (cfg.ioMgmtEnabled) IoMgmtHook.apply(lpparam, cfg)
+
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")
     }

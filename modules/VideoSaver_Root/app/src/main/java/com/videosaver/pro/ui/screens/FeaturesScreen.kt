@@ -239,6 +239,30 @@ fun FeaturesScreen(cfg: VideoConfig, onConfigChange: (VideoConfig) -> Unit) {
             experimental = true
         )
 
+        Spacer(Modifier.height(20.dp))
+        Text(
+            "Root v1.1.0 系统级（需 Shizuku）",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.tertiary
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "系统级屏幕录制/截图",
+            "Shizuku screenrecord + screencap + am broadcast MEDIA_SCANNER",
+            cfg.systemScreenCaptureEnabled,
+            { val nc = cfg.copy(systemScreenCaptureEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "系统级 HTTP 代理",
+            "Shizuku settings put global http_proxy 127.0.0.1:8080 拦截视频流 URL",
+            cfg.systemProxyEnabled,
+            { val nc = cfg.copy(systemProxyEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
+        )
+
         Spacer(Modifier.height(32.dp))
     }
 }

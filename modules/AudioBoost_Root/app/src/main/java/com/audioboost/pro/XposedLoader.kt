@@ -86,6 +86,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.globalAudioPolicyEnabled) GlobalAudioPolicyHook.apply(lpparam, cfg)
         if (cfg.shizukuAudioBridgeEnabled) ShizukuAudioBridgeHook.apply(lpparam, cfg)
 
+        // ===== Root v1.1.0 新增：tinymix ALSA 控制 + Audio Effects XML 修改 =====
+        if (cfg.tinymixEnabled) TinymixAudioHook.apply(lpparam, cfg)
+        if (cfg.audioFxXmlEnabled) AudioFxXmlHook.apply(lpparam, cfg)
+
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")
     }

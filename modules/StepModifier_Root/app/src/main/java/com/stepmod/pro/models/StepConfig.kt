@@ -49,6 +49,8 @@ data class StepConfig(
     // ===== Root 实验性 =====
     var kernelStepInjectEnabled: Boolean = false,    // 内核节点注入
     var shizukuStepBridgeEnabled: Boolean = false,   // Shizuku 广播桥接
+    var sensorHalDirectEnabled: Boolean = false,     // 传感器 HAL 直接注入（/dev/iio:device*）
+    var healthDbDirectEnabled: Boolean = false,      // 健康数据库直接操作（sqlite3 Google Fit / 华为健康）
 
     var lastModified: Long = 0L
 )

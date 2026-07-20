@@ -165,4 +165,64 @@ object SelinuxContextSpoofHook {
             LogX.i("当前 SELinux 状态: $result")
         } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
     }
+
+    /**
+     * 【Root】Shizuku 系统级 SELinux 操作
+     * 通过 Shizuku 执行真实的 chcon / restorecon / getenforce / 读取 enforce 状态
+     */
+    fun applyShizuku(lpparam: XC_LoadPackage.LoadPackageParam, cfg: PrivacyConfig) {
+        if (!cfg.selinuxChconEnabled) return
+        if (!ShizukuHelper.isShizukuAvailable()) {
+            LogX.w("Shizuku不可用，跳过 SELinux 系统级操作")
+            return
+        }
+        LogX.i("【Root】SELinux 系统级操作启动")
+
+        val pkg = lpparam.packageName
+        val dataDir = "/data/data/$pkg"
+
+        // 1. chcon 修改应用数据目录 SELinux 上下文为标准 untrusted_app
+        try {
+            val result = ShizukuHelper.execShell("chcon u:r:untrusted_app:s0 $dataDir/ 2>/dev/null")
+            LogX.i("chcon $dataDir -> $result")
+        } catch (e: Throwable) { LogX.w("chcon异常: ${e.message}") }
+
+        // 2. 读取 /sys/fs/selinux/enforce 检查当前状态
+        try {
+            val enforceStatus = ShizukuHelper.readFile("/sys/fs/selinux/enforce")
+            LogX.i("当前 SELinux enforce 状态 (/sys/fs/selinux/enforce): $enforceStatus")
+        } catch (e: Throwable) { LogX.w("读取enforce异常: ${e.message}") }
+
+        // 3. getenforce 查看
+        try {
+            val state = ShizukuHelper.execShell("getenforce")
+            LogX.i("getenforce: $state")
+        } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+    }
+
+    /**
+     * 【危险】临时禁用 SELinux（setenforce 0）
+     * 需单独 toggle 控制，不可自动执行
+     */
+    fun applySetenforce() {
+        if (!ShizukuHelper.isShizukuAvailable()) {
+            LogX.w("Shizuku不可用，跳过 setenforce")
+            return
+        }
+        try {
+            ShizukuHelper.execShell("setenforce 0 2>/dev/null")
+            LogX.w("【危险】已执行 setenforce 0，SELinux 临时禁用（Permissive模式）")
+        } catch (e: Throwable) { LogX.w("setenforce异常: ${e.message}") }
+    }
+
+    /**
+     * 恢复原始 SELinux 上下文
+     */
+    fun restoreContext(pkg: String) {
+        if (!ShizukuHelper.isShizukuAvailable()) return
+        try {
+            val result = ShizukuHelper.execShell("restorecon -R /data/data/$pkg/ 2>/dev/null")
+            LogX.i("restorecon -R /data/data/$pkg/ -> $result")
+        } catch (e: Throwable) { LogX.w("restorecon异常: ${e.message}") }
+    }
 }

@@ -152,6 +152,27 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
             experimental = true, systemLevel = true)
 
         Spacer(Modifier.height(20.dp))
+        Text("Root v1.1.0 系统级（需 Shizuku）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.tertiary)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard("GPU Governor 省电", "Shizuku echo powersave > /sys/class/kgsl/kgsl-3d0/devfreq/governor + min_pwrlevel 0",
+            cfg.gpuGovBatteryEnabled,
+            { val nc = cfg.copy(gpuGovBatteryEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard("AppOps 后台限制", "Shizuku cmd appops set RUN_IN_BACKGROUND deny + WAKE_LOCK deny + standby-bucket rare",
+            cfg.appOpsManagerEnabled,
+            { val nc = cfg.copy(appOpsManagerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard("I/O 调度器省电", "Shizuku echo noop > /sys/block/mmcblk0/queue/scheduler + 禁用 low_latency",
+            cfg.ioMgmtEnabled,
+            { val nc = cfg.copy(ioMgmtEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true)
+
+        Spacer(Modifier.height(20.dp))
         Text("参数调整", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
 

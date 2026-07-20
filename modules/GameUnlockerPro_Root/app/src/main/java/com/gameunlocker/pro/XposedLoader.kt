@@ -28,8 +28,8 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  *    [1] 环境隐藏(最先执行，防检测)
  *    [2] 机型伪装(Build属性)
  *    [3] 帧率解锁(Display/Surface/引擎)
- *    [4] 温控屏蔽(系统级，Hook PowerManager/ThermalService)
- *    [5] GPU调度(系统级，Hook EGL/Choreographer)
+ *    [4] 温控屏蔽(系统级，Hook PowerManager/ThermalService + Shizuku sysfs)
+ *    [5] GPU调度(系统级，Hook EGL/Choreographer + Shizuku kgsl)
  *    [6] 进程优化(线程优先级 + Shizuku 冻结后台)
  *    [7] 分辨率伪装(可选)
  *    [8] Shizuku系统属性修改(setprop 刷新率)
@@ -67,7 +67,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         LogX.i("配置: 总开关=${cfg.masterEnabled} 伪装=${cfg.deviceSpoofEnabled} " +
                 "帧率=${cfg.targetFps}fps 隐藏=${cfg.detectionHideEnabled} " +
                 "温控=${cfg.thermalBypassEnabled} GPU=${cfg.gpuOptimizeEnabled} " +
-                "Shizuku=${cfg.shizukuBridgeEnabled} " +
+                "Sysfs温控=${cfg.sysfsThermalEnabled} SysfsGPU=${cfg.sysfsGpuEnabled} " +
+                "Shizuku=${cfg.shizukuBridgeEnabled} 停温控引擎=${cfg.thermalEngineDisableEnabled} " +
+                "游戏模式Cmd=${cfg.gameModeCmdEnabled} " +
                 "[实验]触摸=${cfg.touchSamplingBoostEnabled} 网络=${cfg.networkLatencyOptEnabled} " +
                 "音频=${cfg.audioPriorityBoostEnabled} 内存=${cfg.memoryDefragEnabled} " +
                 "游戏模式=${cfg.gameModeActivationEnabled} CPU亲和=${cfg.cpuBigCoreAffinityEnabled} " +
@@ -92,8 +94,14 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== [4] 温控屏蔽（系统级）=====
         if (cfg.thermalBypassEnabled) ThermalBypassHook.apply(lpparam, cfg)
 
+        // ===== [4b] Sysfs 温控（内核级，Shizuku 直接写 sysfs）=====
+        if (cfg.sysfsThermalEnabled) SysfsThermalHook.apply(lpparam, cfg)
+
         // ===== [5] GPU 调度优化（系统级）=====
         if (cfg.gpuOptimizeEnabled) GPUSchedulerHook.apply(lpparam, cfg)
+
+        // ===== [5b] Sysfs GPU（内核级，Shizuku 直接写 kgsl 节点）=====
+        if (cfg.sysfsGpuEnabled) SysfsGpuHook.apply(lpparam, cfg)
 
         // ===== [6] 进程性能优化 =====
         if (cfg.processOptimizeEnabled) ProcessOptimizerHook.apply(lpparam, cfg)

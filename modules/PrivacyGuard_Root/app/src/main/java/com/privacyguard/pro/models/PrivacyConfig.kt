@@ -89,6 +89,12 @@ data class PrivacyConfig(
     // ===== Root 实验性：内核 cmdline 隐藏 =====
     var kernelCmdlineHideEnabled: Boolean = false,
 
+    // ===== Root 实验性：SELinux chcon 实际修改（Shizuku 系统级） =====
+    var selinuxChconEnabled: Boolean = false,
+
+    // ===== Root 实验性：内核 cmdline 挂载伪装（Shizuku mount tmpfs） =====
+    var kernelCmdlineMountEnabled: Boolean = false,
+
     // ===== 参数 =====
     var spoofLatitude: Double = 31.2304,
     var spoofLongitude: Double = 121.4737,

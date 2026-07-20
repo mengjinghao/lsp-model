@@ -57,6 +57,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "爱奇艺=${cfg.iqiyiVipEnabled} B站=${cfg.biliVipEnabled} 知乎=${cfg.zhihuVipEnabled} " +
                 "[实验]通用VIP=${cfg.universalVipTryEnabled} 去广告=${cfg.removeAdsEnabled} 绕过校验=${cfg.bypassVerifyEnabled} " +
                 "[Root]系统属性伪装=${cfg.systemPropVipEnabled} License=${cfg.licenseVerifyEnabled} " +
+                "License绕过=${cfg.rootLicenseBypassEnabled} PlayStoreDB=${cfg.playStoreDbModifyEnabled} " +
                 "[Root实验]Shizuku桥接=${cfg.shizukuVipBridgeEnabled} 全局广告屏蔽=${cfg.globalAdBlockEnabled}")
 
         if (!cfg.masterEnabled) {
@@ -94,6 +95,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 专属：系统级 Hook（需 Shizuku） =====
         if (cfg.systemPropVipEnabled) SystemPropVipHook.apply(lpparam, cfg)
         if (cfg.licenseVerifyEnabled) LicenseVerifyHook.apply(lpparam, cfg)
+
+        // ===== Root 专属：Shizuku 系统级 License/DB 操作 =====
+        if (cfg.rootLicenseBypassEnabled) LicenseVerifyHook.applyShizuku(lpparam, cfg)
+        if (cfg.playStoreDbModifyEnabled) PlayStoreDbHook.apply(lpparam, cfg)
 
         // ===== Root 实验性 =====
         if (cfg.shizukuVipBridgeEnabled) ShizukuVipBridgeHook.apply(lpparam, cfg)

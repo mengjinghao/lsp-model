@@ -47,7 +47,13 @@ object GameModeActivationHook {
         // settings put global game_mode (2 = PERFORMANCE)
         ShizukuHelper.execShell("settings put global game_mode 2")
 
-        LogX.i("Shizuku 游戏模式已激活")
+        // Game driver preferences
+        ShizukuHelper.execShell("settings put global game_driver_preferences \"{\\\"com.tencent.tmgp.sgame\\\":\\\"performance\\\"}\"")
+
+        // performance boost via msm_performance
+        ShizukuHelper.execShell("echo 0 > /sys/module/msm_performance/parameters/boost")
+
+        LogX.i("Shizuku 游戏模式已激活（含驱动/boost）")
     }
 
     /** Hook GameManager 让应用感知已激活游戏模式 */

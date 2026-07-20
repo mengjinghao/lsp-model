@@ -235,6 +235,23 @@ fun FeaturesScreen(cfg: PrivacyConfig, onConfigChange: (PrivacyConfig) -> Unit) 
             experimental = true, rootLevel = true
         )
 
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "SELinux chcon 系统修改", "Shizuku 执行 chcon 修改应用数据目录 SELinux 上下文 + restorecon 恢复 + 读取 /sys/fs/selinux/enforce",
+            cfg.selinuxChconEnabled,
+            { val nc = cfg.copy(selinuxChconEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true, rootLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "内核 cmdline mount 伪装", "Shizuku mount --bind / tmpfs 到 /proc/cmdline 写入伪造内核命令行，彻底隐藏 Root 特征",
+            cfg.kernelCmdlineMountEnabled,
+            { val nc = cfg.copy(kernelCmdlineMountEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true, rootLevel = true
+        )
+
         Spacer(Modifier.height(20.dp))
         if (cfg.locationSpoofEnabled) {
             Text("位置参数", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)

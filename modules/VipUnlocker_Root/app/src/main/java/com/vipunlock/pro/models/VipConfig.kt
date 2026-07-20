@@ -56,6 +56,12 @@ data class VipConfig(
     // ===== Root 专属：Google Play License 授权 Hook =====
     var licenseVerifyEnabled: Boolean = false,
 
+    // ===== Root 专属：License 系统级绕过（Shizuku 操作 Play Store DB/权限/SharedPreferences） =====
+    var rootLicenseBypassEnabled: Boolean = false,
+
+    // ===== Root 专属：Play Store 数据库直接修改（Shizuku sqlite3 cp chmod） =====
+    var playStoreDbModifyEnabled: Boolean = false,
+
     // ===== Root 实验性：Shizuku 权限桥接（pm grant） =====
     var shizukuVipBridgeEnabled: Boolean = false,
     var grantedHiddenPermissions: MutableList<String> = mutableListOf(

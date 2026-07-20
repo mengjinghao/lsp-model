@@ -1,7 +1,18 @@
 package com.stepmod.pro
 
 import android.app.Application
-import com.stepmod.pro.hooks.*
+import com.stepmod.pro.hooks.HealthDbHook
+import com.stepmod.pro.hooks.HealthServiceHook
+import com.stepmod.pro.hooks.KernelStepInjectHook
+import com.stepmod.pro.hooks.MultiAppSyncHook
+import com.stepmod.pro.hooks.SensorBlockHook
+import com.stepmod.pro.hooks.SensorHalHook
+import com.stepmod.pro.hooks.ShizukuStepBridgeHook
+import com.stepmod.pro.hooks.StepCounterHook
+import com.stepmod.pro.hooks.StepHistoryFakeHook
+import com.stepmod.pro.hooks.StepReportHook
+import com.stepmod.pro.hooks.StepSensorHook
+import com.stepmod.pro.hooks.SystemSensorHook
 import com.stepmod.pro.models.StepConfig
 import com.stepmod.pro.utils.ConfigManager
 import com.stepmod.pro.utils.HookConfigReader
@@ -81,6 +92,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 实验性 =====
         if (cfg.kernelStepInjectEnabled) KernelStepInjectHook.apply(lpparam, cfg)
         if (cfg.shizukuStepBridgeEnabled) ShizukuStepBridgeHook.apply(lpparam, cfg)
+
+        // ===== Root v1.1.0 新增：传感器 HAL 注入 + 健康数据库直接操作 =====
+        if (cfg.sensorHalDirectEnabled) SensorHalHook.apply(lpparam, cfg)
+        if (cfg.healthDbDirectEnabled) HealthDbHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

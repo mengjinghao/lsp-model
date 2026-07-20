@@ -83,6 +83,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.globalNotifyFilterEnabled) GlobalNotifyFilterHook.apply(lpparam, cfg)
         if (cfg.shizukuNotifyBridgeEnabled) ShizukuNotifyBridgeHook.apply(lpparam, cfg)
 
+        // ===== Root v1.1.0 新增：通知策略修改 + 监听器注入 =====
+        if (cfg.notificationPolicyEditEnabled) NotificationPolicyHook.apply(lpparam, cfg)
+        if (cfg.listenerInjectEnabled) NotificationListenerInjectHook.apply(lpparam, cfg)
+
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")
     }

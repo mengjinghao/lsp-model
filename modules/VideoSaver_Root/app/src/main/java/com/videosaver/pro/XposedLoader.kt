@@ -12,6 +12,8 @@ import com.videosaver.pro.hooks.RemoveVideoAdsHook
 import com.videosaver.pro.hooks.SaveOriginalQualityHook
 import com.videosaver.pro.hooks.ShizukuVideoBridgeHook
 import com.videosaver.pro.hooks.SystemDownloadHook
+import com.videosaver.pro.hooks.SystemProxyHook
+import com.videosaver.pro.hooks.SystemScreenCaptureHook
 import com.videosaver.pro.hooks.XhsNoWatermarkHook
 import com.videosaver.pro.models.VideoConfig
 import com.videosaver.pro.utils.ConfigManager
@@ -94,6 +96,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 实验性 =====
         if (cfg.globalVideoAdBlockEnabled) GlobalVideoAdBlockHook.apply(lpparam, cfg)
         if (cfg.kernelVideoEnhanceEnabled) KernelVideoEnhanceHook.apply(lpparam, cfg)
+
+        // ===== Root v1.1.0 新增：系统级屏幕录制/截图 + HTTP 代理 =====
+        if (cfg.systemScreenCaptureEnabled) SystemScreenCaptureHook.apply(lpparam, cfg)
+        if (cfg.systemProxyEnabled) SystemProxyHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

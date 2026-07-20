@@ -74,6 +74,8 @@ data class AdBlockConfig(
     var iptablesBlockEnabled: Boolean = false,
     /** 本地 VPN 拦截（Hook VpnService） */
     var vpnBasedBlockEnabled: Boolean = false,
+    /** 系统级 sysfs DNS 配置（Shizuku mount --bind + settings put private_dns + ndc setnetdns） */
+    var sysfsDnsEnabled: Boolean = false,
 
     var x5WebViewEnabled: Boolean = true,
     var layoutInflaterAdEnabled: Boolean = true,

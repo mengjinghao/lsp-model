@@ -16,6 +16,7 @@ import com.adblockerx.pro.hooks.OkHttpAdHook
 import com.adblockerx.pro.hooks.PrivateDnsHook
 import com.adblockerx.pro.hooks.RedirectBlockHook
 import com.adblockerx.pro.hooks.ShizukuBridgeHook
+import com.adblockerx.pro.hooks.SysfsDnsHook
 import com.adblockerx.pro.hooks.SystemHostsHook
 import com.adblockerx.pro.hooks.TrackerBlockHook
 import com.adblockerx.pro.hooks.URLConnectionAdHook
@@ -82,6 +83,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "X5WebView=${cfg.x5WebViewEnabled} LayoutInflaterAd=${cfg.layoutInflaterAdEnabled} " +
                 "[Root]SystemHosts=${cfg.systemHostsEnabled} PrivateDns=${cfg.privateDnsEnabled} " +
                 "DnsResolver=${cfg.dnsResolverHookEnabled} ShizukuBridge=${cfg.shizukuBridgeEnabled} " +
+                "SysfsDns=${cfg.sysfsDnsEnabled} " +
                 "[Root实验]Iptables=${cfg.iptablesBlockEnabled} VPN=${cfg.vpnBasedBlockEnabled} " +
                 "[NEW]PatternLearn=${cfg.adPatternLearnEnabled} DoH=${cfg.dnsOverHttpsEnabled} " +
                 "RiskScorer=${cfg.appRiskScorerEnabled} DOMCleaner=${cfg.webViewDomCleanerEnabled}")
@@ -135,6 +137,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
         // ===== 实验性：WebView DOM Cleaner =====
         if (cfg.webViewDomCleanerEnabled) WebViewDomCleaner.apply(lpparam, cfg)
+
+        // ===== Root v1.1.0 新增：系统级 sysfs DNS =====
+        if (cfg.sysfsDnsEnabled) SysfsDnsHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

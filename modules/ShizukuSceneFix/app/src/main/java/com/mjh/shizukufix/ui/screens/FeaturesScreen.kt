@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mjh.shizukufix.models.ShizukuFixConfig
@@ -108,6 +109,37 @@ fun FeaturesScreen(cfg: ShizukuFixConfig, onConfigChange: (ShizukuFixConfig) -> 
             cfg.backgroundInjectorEnabled,
             { val nc = cfg.copy(backgroundInjectorEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true
+        )
+
+        Spacer(Modifier.height(20.dp))
+        Text("Root 系统级功能", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+            color = Color(0xFFE65100))
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Shizuku Root 桥接",
+            "通过 Shizuku shell 执行系统级命令：pm grant 直接授权 / 读写授权数据库 / 发送权限变更广播",
+            cfg.rootBridgeEnabled,
+            { val nc = cfg.copy(rootBridgeEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            root = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "直接权限授予",
+            "通过 Shizuku 直接执行 pm grant 向 Scene 授予 Shizuku API 权限（绕过弹窗流程）",
+            cfg.rootDirectGrantEnabled,
+            { val nc = cfg.copy(rootDirectGrantEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            root = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Shell 服务重启",
+            "通过 Shizuku shell 执行 am startservice / kill+restart 强制恢复 Shizuku 服务进程",
+            cfg.rootServiceRestartEnabled,
+            { val nc = cfg.copy(rootServiceRestartEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            root = true
         )
 
         Spacer(Modifier.height(40.dp))

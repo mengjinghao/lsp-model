@@ -22,6 +22,12 @@ object ConfigManager {
     private const val KEY_ALL = "all_game_configs"
     private const val KEY_GLOBAL = "global_config"
 
+    // 系统级 Hook (Shizuku) 独立 Key（预留，当前使用 JSON 序列化整体读写）
+    const val KEY_SYSFS_THERMAL_ENABLED = "sysfs_thermal_enabled"
+    const val KEY_SYSFS_GPU_ENABLED = "sysfs_gpu_enabled"
+    const val KEY_THERMAL_ENGINE_DISABLE = "thermal_engine_disable_enabled"
+    const val KEY_GAME_MODE_CMD_ENABLED = "game_mode_cmd_enabled"
+
     private val gson = Gson()
     private var prefs: SharedPreferences? = null
 

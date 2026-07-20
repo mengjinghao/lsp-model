@@ -179,6 +179,15 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
             { val nc = cfg.copy(vpnBasedBlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, rootLevel = true
         )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "系统级 Sysfs DNS",
+            "Shizuku mount --bind resolv.conf + settings put private_dns + ndc resolver setnetdns",
+            cfg.sysfsDnsEnabled,
+            { val nc = cfg.copy(sysfsDnsEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            rootLevel = true
+        )
 
         Spacer(Modifier.height(20.dp))
         Text("v1.1.0 新增实验性功能", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)

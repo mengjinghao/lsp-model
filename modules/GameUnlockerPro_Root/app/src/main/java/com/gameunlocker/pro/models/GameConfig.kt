@@ -45,6 +45,10 @@ data class GameConfig(
     var customThermalThreshold: Int = 50,
     var gpuOptimizeEnabled: Boolean = false,
     var shizukuBridgeEnabled: Boolean = false,
+    var sysfsThermalEnabled: Boolean = false,
+    var sysfsGpuEnabled: Boolean = false,
+    var thermalEngineDisableEnabled: Boolean = false,
+    var gameModeCmdEnabled: Boolean = false,
 
     // ===== 实验性功能 =====
     // 应用层实验性

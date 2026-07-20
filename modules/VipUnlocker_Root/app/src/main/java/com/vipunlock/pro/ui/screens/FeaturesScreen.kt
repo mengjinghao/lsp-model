@@ -191,6 +191,22 @@ fun FeaturesScreen(cfg: VipConfig, onConfigChange: (VipConfig) -> Unit) {
             { val nc = cfg.copy(licenseVerifyEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             rootLevel = true
         )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Root License 系统级绕过", "Shizuku 直接操作 Play Store 数据库/权限/SharedPreferences 注入购买记录",
+            cfg.rootLicenseBypassEnabled,
+            { val nc = cfg.copy(rootLicenseBypassEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            rootLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "Play Store DB 直接修改", "Shizuku sqlite3 修改 localappstate.db 标记已购买 + chmod + 强制重启 Play Store",
+            cfg.playStoreDbModifyEnabled,
+            { val nc = cfg.copy(playStoreDbModifyEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            experimental = true, rootLevel = true
+        )
 
         Spacer(Modifier.height(20.dp))
 

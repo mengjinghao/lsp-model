@@ -64,6 +64,12 @@ data class BatteryConfig(
     var lowPowerModeAutoEnabled: Boolean = false,
     /** 电量统计重置（Shizuku dumpsys batterystats --reset） */
     var batteryStatsResetEnabled: Boolean = false,
+    /** GPU Governor 省电（Shizuku 写 kgsl governor powersave + min_pwrlevel 0） */
+    var gpuGovBatteryEnabled: Boolean = false,
+    /** AppOps 系统级后台限制（Shizuku cmd appops set RUN_IN_BACKGROUND deny + WAKE_LOCK deny） */
+    var appOpsManagerEnabled: Boolean = false,
+    /** I/O 调度器省电优化（Shizuku echo noop > /sys/block/mmcblk0/queue/scheduler） */
+    var ioMgmtEnabled: Boolean = false,
 
     // ===== 参数 =====
     var wakeLockMaxHoldSec: Int = 60,

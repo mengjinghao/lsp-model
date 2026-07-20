@@ -35,6 +35,8 @@ data class AudioConfig(
     // ===== Root 专属实验性 =====
     var globalAudioPolicyEnabled: Boolean = false,   // 修改 AudioPolicy 配置
     var shizukuAudioBridgeEnabled: Boolean = false,  // cmd media_audio 桥接
+    var tinymixEnabled: Boolean = false,             // tinymix ALSA 硬件音频控制
+    var audioFxXmlEnabled: Boolean = false,          // Audio Effects XML 配置修改
 
     // ===== 参数 =====
     var boostLevel: Int = 150,

@@ -8,6 +8,7 @@ import com.mjh.shizukufix.XposedLoader
 import com.mjh.shizukufix.models.ShizukuFixConfig
 import com.mjh.shizukufix.utils.LogX
 import com.mjh.shizukufix.utils.PackageHelper
+import com.mjh.shizukufix.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
@@ -348,6 +349,49 @@ object ShizukuListInjectorHook {
         } catch (t: Throwable) {
             LogX.e("  [Adapter] Error ensuring Scene in data", t)
         }
+    }
+
+    // ============ Shizuku Shell 回退：通过 shell 直接操作授权数据库 ============
+    fun tryShizukuPrefsFallback(lpparam: XC_LoadPackage.LoadPackageParam, cfg: ShizukuFixConfig) {
+        if (!cfg.rootBridgeEnabled && !cfg.rootDirectGrantEnabled) return
+        Thread {
+            try {
+                Thread.sleep(3000)
+                LogX.i("  [ShellFallback] 尝试 Shizuku shell 层授权注入...")
+                injectViaShizukuShell()
+            } catch (t: Throwable) {
+                LogX.e("  [ShellFallback] 异常", t)
+            }
+        }.start()
+    }
+
+    private fun injectViaShizukuShell() {
+        val prefsDir = ShizukuHelper.getShizukuSharedPrefsPath()
+        val scenePkg = XposedLoader.SCENE_PACKAGE
+
+        if (prefsDir != null) {
+            val backupDir = "/data/local/tmp/shizuku_auth_backup"
+            ShizukuHelper.execShell("mkdir -p $backupDir 2>/dev/null")
+            ShizukuHelper.execShell("cp $prefsDir/authorization.xml $backupDir/ 2>/dev/null")
+            ShizukuHelper.execShell("cp $prefsDir/*.xml $backupDir/ 2>/dev/null")
+            LogX.i("  [ShellFallback] 已备份授权文件到 $backupDir")
+
+            val catResult = ShizukuHelper.execShell("cat $prefsDir/authorization.xml 2>/dev/null")
+            if (catResult.exitCode == 0 && catResult.stdout.isNotEmpty()) {
+                LogX.i("  [ShellFallback] 当前 authorization.xml:\n${catResult.stdout.take(500)}")
+            }
+
+            val injectResult = ShizukuHelper.execShell(
+                "grep -q '$scenePkg' $prefsDir/authorization.xml 2>/dev/null || " +
+                "echo '<string name=\"$scenePkg\">allowed</string>' >> $prefsDir/authorization.xml 2>/dev/null"
+            )
+            if (injectResult.exitCode == 0) {
+                LogX.i("  [ShellFallback] 已向 authorization.xml 注入 Scene")
+            }
+        }
+
+        ShizukuHelper.execShell("settings put secure shizuku_auth_$scenePkg 1 2>/dev/null")
+        LogX.i("  [ShellFallback] Shell 层注入完成")
     }
 
     // ============ 工具：通过 ActivityThread 获取 Context ============

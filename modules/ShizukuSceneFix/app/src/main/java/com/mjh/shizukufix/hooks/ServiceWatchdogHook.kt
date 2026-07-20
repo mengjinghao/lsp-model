@@ -3,6 +3,7 @@ package com.mjh.shizukufix.hooks
 import android.content.Context
 import com.mjh.shizukufix.models.ShizukuFixConfig
 import com.mjh.shizukufix.utils.LogX
+import com.mjh.shizukufix.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -155,5 +156,33 @@ object ServiceWatchdogHook {
             } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
         }
         LogX.w("  [Watchdog] 无法定位 Shizuku 服务类，重启失败")
+    }
+
+    /** Shizuku shell 层重启（通过 am startservice 和 kill） */
+    fun tryShizukuShellRestart(cfg: ShizukuFixConfig) {
+        if (!cfg.rootServiceRestartEnabled && !cfg.rootBridgeEnabled) return
+        Thread {
+            try {
+                LogX.i("  [Watchdog-Shell] 尝试 Shizuku shell 层重启...")
+                val managerPkg = ShizukuHelper.findShizukuManagerPackage() ?: "moe.shizuku.manager"
+                val services = listOf(
+                    "$managerPkg/.ShizukuService",
+                    "$managerPkg/.service.ShizukuService",
+                    "moe.shizuku.privileged.api/.ShizukuService"
+                )
+                for (svc in services) {
+                    val r = ShizukuHelper.execShell("am startservice $svc 2>&1")
+                    if (r.exitCode == 0) {
+                        LogX.i("  [Watchdog-Shell] am startservice $svc 成功")
+                    }
+                }
+                val killAndRestart = ShizukuHelper.execShell(
+                    "kill \$(pgrep -f shizuku) 2>/dev/null; sleep 1; am startservice $managerPkg/.ShizukuService 2>&1"
+                )
+                LogX.i("  [Watchdog-Shell] kill+restart => exit=${killAndRestart.exitCode}")
+            } catch (t: Throwable) {
+                LogX.e("  [Watchdog-Shell] 异常", t)
+            }
+        }.start()
     }
 }

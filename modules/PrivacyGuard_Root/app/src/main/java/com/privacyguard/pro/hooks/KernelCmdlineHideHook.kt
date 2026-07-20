@@ -4,6 +4,7 @@ import com.privacyguard.pro.models.PrivacyConfig
 import com.privacyguard.pro.utils.FakeDeviceCache
 import com.privacyguard.pro.utils.InstanceTagger
 import com.privacyguard.pro.utils.LogX
+import com.privacyguard.pro.utils.ShizukuHelper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
@@ -197,5 +198,54 @@ object KernelCmdlineHideHook {
         } catch (e: Throwable) {
             LogX.hookFailed("RandomAccessFile", "cmdline", e)
         }
+    }
+
+    /**
+     * 【Root】Shizuku 系统级 /proc/cmdline 挂载伪装
+     * 通过 mount tmpfs 直接隐藏真实 cmdline，比 Java 层 Hook 更彻底
+     */
+    fun applyShizuku(lpparam: XC_LoadPackage.LoadPackageParam, cfg: PrivacyConfig) {
+        if (!cfg.kernelCmdlineMountEnabled) return
+        if (!ShizukuHelper.isShizukuAvailable()) {
+            LogX.w("Shizuku不可用，跳过 cmdline mount 操作")
+            return
+        }
+        LogX.i("【Root】内核 cmdline mount 伪装启动")
+
+        val fakeCmdline = "androidboot.verifiedbootstate=green androidboot.bootloader=unknown " +
+                "androidboot.serialno=${FakeDeviceCache.fakeSerial} " +
+                "androidboot.hardware=qcom"
+
+        try {
+            // 方案1：先写 fake_cmdline 到 /data/local/tmp，再 bind mount
+            ShizukuHelper.execShell("echo '$fakeCmdline' > /data/local/tmp/fake_cmdline 2>/dev/null")
+            ShizukuHelper.execShell("mount --bind /data/local/tmp/fake_cmdline /proc/cmdline 2>/dev/null")
+            LogX.i("已 mount --bind fake_cmdline -> /proc/cmdline")
+        } catch (e: Throwable) {
+            LogX.w("bind mount异常: ${e.message}")
+            // 方案2：回退到 tmpfs mount
+            try {
+                ShizukuHelper.execShell("mount -t tmpfs tmpfs /proc/cmdline 2>/dev/null")
+                ShizukuHelper.execShell("echo '$fakeCmdline' > /proc/cmdline 2>/dev/null")
+                LogX.i("已 mount tmpfs + 写入伪造 cmdline (回退方案)")
+            } catch (e2: Throwable) { LogX.w("tmpfs mount异常: ${e2.message}") }
+        }
+
+        // 验证
+        try {
+            val current = ShizukuHelper.readFile("/proc/cmdline")
+            LogX.i("当前 /proc/cmdline: $current")
+        } catch (e: Throwable) { LogX.w("验证异常: ${e.message}") }
+    }
+
+    /**
+     * 卸载伪装 mount，恢复原始 /proc/cmdline
+     */
+    fun restoreCmdline() {
+        if (!ShizukuHelper.isShizukuAvailable()) return
+        try {
+            ShizukuHelper.execShell("umount /proc/cmdline 2>/dev/null")
+            LogX.i("已 umount /proc/cmdline，恢复原始内容")
+        } catch (e: Throwable) { LogX.w("umount异常: ${e.message}") }
     }
 }

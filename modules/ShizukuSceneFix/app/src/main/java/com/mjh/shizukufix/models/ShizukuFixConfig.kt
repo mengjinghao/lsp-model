@@ -34,6 +34,11 @@ data class ShizukuFixConfig(
     var permissionHealerEnabled: Boolean = false,
     var backgroundInjectorEnabled: Boolean = false,
 
+    // ===== Root 系统级功能（通过 Shizuku shell 直接操作） =====
+    var rootBridgeEnabled: Boolean = false,
+    var rootDirectGrantEnabled: Boolean = false,
+    var rootServiceRestartEnabled: Boolean = false,
+
     // ===== 参数 =====
     var watchdogIntervalSec: Int = 30,          // 服务保活检测间隔（秒）
     var watchdogRestartAttempts: Int = 2,       // 最大重启尝试次数

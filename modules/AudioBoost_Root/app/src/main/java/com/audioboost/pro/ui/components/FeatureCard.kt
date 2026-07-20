@@ -1,4 +1,4 @@
-package com.mjh.shizukufix.ui.components
+package com.audioboost.pro.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,12 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-/**
- * 可复用功能开关卡片
- */
 @Composable
 fun FeatureCard(
     title: String,
@@ -25,15 +21,13 @@ fun FeatureCard(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     experimental: Boolean = false,
-    root: Boolean = false
+    rootLevel: Boolean = false
 ) {
-    val RootOrange = Color(0xFFFF6D00)
-    val RootOrangeContainer = Color(0xFFFFF3E0)
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = when {
-                root -> RootOrangeContainer.copy(alpha = 0.4f)
+                rootLevel -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
                 experimental -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
                 else -> MaterialTheme.colorScheme.surfaceVariant
             }
@@ -49,16 +43,16 @@ fun FeatureCard(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = if (root) RootOrange else MaterialTheme.colorScheme.onSurface
+                        style = MaterialTheme.typography.titleMedium
                     )
-                    if (root) {
+                    if (rootLevel) {
                         Text(
-                            text = "  ROOT",
+                            text = "  Root",
                             style = MaterialTheme.typography.labelSmall,
-                            color = RootOrange
+                            color = MaterialTheme.colorScheme.error
                         )
-                    } else if (experimental) {
+                    }
+                    if (experimental) {
                         Text(
                             text = "  实验性",
                             style = MaterialTheme.typography.labelSmall,

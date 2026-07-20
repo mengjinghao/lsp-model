@@ -55,6 +55,11 @@ data class VideoConfig(
         "googleads.g.doubleclick.net"
     ),
 
+    // ===== Root 专属：系统级屏幕录制/截图 =====
+    var systemScreenCaptureEnabled: Boolean = false,
+    // ===== Root 专属：系统级 HTTP 代理 =====
+    var systemProxyEnabled: Boolean = false,
+
     // ===== Root 实验性：内核视频增强（写 /sys/class/video） =====
     var kernelVideoEnhanceEnabled: Boolean = false,
     var enhanceBrightness: Int = 0,        // 0=默认, 正数=增强

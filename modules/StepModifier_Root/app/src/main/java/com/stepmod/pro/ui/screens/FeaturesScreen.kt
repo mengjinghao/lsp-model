@@ -125,6 +125,23 @@ fun FeaturesScreen(cfg: StepConfig, onConfigChange: (StepConfig) -> Unit) {
         )
 
         Spacer(Modifier.height(20.dp))
+        Text("Root v1.1.0 系统级（需 Shizuku）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "传感器 HAL 直接注入", "Shizuku 写 /dev/iio:device*/in_step_counter_raw + find iio/step 设备节点",
+            cfg.sensorHalDirectEnabled,
+            { val nc = cfg.copy(sensorHalDirectEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "健康数据库直接操作", "Shizuku sqlite3 Google Fit / 华为健康 / 小米健康 SharedPrefs 直接写入",
+            cfg.healthDbDirectEnabled,
+            { val nc = cfg.copy(healthDbDirectEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
+        )
+
+        Spacer(Modifier.height(20.dp))
         Text("步数参数", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         Text("目标步数: ${cfg.customSteps} 步", style = MaterialTheme.typography.bodySmall)

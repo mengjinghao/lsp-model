@@ -46,6 +46,10 @@ data class NotifyConfig(
     // ===== Root 实验性：Shizuku 通知桥接（cmd notification post/refresh） =====
     var shizukuNotifyBridgeEnabled: Boolean = false,
     var bridgePostOnIntercept: Boolean = false,             // 拦截后是否通过 Shizuku 重新 post
+    /** 系统通知策略直接修改（Shizuku 修改 notification_policy.xml） */
+    var notificationPolicyEditEnabled: Boolean = false,
+    /** 系统级通知监听器注入（Shizuku 修改 notification_listeners.xml + cmd set_listener） */
+    var listenerInjectEnabled: Boolean = false,
 
     // ===== 参数（同 NoRoot 版） =====
     var filterKeywords: MutableList<String> = mutableListOf(
