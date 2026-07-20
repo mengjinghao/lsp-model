@@ -6,6 +6,7 @@ import com.adblockerx.noroot.hooks.AdClosePlusHook
 import com.adblockerx.noroot.hooks.CookieCleanHook
 import com.adblockerx.noroot.hooks.HostsFilterHook
 import com.adblockerx.noroot.hooks.IntentInterceptorHook
+import com.adblockerx.noroot.hooks.LayoutInflaterHook
 import com.adblockerx.noroot.hooks.OkHttpAdHook
 import com.adblockerx.noroot.hooks.RedirectBlockHook
 import com.adblockerx.noroot.hooks.TrackerBlockHook
@@ -69,7 +70,8 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         LogX.i("配置: 总开关=${cfg.masterEnabled} WebView=${cfg.webviewAdEnabled} OkHttp=${cfg.okHttpAdEnabled} " +
                 "URLConnection=${cfg.urlConnectionAdEnabled} Hosts=${cfg.hostsFilterEnabled} " +
                 "AdView=${cfg.adViewHideEnabled} [实验]Tracker=${cfg.trackerBlockEnabled} " +
-                "Cookie=${cfg.cookieCleanEnabled} Redirect=${cfg.redirectBlockEnabled} Intent=${cfg.intentInterceptorEnabled}")
+                "Cookie=${cfg.cookieCleanEnabled} Redirect=${cfg.redirectBlockEnabled} Intent=${cfg.intentInterceptorEnabled} " +
+                "X5WebView=${cfg.x5WebViewEnabled} LayoutInflaterAd=${cfg.layoutInflaterAdEnabled}")
 
         if (!cfg.masterEnabled) {
             LogX.i("总开关关闭，跳过所有Hook")
@@ -86,6 +88,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.okHttpAdEnabled) OkHttpAdHook.apply(lpparam, cfg)
         if (cfg.urlConnectionAdEnabled) URLConnectionAdHook.apply(lpparam, cfg)
         if (cfg.adViewHideEnabled) AdViewHideHook.apply(lpparam, cfg)
+        if (cfg.layoutInflaterAdEnabled) LayoutInflaterHook.apply(lpparam, cfg)
 
         // ===== 应用层实验性 =====
         if (cfg.trackerBlockEnabled) TrackerBlockHook.apply(lpparam, cfg)
@@ -118,7 +121,20 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         "com.eg.android.AlipayGphone",
         "com.zhihu.android",
         "com.netease.cloudmusic",
-        "com.tencent.wmusic"
+        "com.tencent.wmusic",
+        "com.ss.android.article.news",
+        "com.tencent.news",
+        "com.baidu.tieba",
+        "com.sina.weibo",
+        "com.tencent.qqlive",
+        "com.youku.phone",
+        "com.android.browser",
+        "com.UCMobile",
+        "com.tencent.mtt",
+        "com.sogou.activity.src",
+        "com.baidu.searchbox",
+        "com.quark.browser",
+        "com.qihoo.browser"
     )
 
     /** 读取配置：优先XSharedPreferences，回退Context */

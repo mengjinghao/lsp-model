@@ -46,6 +46,10 @@ data class AdBlockConfig(
     /** VPN/代理检测绕过（Hook NetworkInfo/ConnectivityManager 返回非VPN） */
     var vpnDetectBypassEnabled: Boolean = false,
 
+    var x5WebViewEnabled: Boolean = true,
+    var layoutInflaterAdEnabled: Boolean = true,
+    var whitelistDomains: List<String> = emptyList(),
+
     // ===== 参数 =====
     /** WebView 注入 JS 隐藏广告元素（实验性，可能影响页面正常显示） */
     var injectJsEnabled: Boolean = false,

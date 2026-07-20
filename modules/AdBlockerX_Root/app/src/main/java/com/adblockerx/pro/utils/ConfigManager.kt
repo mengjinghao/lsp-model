@@ -19,6 +19,9 @@ object ConfigManager {
     const val PREFS_NAME = "adblockerx_pro_prefs"
     private const val KEY_GLOBAL = "global_config"
     private const val KEY_BLOCKED_COUNT = "blocked_count"
+    private const val KEY_X5_WEBVIEW_ENABLED = "x5_webview_enabled"
+    private const val KEY_LAYOUT_INFLATER_AD_ENABLED = "layout_inflater_ad_enabled"
+    private const val KEY_WHITELIST_DOMAINS = "whitelist_domains"
 
     private val gson = Gson()
     private var prefs: SharedPreferences? = null
@@ -92,5 +95,26 @@ object ConfigManager {
 
     fun resetAll() {
         prefs?.edit()?.clear()?.apply()
+    }
+
+    fun isX5WebViewEnabled(): Boolean = prefs?.getBoolean(KEY_X5_WEBVIEW_ENABLED, true) ?: true
+
+    fun isLayoutInflaterAdEnabled(): Boolean = prefs?.getBoolean(KEY_LAYOUT_INFLATER_AD_ENABLED, true) ?: true
+
+    fun getWhitelistDomains(): List<String> {
+        val json = prefs?.getString(KEY_WHITELIST_DOMAINS, null) ?: return emptyList()
+        return try { gson.fromJson(json, object : com.google.gson.reflect.TypeToken<List<String>>() {}.type) } catch (_: Throwable) { emptyList() }
+    }
+
+    fun setX5WebViewEnabled(enabled: Boolean) {
+        prefs?.edit()?.putBoolean(KEY_X5_WEBVIEW_ENABLED, enabled)?.apply()
+    }
+
+    fun setLayoutInflaterAdEnabled(enabled: Boolean) {
+        prefs?.edit()?.putBoolean(KEY_LAYOUT_INFLATER_AD_ENABLED, enabled)?.apply()
+    }
+
+    fun setWhitelistDomains(domains: List<String>) {
+        prefs?.edit()?.putString(KEY_WHITELIST_DOMAINS, gson.toJson(domains))?.apply()
     }
 }

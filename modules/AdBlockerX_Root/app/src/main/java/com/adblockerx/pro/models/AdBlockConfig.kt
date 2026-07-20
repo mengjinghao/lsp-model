@@ -62,5 +62,9 @@ data class AdBlockConfig(
     /** 本地 VPN 拦截（Hook VpnService） */
     var vpnBasedBlockEnabled: Boolean = false,
 
+    var x5WebViewEnabled: Boolean = true,
+    var layoutInflaterAdEnabled: Boolean = true,
+    var whitelistDomains: List<String> = emptyList(),
+
     var lastModified: Long = System.currentTimeMillis()
 )

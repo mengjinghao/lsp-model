@@ -16,5 +16,18 @@
         <item>com.zhihu.android</item>
         <item>com.netease.cloudmusic</item>
         <item>com.tencent.wmusic</item>
+        <item>com.ss.android.article.news</item>
+        <item>com.tencent.news</item>
+        <item>com.baidu.tieba</item>
+        <item>com.sina.weibo</item>
+        <item>com.tencent.qqlive</item>
+        <item>com.youku.phone</item>
+        <item>com.android.browser</item>
+        <item>com.UCMobile</item>
+        <item>com.tencent.mtt</item>
+        <item>com.sogou.activity.src</item>
+        <item>com.baidu.searchbox</item>
+        <item>com.quark.browser</item>
+        <item>com.qihoo.browser</item>
     </string-array>
 </resources>

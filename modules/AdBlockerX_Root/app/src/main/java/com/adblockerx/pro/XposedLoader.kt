@@ -8,6 +8,7 @@ import com.adblockerx.pro.hooks.DnsResolverHook
 import com.adblockerx.pro.hooks.HostsFilterHook
 import com.adblockerx.pro.hooks.IntentInterceptorHook
 import com.adblockerx.pro.hooks.IptablesBlockHook
+import com.adblockerx.pro.hooks.LayoutInflaterHook
 import com.adblockerx.pro.hooks.OkHttpAdHook
 import com.adblockerx.pro.hooks.PrivateDnsHook
 import com.adblockerx.pro.hooks.RedirectBlockHook
@@ -74,6 +75,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
                 "URLConnection=${cfg.urlConnectionAdEnabled} Hosts=${cfg.hostsFilterEnabled} AdView=${cfg.adViewHideEnabled} " +
                 "[实验]Tracker=${cfg.trackerBlockEnabled} Cookie=${cfg.cookieCleanEnabled} " +
                 "Redirect=${cfg.redirectBlockEnabled} Intent=${cfg.intentInterceptorEnabled} " +
+                "X5WebView=${cfg.x5WebViewEnabled} LayoutInflaterAd=${cfg.layoutInflaterAdEnabled} " +
                 "[Root]SystemHosts=${cfg.systemHostsEnabled} PrivateDns=${cfg.privateDnsEnabled} " +
                 "DnsResolver=${cfg.dnsResolverHookEnabled} ShizukuBridge=${cfg.shizukuBridgeEnabled} " +
                 "[Root实验]Iptables=${cfg.iptablesBlockEnabled} VPN=${cfg.vpnBasedBlockEnabled}")
@@ -93,6 +95,7 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         if (cfg.okHttpAdEnabled) OkHttpAdHook.apply(lpparam, cfg)
         if (cfg.urlConnectionAdEnabled) URLConnectionAdHook.apply(lpparam, cfg)
         if (cfg.adViewHideEnabled) AdViewHideHook.apply(lpparam, cfg)
+        if (cfg.layoutInflaterAdEnabled) LayoutInflaterHook.apply(lpparam, cfg)
 
         // ===== 应用层实验性 =====
         if (cfg.trackerBlockEnabled) TrackerBlockHook.apply(lpparam, cfg)
@@ -135,7 +138,20 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         "com.eg.android.AlipayGphone",
         "com.zhihu.android",
         "com.netease.cloudmusic",
-        "com.tencent.wmusic"
+        "com.tencent.wmusic",
+        "com.ss.android.article.news",
+        "com.tencent.news",
+        "com.baidu.tieba",
+        "com.sina.weibo",
+        "com.tencent.qqlive",
+        "com.youku.phone",
+        "com.android.browser",
+        "com.UCMobile",
+        "com.tencent.mtt",
+        "com.sogou.activity.src",
+        "com.baidu.searchbox",
+        "com.quark.browser",
+        "com.qihoo.browser"
     )
 
     private fun loadConfig(): AdBlockConfig {
