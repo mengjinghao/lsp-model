@@ -63,3 +63,4 @@ data class GameConfig(
     var gpuFreqLockEnabled: Boolean = false,
 
     var lastModified: Long = 0L
+)
