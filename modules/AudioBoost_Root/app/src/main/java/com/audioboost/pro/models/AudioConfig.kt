@@ -36,6 +36,10 @@ data class AudioConfig(
     var globalAudioPolicyEnabled: Boolean = false,   // 修改 AudioPolicy 配置
     var shizukuAudioBridgeEnabled: Boolean = false,  // cmd media_audio 桥接
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** AudioPolicy 配置 Hack（Shizuku 写 Magisk overlay 持久化 audio_policy_configuration.xml） */
+    var audioPolicyHackEnabled: Boolean = false,
+
     // ===== 参数 =====
     var boostLevel: Int = 150,
     var bassLevel: Int = 50,

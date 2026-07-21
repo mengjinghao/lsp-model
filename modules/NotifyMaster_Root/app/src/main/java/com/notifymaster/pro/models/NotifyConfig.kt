@@ -47,6 +47,10 @@ data class NotifyConfig(
     var shizukuNotifyBridgeEnabled: Boolean = false,
     var bridgePostOnIntercept: Boolean = false,             // 拦截后是否通过 Shizuku 重新 post
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** 全局通知队列管理（cmd notification list/cancel/post 跨 APP 排序/延迟/合并） */
+    var globalNotificationQueueEnabled: Boolean = false,
+
     // ===== 参数（同 NoRoot 版） =====
     var filterKeywords: MutableList<String> = mutableListOf(
         "广告", "推广", "推广链接", "营销", "限时抢购"
@@ -73,6 +77,8 @@ data class NotifyConfig(
     // ===== 通知分组参数 =====
     var batchGroupKey: String = "notifymaster_group",
     var batchMaxCount: Int = 5,
+
+    var globalNotifyQueueEnabled: Boolean = false,  // v1.0.11 Root增强: 全局通知队列管理(跨APP排序)
 
     var lastModified: Long = 0L
 )

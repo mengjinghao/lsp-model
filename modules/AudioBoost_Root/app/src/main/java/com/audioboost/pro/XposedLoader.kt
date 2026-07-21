@@ -37,7 +37,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.10"
+        const val VERSION = "1.0.11"
         var currentPkg: String? = null
     }
 
@@ -85,6 +85,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 实验性 =====
         if (cfg.globalAudioPolicyEnabled) GlobalAudioPolicyHook.apply(lpparam, cfg)
         if (cfg.shizukuAudioBridgeEnabled) ShizukuAudioBridgeHook.apply(lpparam, cfg)
+
+        // ===== [Task24] 系统级增强 =====
+        if (cfg.audioPolicyHackEnabled) AudioPolicyHackHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

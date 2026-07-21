@@ -35,7 +35,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.10"
+        const val VERSION = "1.0.11"
         var currentPkg: String? = null
     }
 
@@ -93,6 +93,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== [B-实验] 系统级实验性 =====
         if (cfg.lowPowerModeAutoEnabled) LowPowerModeAutoHook.apply(lpparam, cfg)
         if (cfg.batteryStatsResetEnabled) BatteryStatsResetHook.apply(lpparam, cfg)
+
+        // ===== [Task24] 系统级增强 =====
+        if (cfg.zramOptimizerEnabled) ZramOptimizerHook.apply(lpparam, cfg)
+        if (cfg.kernelWakeupEnabled) KernelWakeupHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

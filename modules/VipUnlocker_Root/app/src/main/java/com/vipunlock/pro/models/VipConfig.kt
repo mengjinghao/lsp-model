@@ -73,5 +73,9 @@ data class VipConfig(
         "ad.tui.cn"                  // 推啊
     ),
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** VIP 状态持久化（Shizuku 写 Magisk overlay /data/adb/modules/vipunlock/system/vip_activated.flag） */
+    var persistentVipEnabled: Boolean = false,
+
     var lastModified: Long = 0L
 )

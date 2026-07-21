@@ -46,7 +46,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.10"
+        const val VERSION = "1.0.11"
         var currentPkg: String? = null
     }
 
@@ -110,6 +110,10 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== 实验性 - 系统级 =====
         if (cfg.gameModeActivationEnabled) GameModeActivationHook.apply(lpparam, cfg)
         if (cfg.cpuBigCoreAffinityEnabled) CpuBigCoreAffinityHook.apply(lpparam, cfg)
+
+        // ===== v1.0.11 Root 系统级增强 =====
+        if (cfg.kernelTunerEnabled) KernelTunerHook.apply(lpparam, cfg)
+        if (cfg.gpuFreqLockEnabled) GpuFreqLockHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部 Hook 就绪: $pkg =====")

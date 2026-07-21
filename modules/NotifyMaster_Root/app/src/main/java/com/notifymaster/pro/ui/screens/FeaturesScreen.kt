@@ -131,6 +131,16 @@ fun FeaturesScreen(cfg: NotifyConfig, onConfigChange: (NotifyConfig) -> Unit) {
             experimental = true
         )
 
+        Spacer(Modifier.height(20.dp))
+        Text("系统级增强（Task24 新增）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "全局通知队列管理", "cmd notification list/cancel/post 跨 APP 通知排序/延迟/合并",
+            cfg.globalNotificationQueueEnabled,
+            { val nc = cfg.copy(globalNotificationQueueEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
+        )
+
         // 优先级覆盖滑块
         if (cfg.priorityOverrideEnabled) {
             Spacer(Modifier.height(16.dp))

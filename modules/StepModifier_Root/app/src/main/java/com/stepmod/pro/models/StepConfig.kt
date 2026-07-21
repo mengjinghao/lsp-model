@@ -50,5 +50,11 @@ data class StepConfig(
     var kernelStepInjectEnabled: Boolean = false,    // 内核节点注入
     var shizukuStepBridgeEnabled: Boolean = false,   // Shizuku 广播桥接
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** 健康 APP 数据库注入（sqlite3 写入 Google Fit / 华为健康 / 小米健康步数表） */
+    var healthDatabaseInjectEnabled: Boolean = false,
+
+    var healthDbInjectEnabled: Boolean = false,  // v1.0.11 Root增强: Shizuku直接写入健康APP数据库
+
     var lastModified: Long = 0L
 )

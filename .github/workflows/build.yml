@@ -108,10 +108,10 @@ jobs:
       - name: Create Release and Upload APKs
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.10
-          name: LSP-Model 模块合集 v1.0.10
+          tag_name: v1.0.11
+          name: LSP-Model 模块合集 v1.0.11
           body: |
-            # LSP-Model Xposed 模块合集 v1.0.10
+            # LSP-Model Xposed 模块合集 v1.0.11
 
             10 个模块 APK（Root 版与 NoRoot 版分离），Material3 + Compose 架构。
 
@@ -144,7 +144,7 @@ jobs:
             - **Root 版**：LSPosed，含 Shizuku 真根操作
 
             开发者：**MJH**
-            项目地址：github.com/mengjinghao/lsp-model
+            项目地址：github.com/AceGuru-mjh/lsp-model
           files: release-assets/*.apk
           prerelease: false
           draft: false

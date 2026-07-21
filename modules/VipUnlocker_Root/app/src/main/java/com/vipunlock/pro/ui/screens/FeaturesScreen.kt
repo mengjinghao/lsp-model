@@ -212,5 +212,16 @@ fun FeaturesScreen(cfg: VipConfig, onConfigChange: (VipConfig) -> Unit) {
             { val nc = cfg.copy(globalAdBlockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
             experimental = true, rootLevel = true
         )
+
+        Spacer(Modifier.height(20.dp))
+        Text("系统级增强（Task24 新增）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "VIP 状态持久化", "Shizuku 写 Magisk overlay /data/adb/modules/vipunlock/system/vip_activated.flag",
+            cfg.persistentVipEnabled,
+            { val nc = cfg.copy(persistentVipEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            rootLevel = true
+        )
     }
 }

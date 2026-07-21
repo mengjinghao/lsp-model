@@ -61,6 +61,10 @@ data class VideoConfig(
     var enhanceContrast: Int = 0,
     var enhanceSaturation: Int = 0,
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** 媒体扫描触发（Hook FileOutputStream.close + Shizuku am broadcast MEDIA_SCANNER_SCAN_FILE） */
+    var mediaScannerEnabled: Boolean = false,
+
     // ===== 元数据 =====
     var lastModified: Long = 0L
 )

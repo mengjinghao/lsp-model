@@ -71,6 +71,12 @@ data class PrivacyConfig(
     // ===== Root 实验性：内核 cmdline 隐藏 =====
     var kernelCmdlineHideEnabled: Boolean = false,
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** build.prop 持久化伪装（Magisk overlay 写入 /data/adb/modules/.../system/build.prop） */
+    var buildPropSpoofEnabled: Boolean = false,
+    /** /proc 文件读取隐藏（拦截 su/magisk/xposed 字符串，Hook FileInputStream/BufferedReader/File.exists） */
+    var procHideEnabled: Boolean = false,
+
     // ===== 参数 =====
     var spoofLatitude: Double = 31.2304,
     var spoofLongitude: Double = 121.4737,

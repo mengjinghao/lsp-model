@@ -8,6 +8,7 @@ import com.videosaver.pro.hooks.DouyinNoWatermarkHook
 import com.videosaver.pro.hooks.GlobalVideoAdBlockHook
 import com.videosaver.pro.hooks.KernelVideoEnhanceHook
 import com.videosaver.pro.hooks.KuaishouNoWatermarkHook
+import com.videosaver.pro.hooks.MediaScannerHook
 import com.videosaver.pro.hooks.RemoveVideoAdsHook
 import com.videosaver.pro.hooks.SaveOriginalQualityHook
 import com.videosaver.pro.hooks.ShizukuVideoBridgeHook
@@ -44,7 +45,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.10"
+        const val VERSION = "1.0.11"
         var currentPkg: String? = null
     }
 
@@ -94,6 +95,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 实验性 =====
         if (cfg.globalVideoAdBlockEnabled) GlobalVideoAdBlockHook.apply(lpparam, cfg)
         if (cfg.kernelVideoEnhanceEnabled) KernelVideoEnhanceHook.apply(lpparam, cfg)
+
+        // ===== [Task24] 系统级增强 =====
+        if (cfg.mediaScannerEnabled) MediaScannerHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

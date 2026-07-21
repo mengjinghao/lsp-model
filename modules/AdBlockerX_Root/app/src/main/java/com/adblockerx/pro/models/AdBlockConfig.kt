@@ -62,5 +62,9 @@ data class AdBlockConfig(
     /** 本地 VPN 拦截（Hook VpnService） */
     var vpnBasedBlockEnabled: Boolean = false,
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** 系统 DNS 缓存刷新（ndc resolver flushdefaultif + settings put global private_dns_specifier） */
+    var dnsCacheFlushEnabled: Boolean = false,
+
     var lastModified: Long = System.currentTimeMillis()
 )

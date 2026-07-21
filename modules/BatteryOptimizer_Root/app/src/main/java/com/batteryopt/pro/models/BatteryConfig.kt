@@ -58,6 +58,18 @@ data class BatteryConfig(
     /** 电量统计重置（Shizuku dumpsys batterystats --reset） */
     var batteryStatsResetEnabled: Boolean = false,
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** ZRAM 压缩优化（屏幕亮起禁用省电，屏幕关闭启用压缩冷数据） */
+    var zramOptimizerEnabled: Boolean = false,
+    /** 屏幕关闭时是否启用 zram（true=启用压缩冷数据，false=完全禁用） */
+    var zramEnableOnScreenOff: Boolean = true,
+    /** zram disksize 字节数（默认 2GB） */
+    var zramDisksizeBytes: String = "2147483648",
+    /** 内核唤醒优化（充电时屏幕常亮 + wake_lock 管理） */
+    var kernelWakeupEnabled: Boolean = false,
+    /** 是否开启充电时屏幕常亮（stay_on_while_plugged_in=3） */
+    var stayOnWhilePluggedIn: Boolean = false,
+
     // ===== 参数 =====
     var wakeLockMaxHoldSec: Int = 60,
     var alarmMinIntervalMin: Int = 5,

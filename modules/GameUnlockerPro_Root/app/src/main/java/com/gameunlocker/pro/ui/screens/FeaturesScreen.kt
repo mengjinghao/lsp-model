@@ -156,6 +156,27 @@ fun FeaturesScreen(cfg: GameConfig, onConfigChange: (GameConfig) -> Unit) {
         )
 
         Spacer(Modifier.height(20.dp))
+
+        // ===== Task24 系统级增强 =====
+        Text("系统级增强（Task24 新增）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "内核参数优化", "IO 调度器 noop + 大核强制在线 + performance governor + sched 优化",
+            cfg.kernelTunerEnabled,
+            { val nc = cfg.copy(kernelTunerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "GPU 频率锁定", "锁定 GPU devfreq 为最大频率 + performance governor",
+            cfg.gpuFreqLockEnabled,
+            { val nc = cfg.copy(gpuFreqLockEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true
+        )
+
+        Spacer(Modifier.height(20.dp))
         if (cfg.frameRateUnlockEnabled) {
             Text("目标帧率", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))

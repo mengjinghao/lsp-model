@@ -131,6 +131,21 @@ fun FeaturesScreen(cfg: BatteryConfig, onConfigChange: (BatteryConfig) -> Unit) 
             experimental = true, systemLevel = true)
 
         Spacer(Modifier.height(20.dp))
+        Text("系统级增强（Task24 新增）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.tertiary)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard("ZRAM 压缩优化", "屏幕亮起禁用 zram 省电，屏幕关闭启用压缩冷数据",
+            cfg.zramOptimizerEnabled,
+            { val nc = cfg.copy(zramOptimizerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard("内核唤醒优化", "充电时屏幕常亮 stay_on_while_plugged_in + wake_lock 管理",
+            cfg.kernelWakeupEnabled,
+            { val nc = cfg.copy(kernelWakeupEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            systemLevel = true)
+
+        Spacer(Modifier.height(20.dp))
         Text("参数调整", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
 

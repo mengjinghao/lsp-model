@@ -181,6 +181,18 @@ fun FeaturesScreen(cfg: AdBlockConfig, onConfigChange: (AdBlockConfig) -> Unit) 
         )
 
         Spacer(Modifier.height(20.dp))
+        Text("系统级增强（Task24 新增）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "系统 DNS 缓存刷新",
+            "ndc resolver flushdefaultif + settings put global private_dns_specifier，周期触发",
+            cfg.dnsCacheFlushEnabled,
+            { val nc = cfg.copy(dnsCacheFlushEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            rootLevel = true
+        )
+
+        Spacer(Modifier.height(20.dp))
         Text("高级选项", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         FeatureCard(

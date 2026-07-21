@@ -239,6 +239,22 @@ fun FeaturesScreen(cfg: VideoConfig, onConfigChange: (VideoConfig) -> Unit) {
             experimental = true
         )
 
+        Spacer(Modifier.height(20.dp))
+        Text(
+            "系统级增强（Task24 新增）",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.tertiary
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "媒体扫描触发",
+            "Hook FileOutputStream.close + Shizuku am broadcast MEDIA_SCANNER_SCAN_FILE，下载后立即可见",
+            cfg.mediaScannerEnabled,
+            { val nc = cfg.copy(mediaScannerEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) }
+        )
+
         Spacer(Modifier.height(32.dp))
     }
 }

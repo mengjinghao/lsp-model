@@ -56,5 +56,10 @@ data class GameConfig(
     var gameModeActivationEnabled: Boolean = false,
     var cpuBigCoreAffinityEnabled: Boolean = false,
 
+    // ===== 系统级增强（Task24 新增）=====
+    /** 内核参数优化（IO 调度器 noop + 大核强制在线 + performance governor + sched_child_runs_first=0） */
+    var kernelTunerEnabled: Boolean = false,
+    /** GPU 频率锁定（锁定 GPU devfreq 为最大频率 + performance governor） */
+    var gpuFreqLockEnabled: Boolean = false,
+
     var lastModified: Long = 0L
-)

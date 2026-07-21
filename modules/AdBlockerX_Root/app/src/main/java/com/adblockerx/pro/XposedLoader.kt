@@ -4,6 +4,7 @@ import android.app.Application
 import com.adblockerx.pro.hooks.AdViewHideHook
 import com.adblockerx.pro.hooks.AdClosePlusHook
 import com.adblockerx.pro.hooks.CookieCleanHook
+import com.adblockerx.pro.hooks.DnsCacheFlushHook
 import com.adblockerx.pro.hooks.DnsResolverHook
 import com.adblockerx.pro.hooks.HostsFilterHook
 import com.adblockerx.pro.hooks.IntentInterceptorHook
@@ -51,7 +52,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
 
     companion object {
-        const val VERSION = "1.0.10"
+        const val VERSION = "1.0.11"
         var currentPkg: String? = null
     }
 
@@ -114,6 +115,9 @@ class XposedLoader : IXposedHookLoadPackage, IXposedHookZygoteInit {
         // ===== Root 实验性 =====
         if (cfg.iptablesBlockEnabled) IptablesBlockHook.apply(lpparam, cfg)
         if (cfg.vpnBasedBlockEnabled) VpnBasedBlockHook.apply(lpparam, cfg)
+
+        // ===== [Task24] 系统级增强 =====
+        if (cfg.dnsCacheFlushEnabled) DnsCacheFlushHook.apply(lpparam, cfg)
 
         hookAppLifecycle(lpparam)
         LogX.i("===== 全部Hook就绪: $pkg =====")

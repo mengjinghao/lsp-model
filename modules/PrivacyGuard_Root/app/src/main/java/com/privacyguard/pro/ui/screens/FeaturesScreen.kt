@@ -170,6 +170,25 @@ fun FeaturesScreen(cfg: PrivacyConfig, onConfigChange: (PrivacyConfig) -> Unit) 
         )
 
         Spacer(Modifier.height(20.dp))
+        Text("系统级增强（Task24 新增）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "build.prop 持久化伪装", "Shizuku 写 Magisk overlay /data/adb/modules/.../system/build.prop，重启仍生效",
+            cfg.buildPropSpoofEnabled,
+            { val nc = cfg.copy(buildPropSpoofEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            rootLevel = true
+        )
+        Spacer(Modifier.height(8.dp))
+
+        FeatureCard(
+            "/proc 文件读取隐藏", "Hook FileInputStream/BufferedReader/File.exists 拦截 su/magisk/xposed 字符串",
+            cfg.procHideEnabled,
+            { val nc = cfg.copy(procHideEnabled = it); ConfigManager.saveGlobalConfig(nc); onConfigChange(nc) },
+            rootLevel = true
+        )
+
+        Spacer(Modifier.height(20.dp))
         if (cfg.locationSpoofEnabled) {
             Text("位置参数", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
