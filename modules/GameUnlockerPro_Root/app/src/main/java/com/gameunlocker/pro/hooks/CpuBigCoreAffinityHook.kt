@@ -40,7 +40,7 @@ object CpuBigCoreAffinityHook {
      * cpu4-7（大核）: performance（最高性能）
      */
     private fun setCpuGovernorViaShizuku() {
-        if (!ShizukuHelper.isAvailable()) {
+        if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku 不可用，跳过 CPU governor 设置")
             return
         }

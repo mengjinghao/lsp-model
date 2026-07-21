@@ -164,13 +164,13 @@ object ProcHideHook {
     /** 过滤 InputStream 内容（移除敏感行），返回新的 InputStream */
     private fun filterInputStream(input: InputStream): InputStream {
         return try {
-            val filteredLines = input.bufferedReader().readLines()
+            val filteredText = input.bufferedReader().readLines()
                 .filterNot { line ->
                     val lower = line.lowercase()
                     sensitiveKeywords.any { kw -> lower.contains(kw.lowercase()) }
                 }
                 .joinToString("\n")
-                .byteInputStream()
+            filteredText.byteInputStream()
         } catch (e: Throwable) {
             LogX.w("filterInputStream 异常: ${e.message}")
             input

@@ -49,7 +49,7 @@ object ShizukuBridgeHook {
 
     /** 通过 Shizuku setprop 修改刷新率属性 */
     private fun applyRefreshRateProps(targetFps: Int) {
-        if (!ShizukuHelper.isAvailable()) {
+        if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku 不可用，跳过 setprop 系统属性修改")
             return
         }
@@ -65,7 +65,7 @@ object ShizukuBridgeHook {
 
     /** 通过 Shizuku am force-stop 释放后台内存 */
     private fun freeBackgroundMemory() {
-        if (!ShizukuHelper.isAvailable()) return
+        if (!ShizukuHelper.isShizukuAvailable()) return
 
         ShizukuHelper.execShell("echo 3 > /proc/sys/vm/drop_caches")
 
@@ -88,7 +88,7 @@ object ShizukuBridgeHook {
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(p: MethodHookParam) {
                         // Shizuku 状态在 onCreate 后再次确认
-                        if (ShizukuHelper.isAvailable()) {
+                        if (ShizukuHelper.isShizukuAvailable()) {
                             LogX.d("Shizuku 状态确认: 可用")
                         }
                     }

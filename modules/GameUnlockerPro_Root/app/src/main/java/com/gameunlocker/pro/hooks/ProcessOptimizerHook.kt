@@ -77,7 +77,7 @@ object ProcessOptimizerHook {
 
     /** 通过 Shizuku 冻结非必要后台进程 */
     private fun freezeBackgroundApps() {
-        if (!ShizukuHelper.isAvailable()) {
+        if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku 不可用，跳过后台冻结")
             return
         }

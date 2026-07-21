@@ -34,7 +34,7 @@ object GameModeActivationHook {
 
     /** 通过 Shizuku 激活游戏模式 */
     private fun activateGameModeViaShizuku() {
-        if (!ShizukuHelper.isAvailable()) {
+        if (!ShizukuHelper.isShizukuAvailable()) {
             LogX.w("Shizuku 不可用，跳过游戏模式激活")
             return
         }

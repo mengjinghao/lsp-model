@@ -1,23 +1,28 @@
 package com.batteryopt.pro.utils
 
+import java.lang.reflect.Method
+
 /**
- * Shizuku 联动助手
+ * Shizuku 联动助手（Root 版）
  *
  * 功能：
  *  1. 检测 Shizuku 服务是否可用
- *  2. 通过反射调用 Shizuku API 执行系统命令（dumpsys/settings/am/setprop 等）
+ *  2. 通过反射调用 Shizuku.newProcess 执行系统级 Shell 命令
+ *     - setprop 修改系统属性（ro.serialno/ro.product.*）
+ *     - pm revoke 回收权限
+ *     - settings put 修改系统设置
+ *     - ip link set 修改网卡 MAC
+ *     - 读写 /sys、/proc 等节点
  *
  * 硬性限制：
- *  - LSPatch 本地模式下 Shizuku 未必运行，所有调用通过反射 + try-catch 保护
- *  - am force-stop / dumpsys deviceidle / 写 sysfs 节点等系统级操作均需 Shizuku 授权
- *
- * 使用前必须：
- *  1. 安装 Shizuku App
- *  2. 通过无线调试或 ADB 激活 Shizuku
- *  3. 在 Shizuku 中授权本模块
+ *  - 系统级 Hook 必须先检查 isShizukuAvailable()
+ *  - setprop 修改非持久化，重启后消失
+ *  - 写 /sys 节点需要 root 级别 Shizuku 授权
+ *  - 所有调用通过 try-catch 保护，失败不影响其他 Hook
  */
 object ShizukuHelper {
 
+    private const val TAG = "ShizukuHelper"
     private var shizukuAvailable: Boolean? = null
 
     /** 检查 Shizuku 是否可用 */
@@ -25,30 +30,24 @@ object ShizukuHelper {
         if (shizukuAvailable != null) return shizukuAvailable!!
         shizukuAvailable = try {
             val cls = Class.forName("rikka.shizuku.Shizuku")
-            val method = cls.getMethod("pingBinder")
+            val method: Method = cls.getMethod("pingBinder")
             val result = method.invoke(null) as? Boolean ?: false
-            LogX.d("Shizuku 状态: $result")
+            LogX.d("Shizuku状态: $result")
             result
         } catch (e: Exception) {
-            LogX.w("Shizuku 不可用或未安装: ${e.message}")
+            LogX.w("Shizuku不可用或未安装: ${e.message}")
             false
         }
         return shizukuAvailable!!
     }
 
     /**
-     * 通过 Shizuku 执行 Shell 命令
-     * 用于：dumpsys deviceidle / am force-stop / settings put global / 写 sysfs 节点等
-     *
-     * @param command Shell 命令
+     * 通过 Shizuku 执行 shell 命令
      * @return 命令输出（stdout），失败返回 null
      */
     fun execShell(command: String): String? {
         return try {
-            if (!isShizukuAvailable()) {
-                LogX.w("Shizuku 不可用，跳过命令: $command")
-                return null
-            }
+            if (!isShizukuAvailable()) return null
             val shizukuCls = Class.forName("rikka.shizuku.Shizuku")
             val newProcessMethod = shizukuCls.getMethod(
                 "newProcess",
@@ -62,21 +61,22 @@ object ShizukuHelper {
                 null,
                 null
             ) ?: return null
-            val inputStream = process.javaClass.getMethod("getInputStream").invoke(process)
-                as? java.io.InputStream
-            val stdout = inputStream?.bufferedReader()?.readText()
-            try { process.javaClass.getMethod("waitFor").invoke(process) } catch (e: Exception) { LogX.w("异常: ${e.message}") }
-            stdout
+
+            val isMethod = process.javaClass.getMethod("getInputStream")
+            val isStr = isMethod.invoke(process) as? java.io.InputStream
+            val out = isStr?.bufferedReader()?.readText()
+
+            // 等待进程结束（防止僵死）
+            try {
+                val waitFor = process.javaClass.getMethod("waitFor")
+                waitFor.invoke(process)
+            } catch (e: Throwable) { LogX.w("异常: ${e.message}") }
+
+            out
         } catch (e: Exception) {
-            LogX.e("Shizuku Shell 执行异常: $command", e)
+            LogX.e("Shizuku Shell执行异常: $command", e)
             null
         }
-    }
-
-    /** 通过 Shizuku 设置系统属性 */
-    fun setSystemProperty(key: String, value: String): Boolean {
-        val result = execShell("setprop $key $value")
-        return result != null
     }
 
     /** 仅执行不关心输出，返回是否执行成功（未抛异常且 Shizuku 可用） */
@@ -87,6 +87,45 @@ object ShizukuHelper {
         } catch (_: Throwable) {
             false
         }
+    }
+
+    /**
+     * 通过 Shizuku 设置系统属性（setprop）
+     * 注意：ro.* 属性在原生 Android 上不可写，setprop 仅对非只读属性生效。
+     */
+    fun setSystemProperty(key: String, value: String): Boolean {
+        return execShellSilent("setprop $key $value")
+    }
+
+    /**
+     * 通过 Shizuku 写入文件（需 root 级别）
+     * 用于写 /sys/class/net/wlan0/address、/proc/... 等
+     */
+    fun writeFile(path: String, content: String): Boolean {
+        return try {
+            if (!isShizukuAvailable()) return false
+            val escaped = content.replace("'", "'\\''")
+            execShell("echo '$escaped' > $path") != null
+        } catch (e: Exception) {
+            LogX.e("Shizuku写入文件异常: $path", e)
+            false
+        }
+    }
+
+    /**
+     * 通过 Shizuku 读取文件内容
+     * @return 文件内容，失败返回 null
+     */
+    fun readFile(path: String): String? {
+        return try {
+            if (!isShizukuAvailable()) return null
+            execShell("cat $path 2>/dev/null")
+        } catch (_: Throwable) { null }
+    }
+
+    /** 重置 Shizuku 状态（重新检测） */
+    fun reset() {
+        shizukuAvailable = null
     }
 
     /**
