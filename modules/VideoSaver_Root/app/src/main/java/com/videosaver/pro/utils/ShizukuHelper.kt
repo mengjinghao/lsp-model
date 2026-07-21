@@ -176,6 +176,16 @@ object ShizukuHelper {
     }
 
     /** 释放资源 */
+
+    /** 通过 Shizuku 写 Magisk overlay 文件 */
+    fun writeMagiskOverlay(moduleId: String, relPath: String, content: String): Boolean {
+        val base = "/data/adb/modules/" + moduleId
+        val fullPath = base + "/system/" + relPath
+        val dir = fullPath.substring(0, fullPath.lastIndexOf('/'))
+        execShellSilent("mkdir -p " + dir)
+        return writeFile(fullPath, content)
+    }
+
     fun release() {
         shizukuAvailable = null
     }
